@@ -11,7 +11,8 @@
     "registry": "node scripts/build-registry.mjs",
     "llms": "node scripts/build-llms.mjs",
     "sync:recipes": "node scripts/sync-recipes.mjs",
-    "check:sync": "node scripts/check-sync.mjs"
+    "check:sync": "node scripts/check-sync.mjs",
+    "start": "node server.mjs"
   },
   "dependencies": {
     "@fontsource-variable/geist-mono": "^5.3.0",
