@@ -1,0 +1,38 @@
+{
+  "$schema": "https://ui.shadcn.com/schema/registry-item.json",
+  "name": "export-button",
+  "type": "registry:ui",
+  "title": "ExportButton",
+  "description": "A plain download link styled as an outline button. Exports what the list shows. One job: Download the current list as CSV.",
+  "registryDependencies": [
+    "http://localhost:5173/r/tokens.json",
+    "button"
+  ],
+  "files": [
+    {
+      "path": "registry/company-os/export-button.tsx",
+      "content": "import { DownloadIcon } from 'lucide-react';\nimport { Button } from '@/components/ui/button';\n\nexport function ExportButton({ href, label = 'Export' }: { href: string; label?: string }) {\n    return (\n        <Button asChild size=\"sm\" variant=\"outline\">\n            <a href={href} download>\n                <DownloadIcon />\n                {label}\n            </a>\n        </Button>\n    );\n}\n",
+      "type": "registry:ui",
+      "target": "components/company-os/export-button.tsx"
+    }
+  ],
+  "categories": [
+    "views"
+  ],
+  "docs": "http://localhost:5173/llms/export-button.md",
+  "meta": {
+    "system": "Company OS",
+    "pieces": [
+      15
+    ],
+    "job": "Download the current list as CSV.",
+    "tags": [
+      "export",
+      "csv",
+      "download"
+    ],
+    "exports": [
+      "ExportButton"
+    ]
+  }
+}

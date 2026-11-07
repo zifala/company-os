@@ -1,0 +1,48 @@
+{
+  "$schema": "https://ui.shadcn.com/schema/registry-item.json",
+  "name": "form-dialog",
+  "type": "registry:ui",
+  "title": "FormDialog",
+  "description": "A dialog that is a form: title, your fields, Cancel and a submit that names the object. One job: Create or rename a small record without leaving the page.",
+  "registryDependencies": [
+    "http://localhost:5173/r/tokens.json",
+    "button",
+    "dialog"
+  ],
+  "files": [
+    {
+      "path": "registry/company-os/form-dialog.tsx",
+      "content": "import type { ReactNode } from 'react';\nimport { Button } from '@/components/ui/button';\nimport {\n    Dialog,\n    DialogContent,\n    DialogDescription,\n    DialogFooter,\n    DialogHeader,\n    DialogTitle,\n    DialogTrigger,\n} from '@/components/ui/dialog';\nimport { useControllableOpen } from '@/hooks/use-controllable-open';\n\nexport function FormDialog({\n    trigger,\n    open: controlledOpen,\n    onOpenChange,\n    title,\n    description,\n    submitLabel,\n    cancelLabel = 'Cancel',\n    processing = false,\n    onSubmit,\n    children,\n}: {\n    trigger?: ReactNode;\n    open?: boolean;\n    onOpenChange?: (open: boolean) => void;\n    title: string;\n    description?: string;\n    submitLabel: string;\n    cancelLabel?: string;\n    processing?: boolean;\n    onSubmit: () => void;\n    children: ReactNode;\n}) {\n    const [open, setOpen] = useControllableOpen(controlledOpen, onOpenChange);\n\n    return (\n        <Dialog open={open} onOpenChange={setOpen}>\n            {trigger && <DialogTrigger asChild>{trigger}</DialogTrigger>}\n            <DialogContent>\n                <form\n                    className=\"grid gap-6\"\n                    onSubmit={(event) => {\n                        event.preventDefault();\n                        event.stopPropagation();\n                        onSubmit();\n                    }}\n                >\n                    <DialogHeader>\n                        <DialogTitle>{title}</DialogTitle>\n                        {description && <DialogDescription>{description}</DialogDescription>}\n                    </DialogHeader>\n                    {children}\n                    <DialogFooter>\n                        <Button type=\"button\" variant=\"outline\" onClick={() => setOpen(false)}>\n                            {cancelLabel}\n                        </Button>\n                        <Button type=\"submit\" disabled={processing}>\n                            {submitLabel}\n                        </Button>\n                    </DialogFooter>\n                </form>\n            </DialogContent>\n        </Dialog>\n    );\n}\n",
+      "type": "registry:ui",
+      "target": "components/company-os/form-dialog.tsx"
+    },
+    {
+      "path": "registry/company-os/use-controllable-open.ts",
+      "content": "import { useState } from 'react';\n\nexport function useControllableOpen(\n    open?: boolean,\n    onOpenChange?: (open: boolean) => void,\n): [boolean, (open: boolean) => void] {\n    const [ownOpen, setOwnOpen] = useState(false);\n\n    return [open ?? ownOpen, onOpenChange ?? setOwnOpen];\n}\n",
+      "type": "registry:ui",
+      "target": "hooks/use-controllable-open.ts"
+    }
+  ],
+  "categories": [
+    "dialogs"
+  ],
+  "docs": "http://localhost:5173/llms/form-dialog.md",
+  "meta": {
+    "system": "Company OS",
+    "pieces": [
+      25
+    ],
+    "job": "Create or rename a small record without leaving the page.",
+    "tags": [
+      "dialog",
+      "form",
+      "create",
+      "rename",
+      "setup-lists",
+      "inline"
+    ],
+    "exports": [
+      "FormDialog"
+    ]
+  }
+}

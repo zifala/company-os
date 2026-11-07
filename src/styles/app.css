@@ -1,0 +1,135 @@
+@import 'tailwindcss';
+@import 'tw-animate-css';
+@import './tokens.css';
+
+@custom-variant dark (&:is(.dark *));
+
+@layer base {
+    * {
+        @apply border-border outline-ring/50;
+    }
+    html {
+        -webkit-font-smoothing: antialiased;
+        -moz-osx-font-smoothing: grayscale;
+    }
+    body {
+        @apply relative isolate min-h-svh bg-background font-sans text-foreground;
+    }
+    body::before {
+        content: '';
+        position: absolute;
+        inset: -10rem 0 auto;
+        height: 44rem;
+        z-index: -1;
+        pointer-events: none;
+        background:
+            radial-gradient(35% 45% at 30% 35%, var(--glow-from), transparent 70%),
+            radial-gradient(40% 50% at 55% 25%, var(--glow-to), transparent 70%);
+        opacity: 0.3;
+        filter: blur(64px);
+    }
+}
+
+@utility glass {
+    @apply border border-glass-border bg-glass shadow-sm backdrop-blur-sm;
+}
+
+@utility glass-float {
+    @apply border border-glass-border bg-card/80 shadow-lg shadow-primary/10 backdrop-blur-lg;
+}
+
+@utility bg-graph-paper {
+    background-image:
+        linear-gradient(rgb(100 116 139 / 0.12) 1px, transparent 1px),
+        linear-gradient(90deg, rgb(100 116 139 / 0.12) 1px, transparent 1px),
+        linear-gradient(rgb(100 116 139 / 0.06) 1px, transparent 1px),
+        linear-gradient(90deg, rgb(100 116 139 / 0.06) 1px, transparent 1px);
+    background-size:
+        80px 80px,
+        80px 80px,
+        16px 16px,
+        16px 16px;
+}
+
+@utility bg-paper {
+    background-image:
+        linear-gradient(rgb(255 255 255 / 0.35) 1px, transparent 1px),
+        linear-gradient(90deg, rgb(255 255 255 / 0.35) 1px, transparent 1px);
+    background-size:
+        32px 32px,
+        32px 32px;
+}
+
+@utility bg-mesh {
+    background-color: #fde68a;
+    background-image:
+        radial-gradient(at 0% 0%, #fb7185 0px, transparent 50%),
+        radial-gradient(at 50% 0%, #fdba74 0px, transparent 50%),
+        radial-gradient(at 100% 0%, #fde68a 0px, transparent 50%),
+        radial-gradient(at 0% 100%, #818cf8 0px, transparent 50%),
+        radial-gradient(at 60% 90%, #22d3ee 0px, transparent 50%),
+        radial-gradient(at 100% 100%, #f9a8d4 0px, transparent 50%);
+}
+
+.driver-popover {
+    @apply max-w-80 min-w-64 rounded-lg border border-glass-border bg-card/90 p-4 font-sans text-foreground shadow-xl shadow-primary/10 backdrop-blur-lg;
+}
+
+.driver-popover-title {
+    @apply text-base font-light text-slate-800;
+}
+
+.driver-popover-description {
+    @apply text-sm text-foreground;
+}
+
+.driver-popover-progress-text {
+    @apply text-xs text-muted-foreground;
+}
+
+.driver-popover-close-btn {
+    @apply text-slate-400 transition-all duration-300 hover:text-primary focus:text-primary;
+}
+
+.driver-popover-footer-btn {
+    @apply inline-flex h-8 items-center rounded-md border border-input bg-transparent px-3 text-sm text-foreground transition-all duration-300 hover:bg-primary/5 hover:text-primary focus-visible:ring-2 focus-visible:ring-ring/50;
+}
+
+.driver-popover-footer-btn.driver-popover-next-btn {
+    @apply border-transparent bg-primary text-primary-foreground shadow-lg shadow-primary/40 hover:bg-primary/90 hover:text-primary-foreground hover:shadow-primary/60;
+}
+
+.driver-popover-navigation-btns {
+    @apply gap-2;
+}
+
+.driver-popover-navigation-btns button + button {
+    @apply ml-0;
+}
+
+body:has(.print-sheet) {
+    @apply bg-white;
+}
+
+body:has(.print-sheet)::before {
+    display: none;
+}
+
+.print-sheet {
+    @apply mx-auto my-8 w-[210mm] min-h-[297mm] bg-white p-[16mm] text-sm text-slate-800 shadow-sm ring-1 ring-slate-200;
+}
+
+@media print {
+    @page {
+        size: A4;
+        margin: 16mm;
+    }
+
+    .print-sheet {
+        @apply m-0 min-h-0 w-auto p-0 shadow-none ring-0;
+    }
+
+    .print-hide {
+        display: none;
+    }
+}

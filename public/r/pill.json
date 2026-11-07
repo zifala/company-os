@@ -1,0 +1,42 @@
+{
+  "$schema": "https://ui.shadcn.com/schema/registry-item.json",
+  "name": "pill",
+  "type": "registry:ui",
+  "title": "Pill",
+  "description": "A tinted label for a status, a stage or a count. The tint is the colour; there is no dot. One job: State one status or category in one word.",
+  "registryDependencies": [
+    "http://localhost:5173/r/tokens.json"
+  ],
+  "files": [
+    {
+      "path": "registry/company-os/pill.tsx",
+      "content": "import { cn } from '@/lib/utils';\n\nexport type PillColor = 'slate' | 'indigo' | 'cyan' | 'emerald' | 'rose' | 'amber';\n\nconst tints: Record<PillColor, string> = {\n    slate: 'bg-slate-500/10 text-slate-600',\n    indigo: 'bg-indigo-500/10 text-indigo-600',\n    cyan: 'bg-cyan-500/10 text-cyan-600',\n    emerald: 'bg-emerald-500/10 text-emerald-600',\n    rose: 'bg-rose-500/10 text-rose-600',\n    amber: 'bg-amber-500/10 text-amber-600',\n};\n\nconst solids: Record<PillColor, string> = {\n    slate: 'bg-slate-400',\n    indigo: 'bg-indigo-500',\n    cyan: 'bg-cyan-500',\n    emerald: 'bg-emerald-500',\n    rose: 'bg-rose-500',\n    amber: 'bg-amber-500',\n};\n\nexport function pillTint(color: string): string {\n    return tints[color as PillColor] ?? tints.slate;\n}\n\nexport function pillSolid(color: string): string {\n    return solids[color as PillColor] ?? solids.slate;\n}\n\nexport function Pill({\n    name,\n    color = 'slate',\n    count,\n    className,\n}: {\n    name: string;\n    color?: string;\n    count?: number;\n    className?: string;\n}) {\n    return (\n        <span\n            className={cn(\n                'inline-flex items-center gap-1 rounded-full px-2 py-0.5 text-xs font-medium whitespace-nowrap',\n                pillTint(color),\n                className,\n            )}\n        >\n            {count !== undefined && (\n                <span className=\"font-bold tabular-nums\">{count}</span>\n            )}\n            {name}\n        </span>\n    );\n}\n",
+      "type": "registry:ui",
+      "target": "components/company-os/pill.tsx"
+    }
+  ],
+  "categories": [
+    "page-kit"
+  ],
+  "docs": "http://localhost:5173/llms/pill.md",
+  "meta": {
+    "system": "Company OS",
+    "pieces": [
+      20
+    ],
+    "job": "State one status or category in one word.",
+    "tags": [
+      "status",
+      "badge",
+      "pill",
+      "label",
+      "stage"
+    ],
+    "exports": [
+      "Pill",
+      "pillTint",
+      "pillSolid",
+      "PillColor"
+    ]
+  }
+}

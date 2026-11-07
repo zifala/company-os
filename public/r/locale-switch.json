@@ -1,0 +1,42 @@
+{
+  "$schema": "https://ui.shadcn.com/schema/registry-item.json",
+  "name": "locale-switch",
+  "type": "registry:ui",
+  "title": "LocaleSwitch",
+  "description": "A globe with the current language code. Pick another and the page reloads in it. One job: Switch the interface language in one click from any page.",
+  "registryDependencies": [
+    "http://localhost:5173/r/tokens.json",
+    "button",
+    "dropdown-menu"
+  ],
+  "files": [
+    {
+      "path": "registry/company-os/locale-switch.tsx",
+      "content": "import { Check, Globe } from 'lucide-react';\nimport { Button } from '@/components/ui/button';\nimport {\n    DropdownMenu,\n    DropdownMenuContent,\n    DropdownMenuItem,\n    DropdownMenuTrigger,\n} from '@/components/ui/dropdown-menu';\n\nexport type LocaleOption = { value: string; label: string };\n\nexport function LocaleSwitch({\n    locales,\n    current,\n    onChange,\n    label = 'Language',\n}: {\n    locales: LocaleOption[];\n    current: string;\n    onChange: (value: string) => void;\n    label?: string;\n}) {\n    return (\n        <DropdownMenu>\n            <DropdownMenuTrigger asChild>\n                <Button\n                    variant=\"ghost\"\n                    size=\"sm\"\n                    className=\"gap-1.5 text-muted-foreground uppercase\"\n                    aria-label={label}\n                >\n                    <Globe className=\"size-4\" />\n                    {current}\n                </Button>\n            </DropdownMenuTrigger>\n            <DropdownMenuContent align=\"end\" className=\"min-w-40\">\n                {locales.map((locale) => (\n                    <DropdownMenuItem key={locale.value} onSelect={() => onChange(locale.value)}>\n                        {locale.label}\n                        {locale.value === current && (\n                            <Check className=\"ml-auto size-4 text-primary\" />\n                        )}\n                    </DropdownMenuItem>\n                ))}\n            </DropdownMenuContent>\n        </DropdownMenu>\n    );\n}\n",
+      "type": "registry:ui",
+      "target": "components/company-os/locale-switch.tsx"
+    }
+  ],
+  "categories": [
+    "shell"
+  ],
+  "docs": "http://localhost:5173/llms/locale-switch.md",
+  "meta": {
+    "system": "Company OS",
+    "pieces": [
+      18
+    ],
+    "job": "Switch the interface language in one click from any page.",
+    "tags": [
+      "locale",
+      "language",
+      "bilingual",
+      "i18n",
+      "switch"
+    ],
+    "exports": [
+      "LocaleSwitch",
+      "LocaleOption"
+    ]
+  }
+}

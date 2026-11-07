@@ -1,0 +1,42 @@
+{
+  "$schema": "https://ui.shadcn.com/schema/registry-item.json",
+  "name": "section-layout",
+  "type": "registry:ui",
+  "title": "SectionLayout",
+  "description": "Title, grouped inner nav on the left, page on the right. Setup, Organization and Settings open in it. One job: Give a section with many pages one place to switch between them.",
+  "registryDependencies": [
+    "http://localhost:5173/r/tokens.json",
+    "http://localhost:5173/r/nav.json"
+  ],
+  "files": [
+    {
+      "path": "registry/company-os/section-layout.tsx",
+      "content": "import type { ReactNode } from 'react';\nimport { visibleGroups } from '@/components/company-os/nav';\nimport type { NavGroup } from '@/components/company-os/nav';\nimport { useActiveNavHref } from '@/components/company-os/use-active-nav-href';\nimport { Link, toUrl } from '@/lib/navigation';\nimport { cn } from '@/lib/utils';\n\nexport function SectionLayout({\n    title,\n    groups,\n    permissions,\n    children,\n}: {\n    title: string;\n    groups: NavGroup[];\n    permissions: string[];\n    children: ReactNode;\n}) {\n    const visible = visibleGroups(groups, permissions);\n    const activeHref = useActiveNavHref(\n        visible.flatMap((group) => group.items.map((item) => toUrl(item.href))),\n    );\n    const showNav = visible.flatMap((group) => group.items).length > 1;\n\n    return (\n        <div className=\"flex flex-col gap-6\">\n            <h1 className=\"text-xl font-semibold text-slate-800\">{title}</h1>\n            <div className=\"flex flex-col gap-6 lg:flex-row lg:gap-12\">\n                {showNav && (\n                    <nav\n                        aria-label={title}\n                        className=\"flex gap-1 overflow-x-auto lg:w-48 lg:shrink-0 lg:flex-col lg:gap-5 lg:overflow-visible\"\n                    >\n                        {visible.map((group, index) => (\n                            <div key={group.label ?? index} className=\"flex gap-1 lg:grid lg:gap-0.5\">\n                                {group.label && (\n                                    <span className=\"hidden px-3 pb-1 text-xs font-bold tracking-wide text-muted-foreground uppercase lg:block\">\n                                        {group.label}\n                                    </span>\n                                )}\n                                {group.items.map((item) => {\n                                    const active = toUrl(item.href) === activeHref;\n\n                                    return (\n                                        <Link\n                                            key={toUrl(item.href)}\n                                            href={item.href}\n                                            prefetch\n                                            aria-current={active ? 'page' : undefined}\n                                            className={cn(\n                                                'flex h-8 shrink-0 items-center gap-2 rounded-md px-3 text-sm whitespace-nowrap transition-all duration-300 hover:bg-primary/5 hover:text-primary',\n                                                active && 'bg-primary/10 text-primary',\n                                            )}\n                                        >\n                                            {item.icon && <item.icon className=\"size-4\" />}\n                                            {item.title}\n                                        </Link>\n                                    );\n                                })}\n                            </div>\n                        ))}\n                    </nav>\n                )}\n                <section className=\"min-w-0 flex-1\">{children}</section>\n            </div>\n        </div>\n    );\n}\n",
+      "type": "registry:ui",
+      "target": "components/company-os/section-layout.tsx"
+    }
+  ],
+  "categories": [
+    "shell"
+  ],
+  "docs": "http://localhost:5173/llms/section-layout.md",
+  "meta": {
+    "system": "Company OS",
+    "pieces": [
+      7,
+      26
+    ],
+    "job": "Give a section with many pages one place to switch between them.",
+    "tags": [
+      "section",
+      "settings",
+      "setup",
+      "organization",
+      "inner-nav",
+      "layout"
+    ],
+    "exports": [
+      "SectionLayout"
+    ]
+  }
+}

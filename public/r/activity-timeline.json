@@ -1,0 +1,51 @@
+{
+  "$schema": "https://ui.shadcn.com/schema/registry-item.json",
+  "name": "activity-timeline",
+  "type": "registry:ui",
+  "title": "ActivityTimeline",
+  "description": "The audit log as a timeline: day groups, kind icon, actor, from → to pills, the reason. One job: Show the history of one record, or of everything, as the audit log recorded it.",
+  "registryDependencies": [
+    "http://localhost:5173/r/tokens.json",
+    "http://localhost:5173/r/pill.json",
+    "http://localhost:5173/r/empty-state.json"
+  ],
+  "files": [
+    {
+      "path": "registry/company-os/activity-timeline.tsx",
+      "content": "import { HistoryIcon } from 'lucide-react';\nimport { ActivityEntryItem } from '@/components/company-os/activity-entry';\nimport type { ActivityEntry } from '@/components/company-os/activity-entry';\nimport { EmptyState } from '@/components/company-os/empty-state';\n\nexport type ActivityLabels = { emptyTitle: string; emptyMessage: string; system: string };\n\nconst defaultLabels: ActivityLabels = {\n    emptyTitle: 'No activity yet',\n    emptyMessage: 'No changes, comments or uploads.',\n    system: 'System',\n};\n\nexport function ActivityTimeline({\n    entries,\n    showSubject = false,\n    labels = defaultLabels,\n}: {\n    entries: ActivityEntry[];\n    showSubject?: boolean;\n    labels?: ActivityLabels;\n}) {\n    if (entries.length === 0) {\n        return <EmptyState icon={HistoryIcon} title={labels.emptyTitle} message={labels.emptyMessage} />;\n    }\n\n    const days = entries.reduce<{ label: string; entries: ActivityEntry[] }[]>((groups, entry) => {\n        const last = groups.at(-1);\n\n        if (last?.label === entry.day_label) {\n            last.entries.push(entry);\n        } else {\n            groups.push({ label: entry.day_label, entries: [entry] });\n        }\n\n        return groups;\n    }, []);\n\n    return (\n        <div className=\"grid gap-5\">\n            {days.map((day) => (\n                <section key={day.label} className=\"grid gap-3\">\n                    <h3 className=\"text-xs font-bold tracking-wide text-muted-foreground uppercase\">{day.label}</h3>\n                    <ol className=\"relative before:absolute before:top-4 before:bottom-4 before:left-4 before:w-px before:bg-border\">\n                        {day.entries.map((entry) => (\n                            <ActivityEntryItem key={entry.id} entry={entry} showSubject={showSubject} systemLabel={labels.system} />\n                        ))}\n                    </ol>\n                </section>\n            ))}\n        </div>\n    );\n}\n",
+      "type": "registry:ui",
+      "target": "components/company-os/activity-timeline.tsx"
+    },
+    {
+      "path": "registry/company-os/activity-entry.tsx",
+      "content": "import {\n    ActivityIcon,\n    ArrowRightIcon,\n    ArrowRightLeftIcon,\n    CheckIcon,\n    MessageSquareIcon,\n    PaperclipIcon,\n    PencilIcon,\n    PlusIcon,\n    RotateCcwIcon,\n    Trash2Icon,\n    UserPlusIcon,\n} from 'lucide-react';\nimport type { LucideIcon } from 'lucide-react';\nimport { Pill, pillTint } from '@/components/company-os/pill';\nimport { Link } from '@/lib/navigation';\nimport { cn } from '@/lib/utils';\n\nexport type ActivityEntry = {\n    id: string;\n    kind: string;\n    actor: { name: string; initials: string } | null;\n    action: string;\n    via?: string | null;\n    subject?: { label: string; url: string } | null;\n    at: string;\n    at_label: string;\n    time_label: string;\n    day_label: string;\n    changes: { label: string; from: string | null; to: string | null }[];\n    reason?: string | null;\n};\n\nconst kinds: Record<string, { icon: LucideIcon; color: string }> = {\n    created: { icon: PlusIcon, color: 'indigo' },\n    updated: { icon: PencilIcon, color: 'slate' },\n    completed: { icon: CheckIcon, color: 'emerald' },\n    reopened: { icon: RotateCcwIcon, color: 'cyan' },\n    deleted: { icon: Trash2Icon, color: 'rose' },\n    commented: { icon: MessageSquareIcon, color: 'indigo' },\n    assigned: { icon: UserPlusIcon, color: 'cyan' },\n    moved: { icon: ArrowRightLeftIcon, color: 'slate' },\n    uploaded: { icon: PaperclipIcon, color: 'cyan' },\n    other: { icon: ActivityIcon, color: 'slate' },\n};\n\nexport function ActivityEntryItem({\n    entry,\n    showSubject,\n    systemLabel = 'System',\n}: {\n    entry: ActivityEntry;\n    showSubject: boolean;\n    systemLabel?: string;\n}) {\n    const { icon: Icon, color } = kinds[entry.kind] ?? kinds.other;\n\n    return (\n        <li className=\"relative flex gap-3 pb-4 last:pb-0\">\n            <span className={cn('relative z-10 flex size-8 shrink-0 items-center justify-center rounded-full ring-4 ring-background', pillTint(color))}>\n                <Icon className=\"size-4\" />\n            </span>\n            <div className=\"grid min-w-0 flex-1 gap-1.5 pt-1\">\n                <div className=\"flex flex-wrap items-center gap-x-1.5 gap-y-1 text-sm\">\n                    {entry.actor && (\n                        <span className=\"flex size-5 items-center justify-center rounded-full bg-primary/10 text-[10px] font-semibold text-primary\">\n                            {entry.actor.initials}\n                        </span>\n                    )}\n                    <span className=\"font-bold text-slate-800\">{entry.actor?.name ?? systemLabel}</span>\n                    <span>{entry.action}</span>\n                    {entry.via && <span className=\"text-xs text-muted-foreground\">{entry.via}</span>}\n                    {showSubject && entry.subject && (\n                        <Link\n                            href={entry.subject.url}\n                            className=\"rounded-md bg-slate-900/5 px-1.5 font-mono text-xs text-slate-800 hover:bg-primary/10 hover:text-primary\"\n                        >\n                            {entry.subject.label}\n                        </Link>\n                    )}\n                    <time dateTime={entry.at} title={entry.at_label} className=\"ml-auto text-xs text-muted-foreground tabular-nums\">\n                        {entry.time_label}\n                    </time>\n                </div>\n                {entry.changes.length > 0 && (\n                    <div className=\"flex flex-wrap items-center gap-1\">\n                        {entry.changes.map((change, index) =>\n                            change.to !== null ? (\n                                <span key={index} className=\"inline-flex items-center gap-1\">\n                                    {change.label && <span className=\"text-xs text-muted-foreground\">{change.label}</span>}\n                                    {change.from && <Pill name={change.from} />}\n                                    <ArrowRightIcon className=\"size-3 text-slate-400\" />\n                                    <Pill name={change.to} color={color} />\n                                </span>\n                            ) : (\n                                <Pill key={index} name={change.label} />\n                            ),\n                        )}\n                    </div>\n                )}\n                {entry.reason && (\n                    <p className=\"rounded-md bg-slate-900/5 px-3 py-1.5 text-sm text-muted-foreground italic\">{entry.reason}</p>\n                )}\n            </div>\n        </li>\n    );\n}\n",
+      "type": "registry:ui",
+      "target": "components/company-os/activity-entry.tsx"
+    }
+  ],
+  "categories": [
+    "page-kit"
+  ],
+  "docs": "http://localhost:5173/llms/activity-timeline.md",
+  "meta": {
+    "system": "Company OS",
+    "pieces": [
+      2,
+      23,
+      20
+    ],
+    "job": "Show the history of one record, or of everything, as the audit log recorded it.",
+    "tags": [
+      "activity",
+      "audit",
+      "timeline",
+      "history",
+      "log"
+    ],
+    "exports": [
+      "ActivityTimeline",
+      "ActivityEntryItem",
+      "ActivityEntry"
+    ]
+  }
+}

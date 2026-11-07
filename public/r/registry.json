@@ -1,0 +1,829 @@
+{
+  "$schema": "https://ui.shadcn.com/schema/registry.json",
+  "name": "company-os",
+  "homepage": "http://localhost:5173",
+  "items": [
+    {
+      "name": "tokens",
+      "type": "registry:theme",
+      "title": "Company OS tokens",
+      "description": "The required token set (shadcn + success, warning, info, field) with sample values, the cn helper, and the Inertia navigation seam every component imports."
+    },
+    {
+      "name": "app-shell",
+      "type": "registry:ui",
+      "title": "AppShell",
+      "description": "Sidebar left, thin header, content below. The one layout every signed-in page renders in. One job: Hold the sidebar, the header and the page in the one frame the product has.",
+      "categories": [
+        "shell"
+      ],
+      "files": [
+        {
+          "path": "components/company-os/app-shell.tsx",
+          "type": "registry:ui"
+        }
+      ]
+    },
+    {
+      "name": "app-sidebar",
+      "type": "registry:ui",
+      "title": "AppSidebar",
+      "description": "Logo, New, favorites, permission-gated groups, user menu. Collapses to icons. One job: Put every page one click away, in the order people work.",
+      "categories": [
+        "shell"
+      ],
+      "files": [
+        {
+          "path": "components/company-os/app-sidebar.tsx",
+          "type": "registry:ui"
+        },
+        {
+          "path": "components/company-os/nav-main.tsx",
+          "type": "registry:ui"
+        },
+        {
+          "path": "components/company-os/nav-user.tsx",
+          "type": "registry:ui"
+        },
+        {
+          "path": "components/company-os/user-info.tsx",
+          "type": "registry:ui"
+        },
+        {
+          "path": "hooks/use-mobile.ts",
+          "type": "registry:ui"
+        }
+      ]
+    },
+    {
+      "name": "nav",
+      "type": "registry:ui",
+      "title": "Nav",
+      "description": "The nav list as data. One array of gated groups drives the sidebar, the section nav, the palette and the g-keys. One job: Declare every page once, with its permission, icon, tour key and go-key.",
+      "categories": [
+        "shell"
+      ],
+      "files": [
+        {
+          "path": "components/company-os/nav.ts",
+          "type": "registry:ui"
+        },
+        {
+          "path": "components/company-os/use-active-nav-href.ts",
+          "type": "registry:ui"
+        }
+      ]
+    },
+    {
+      "name": "app-header",
+      "type": "registry:ui",
+      "title": "AppHeader",
+      "description": "A thin bar: sidebar trigger left, then trigger · search · locale · bell. Nothing else. One job: Hold the three global controls without stealing the page title.",
+      "categories": [
+        "shell"
+      ],
+      "files": [
+        {
+          "path": "components/company-os/app-header.tsx",
+          "type": "registry:ui"
+        }
+      ]
+    },
+    {
+      "name": "quick-create",
+      "type": "registry:ui",
+      "title": "QuickCreate",
+      "description": "The one global New menu, top of the sidebar. Items the user may create, nothing else. One job: Create any record from anywhere in two keystrokes.",
+      "categories": [
+        "shell"
+      ],
+      "files": [
+        {
+          "path": "components/company-os/quick-create.tsx",
+          "type": "registry:ui"
+        },
+        {
+          "path": "hooks/use-controllable-open.ts",
+          "type": "registry:ui"
+        }
+      ]
+    },
+    {
+      "name": "command-palette",
+      "type": "registry:ui",
+      "title": "CommandPalette",
+      "description": "One ⌘K dialog that finds records, runs actions and goes to pages. The server searches; the nav list supplies Go to. One job: Reach any record, verb or page from the keyboard in one box.",
+      "categories": [
+        "shell"
+      ],
+      "files": [
+        {
+          "path": "components/company-os/command-palette.tsx",
+          "type": "registry:ui"
+        },
+        {
+          "path": "components/company-os/command-palette-items.ts",
+          "type": "registry:ui"
+        },
+        {
+          "path": "components/company-os/use-record-search.ts",
+          "type": "registry:ui"
+        },
+        {
+          "path": "components/company-os/use-shortcuts.ts",
+          "type": "registry:ui"
+        }
+      ]
+    },
+    {
+      "name": "shortcut-help",
+      "type": "registry:ui",
+      "title": "ShortcutHelp",
+      "description": "The ? sheet. Every key the shell answers to, grouped, with the go-keys generated from the nav. One job: Show the keyboard once so people stop using the mouse.",
+      "categories": [
+        "shell"
+      ],
+      "files": [
+        {
+          "path": "components/company-os/shortcut-help.tsx",
+          "type": "registry:ui"
+        }
+      ]
+    },
+    {
+      "name": "notification-bell",
+      "type": "registry:ui",
+      "title": "NotificationBell",
+      "description": "The header bell. A count badge, then a Sheet with the work waiting for you and the recent activity. One job: Tell one person what needs them now and what just happened.",
+      "categories": [
+        "shell"
+      ],
+      "files": [
+        {
+          "path": "components/company-os/notification-bell.tsx",
+          "type": "registry:ui"
+        },
+        {
+          "path": "components/company-os/notification-list.tsx",
+          "type": "registry:ui"
+        }
+      ]
+    },
+    {
+      "name": "locale-switch",
+      "type": "registry:ui",
+      "title": "LocaleSwitch",
+      "description": "A globe with the current language code. Pick another and the page reloads in it. One job: Switch the interface language in one click from any page.",
+      "categories": [
+        "shell"
+      ],
+      "files": [
+        {
+          "path": "components/company-os/locale-switch.tsx",
+          "type": "registry:ui"
+        }
+      ]
+    },
+    {
+      "name": "section-layout",
+      "type": "registry:ui",
+      "title": "SectionLayout",
+      "description": "Title, grouped inner nav on the left, page on the right. Setup, Organization and Settings open in it. One job: Give a section with many pages one place to switch between them.",
+      "categories": [
+        "shell"
+      ],
+      "files": [
+        {
+          "path": "components/company-os/section-layout.tsx",
+          "type": "registry:ui"
+        }
+      ]
+    },
+    {
+      "name": "app-tour",
+      "type": "registry:ui",
+      "title": "AppTour",
+      "description": "One short overlay tour over the shell, once per user. Hidden targets are skipped by size. One job: Walk a new user through navigation, New and search in under a minute.",
+      "categories": [
+        "shell"
+      ],
+      "files": [
+        {
+          "path": "components/company-os/app-tour.tsx",
+          "type": "registry:ui"
+        }
+      ]
+    },
+    {
+      "name": "page-header",
+      "type": "registry:ui",
+      "title": "PageHeader",
+      "description": "The one h1 of a page, with its own create and export actions on the right. One job: Name the page and hold the actions that belong to the whole page.",
+      "categories": [
+        "page-kit"
+      ],
+      "files": [
+        {
+          "path": "components/company-os/page-header.tsx",
+          "type": "registry:ui"
+        }
+      ]
+    },
+    {
+      "name": "filter-bar",
+      "type": "registry:ui",
+      "title": "FilterBar",
+      "description": "Search, inline filters, an overflow popover, and removable chips. The query string is the state. One job: Narrow one index table from the URL, one field per filterable column.",
+      "categories": [
+        "page-kit"
+      ],
+      "files": [
+        {
+          "path": "components/company-os/filter-bar.tsx",
+          "type": "registry:ui"
+        },
+        {
+          "path": "components/company-os/filter-chips.tsx",
+          "type": "registry:ui"
+        },
+        {
+          "path": "components/company-os/filter-control.tsx",
+          "type": "registry:ui"
+        }
+      ]
+    },
+    {
+      "name": "data-table",
+      "type": "registry:ui",
+      "title": "DataTable",
+      "description": "The index table frame: sticky header, scrolling rows, pager footer, and an empty state that keeps the table. One job: Frame one paginated table so it fills the page and always shows the shape the data will take.",
+      "categories": [
+        "page-kit"
+      ],
+      "files": [
+        {
+          "path": "components/company-os/data-table.tsx",
+          "type": "registry:ui"
+        },
+        {
+          "path": "components/company-os/pager.tsx",
+          "type": "registry:ui"
+        }
+      ]
+    },
+    {
+      "name": "cells",
+      "type": "registry:ui",
+      "title": "Cells",
+      "description": "One cell per data kind. Laravel formats, the cell only places. One job: Render one typed value in one table cell, aligned and styled for its kind.",
+      "categories": [
+        "page-kit"
+      ],
+      "files": [
+        {
+          "path": "components/company-os/cells.tsx",
+          "type": "registry:ui"
+        }
+      ]
+    },
+    {
+      "name": "pill",
+      "type": "registry:ui",
+      "title": "Pill",
+      "description": "A tinted label for a status, a stage or a count. The tint is the colour; there is no dot. One job: State one status or category in one word.",
+      "categories": [
+        "page-kit"
+      ],
+      "files": [
+        {
+          "path": "components/company-os/pill.tsx",
+          "type": "registry:ui"
+        }
+      ]
+    },
+    {
+      "name": "empty-state",
+      "type": "registry:ui",
+      "title": "EmptyState",
+      "description": "An icon chip, why the region is empty, and the first action. For regions that are not tables. One job: Say why a region is empty and what fills it.",
+      "categories": [
+        "page-kit"
+      ],
+      "files": [
+        {
+          "path": "components/company-os/empty-state.tsx",
+          "type": "registry:ui"
+        }
+      ]
+    },
+    {
+      "name": "tab-nav",
+      "type": "registry:ui",
+      "title": "TabNav",
+      "description": "Tabs that are routes. The active tab comes from the URL, never from state. One job: Switch between the sections of one record or one area, each on its own URL.",
+      "categories": [
+        "page-kit"
+      ],
+      "files": [
+        {
+          "path": "components/company-os/tab-nav.tsx",
+          "type": "registry:ui"
+        }
+      ]
+    },
+    {
+      "name": "actions-menu",
+      "type": "registry:ui",
+      "title": "ActionsMenu",
+      "description": "The \"…\" menu for a row or a record header. Destructive items in rose, dialogs opened by state. One job: Hold the secondary and destructive actions of one record.",
+      "categories": [
+        "page-kit"
+      ],
+      "files": [
+        {
+          "path": "components/company-os/actions-menu.tsx",
+          "type": "registry:ui"
+        }
+      ]
+    },
+    {
+      "name": "stat-tile",
+      "type": "registry:ui",
+      "title": "StatTile",
+      "description": "One number with its label, unit and hint. Quiet by default, raised glass above a list. One job: State one figure the server computed.",
+      "categories": [
+        "page-kit"
+      ],
+      "files": [
+        {
+          "path": "components/company-os/stat-tile.tsx",
+          "type": "registry:ui"
+        }
+      ]
+    },
+    {
+      "name": "activity-timeline",
+      "type": "registry:ui",
+      "title": "ActivityTimeline",
+      "description": "The audit log as a timeline: day groups, kind icon, actor, from → to pills, the reason. One job: Show the history of one record, or of everything, as the audit log recorded it.",
+      "categories": [
+        "page-kit"
+      ],
+      "files": [
+        {
+          "path": "components/company-os/activity-timeline.tsx",
+          "type": "registry:ui"
+        },
+        {
+          "path": "components/company-os/activity-entry.tsx",
+          "type": "registry:ui"
+        }
+      ]
+    },
+    {
+      "name": "detail-card",
+      "type": "registry:ui",
+      "title": "DetailCard",
+      "description": "A record readout: a titled glass card of label and value pairs. Main facts left, fixed facts right. One job: State a set of labelled facts about one record.",
+      "categories": [
+        "page-kit"
+      ],
+      "files": [
+        {
+          "path": "components/company-os/detail-card.tsx",
+          "type": "registry:ui"
+        }
+      ]
+    },
+    {
+      "name": "form-layout",
+      "type": "registry:ui",
+      "title": "FormLayout",
+      "description": "The full-page form: sticky header with Cancel and Save, section cards left, small fixed-field cards right. One job: Lay out a create or edit page with more than five fields.",
+      "categories": [
+        "page-kit"
+      ],
+      "files": [
+        {
+          "path": "components/company-os/form-layout.tsx",
+          "type": "registry:ui"
+        }
+      ]
+    },
+    {
+      "name": "field-row",
+      "type": "registry:ui",
+      "title": "FieldRow",
+      "description": "Label, control, hint, error. Plus the form's error summary and its Cancel. One job: Wrap one form control with its persistent label and its server error.",
+      "categories": [
+        "page-kit"
+      ],
+      "files": [
+        {
+          "path": "components/company-os/field-row.tsx",
+          "type": "registry:ui"
+        }
+      ]
+    },
+    {
+      "name": "list-skeleton",
+      "type": "registry:ui",
+      "title": "ListSkeleton",
+      "description": "Placeholder bars for a non-table list while its deferred prop loads. One job: Hold the space of a list that is still arriving.",
+      "categories": [
+        "page-kit"
+      ],
+      "files": [
+        {
+          "path": "components/company-os/list-skeleton.tsx",
+          "type": "registry:ui"
+        }
+      ]
+    },
+    {
+      "name": "load-error",
+      "type": "registry:ui",
+      "title": "LoadError",
+      "description": "The fourth state of a data region: it did not load, and here is the button that tries again. One job: Say a region failed to load and offer one retry.",
+      "categories": [
+        "page-kit"
+      ],
+      "files": [
+        {
+          "path": "components/company-os/load-error.tsx",
+          "type": "registry:ui"
+        }
+      ]
+    },
+    {
+      "name": "confirm-dialog",
+      "type": "registry:ui",
+      "title": "ConfirmDialog",
+      "description": "Title, one sentence of consequence, Keep it, and a button that names the verb. For the light status changes. One job: Stop a one-click state change long enough to read what it does.",
+      "categories": [
+        "dialogs"
+      ],
+      "files": [
+        {
+          "path": "components/company-os/confirm-dialog.tsx",
+          "type": "registry:ui"
+        },
+        {
+          "path": "hooks/use-controllable-open.ts",
+          "type": "registry:ui"
+        }
+      ]
+    },
+    {
+      "name": "reason-dialog",
+      "type": "registry:ui",
+      "title": "ReasonDialog",
+      "description": "A confirm with a required reason, and a typed name for deletes. The reason lands in the audit log. One job: Make every serious change say why before it happens.",
+      "categories": [
+        "dialogs"
+      ],
+      "files": [
+        {
+          "path": "components/company-os/reason-dialog.tsx",
+          "type": "registry:ui"
+        },
+        {
+          "path": "components/company-os/confirm-dialog.tsx",
+          "type": "registry:ui"
+        },
+        {
+          "path": "hooks/use-controllable-open.ts",
+          "type": "registry:ui"
+        }
+      ]
+    },
+    {
+      "name": "form-dialog",
+      "type": "registry:ui",
+      "title": "FormDialog",
+      "description": "A dialog that is a form: title, your fields, Cancel and a submit that names the object. One job: Create or rename a small record without leaving the page.",
+      "categories": [
+        "dialogs"
+      ],
+      "files": [
+        {
+          "path": "components/company-os/form-dialog.tsx",
+          "type": "registry:ui"
+        },
+        {
+          "path": "hooks/use-controllable-open.ts",
+          "type": "registry:ui"
+        }
+      ]
+    },
+    {
+      "name": "phone-field",
+      "type": "registry:ui",
+      "title": "PhoneField",
+      "description": "The one phone input: country selector, as-you-type formatting, E.164 out, Somalia first. One job: Collect one valid phone number in international form.",
+      "categories": [
+        "forms"
+      ],
+      "files": [
+        {
+          "path": "components/company-os/phone-field.tsx",
+          "type": "registry:ui"
+        },
+        {
+          "path": "components/company-os/phone-input.tsx",
+          "type": "registry:ui"
+        }
+      ]
+    },
+    {
+      "name": "password-input",
+      "type": "registry:ui",
+      "title": "PasswordInput",
+      "description": "A password input with a show / hide toggle that stays out of the tab order. One job: Collect a password the user can check before submitting.",
+      "categories": [
+        "forms"
+      ],
+      "files": [
+        {
+          "path": "components/company-os/password-input.tsx",
+          "type": "registry:ui"
+        }
+      ]
+    },
+    {
+      "name": "remote-combobox",
+      "type": "registry:ui",
+      "title": "RemoteCombobox",
+      "description": "A searchable picker whose options come from the server as you type. One job: Pick one record from a list too long to send with the page.",
+      "categories": [
+        "forms"
+      ],
+      "files": [
+        {
+          "path": "components/company-os/remote-combobox.tsx",
+          "type": "registry:ui"
+        }
+      ]
+    },
+    {
+      "name": "verify-phone-dialog",
+      "type": "registry:ui",
+      "title": "VerifyPhoneDialog",
+      "description": "Fixed title, the phone, \"Send code\", then six digits and one confirm. One job: Prove a phone number belongs to the person in front of the screen.",
+      "categories": [
+        "forms"
+      ],
+      "files": [
+        {
+          "path": "components/company-os/verify-phone-dialog.tsx",
+          "type": "registry:ui"
+        }
+      ]
+    },
+    {
+      "name": "saved-views-menu",
+      "type": "registry:ui",
+      "title": "SavedViewsMenu",
+      "description": "Saved filter sets for a list. The menu knows which one is active by comparing the URL. One job: Save the current query of a list under a name and return to it in one click.",
+      "categories": [
+        "views"
+      ],
+      "files": [
+        {
+          "path": "components/company-os/saved-views-menu.tsx",
+          "type": "registry:ui"
+        },
+        {
+          "path": "components/company-os/save-view-dialog.tsx",
+          "type": "registry:ui"
+        },
+        {
+          "path": "components/company-os/saved-view-query.ts",
+          "type": "registry:ui"
+        }
+      ]
+    },
+    {
+      "name": "favorite-button",
+      "type": "registry:ui",
+      "title": "FavoriteButton",
+      "description": "A star that pins any viewable record or saved view to the sidebar. One job: Toggle one record in the user's favorites.",
+      "categories": [
+        "views"
+      ],
+      "files": [
+        {
+          "path": "components/company-os/favorite-button.tsx",
+          "type": "registry:ui"
+        }
+      ]
+    },
+    {
+      "name": "export-button",
+      "type": "registry:ui",
+      "title": "ExportButton",
+      "description": "A plain download link styled as an outline button. Exports what the list shows. One job: Download the current list as CSV.",
+      "categories": [
+        "views"
+      ],
+      "files": [
+        {
+          "path": "components/company-os/export-button.tsx",
+          "type": "registry:ui"
+        }
+      ]
+    },
+    {
+      "name": "csv-import",
+      "type": "registry:ui",
+      "title": "CsvImport",
+      "description": "Pick a file, preview what would change, then import. Nothing writes before the preview. One job: Import records from CSV with a dry run first.",
+      "categories": [
+        "views"
+      ],
+      "files": [
+        {
+          "path": "components/company-os/csv-import.tsx",
+          "type": "registry:ui"
+        },
+        {
+          "path": "components/company-os/import-preview.tsx",
+          "type": "registry:ui"
+        }
+      ]
+    },
+    {
+      "name": "setup-checklist",
+      "type": "registry:ui",
+      "title": "SetupChecklist",
+      "description": "Steps that tick from real data, each with a link to where it gets done, and one \"Finish setup\". One job: Walk the super admin through the first configuration without storing a single tick.",
+      "categories": [
+        "setup"
+      ],
+      "files": [
+        {
+          "path": "components/company-os/setup-checklist.tsx",
+          "type": "registry:ui"
+        }
+      ]
+    },
+    {
+      "name": "onboarding-card",
+      "type": "registry:ui",
+      "title": "OnboardingCard",
+      "description": "The side card on a record born from an onboarding: reference, who started it, who approved it, when, and the source. One job: Show where a relationship record came from.",
+      "categories": [
+        "setup"
+      ],
+      "files": [
+        {
+          "path": "components/company-os/onboarding-card.tsx",
+          "type": "registry:ui"
+        }
+      ]
+    },
+    {
+      "name": "insight-item",
+      "type": "registry:ui",
+      "title": "InsightItem",
+      "description": "One insight: severity, title, body, folded evidence, suggestions you can apply, mark seen, dismiss. One job: Present one rule signal and let the reader act on it or close it.",
+      "categories": [
+        "setup"
+      ],
+      "files": [
+        {
+          "path": "components/company-os/insight-item.tsx",
+          "type": "registry:ui"
+        }
+      ]
+    },
+    {
+      "name": "block-index-page",
+      "type": "registry:block",
+      "title": "Index page",
+      "description": "PageHeader with its create action, FilterBar with export, one DataTable of typed cells, the pager.",
+      "categories": [
+        "blocks"
+      ],
+      "files": [
+        {
+          "path": "blocks/index-page.tsx",
+          "type": "registry:block"
+        }
+      ]
+    },
+    {
+      "name": "block-record-page",
+      "type": "registry:block",
+      "title": "Record page",
+      "description": "Header actions, tabs that are routes, detail cards main-left and fixed-right, activity.",
+      "categories": [
+        "blocks"
+      ],
+      "files": [
+        {
+          "path": "blocks/record-page.tsx",
+          "type": "registry:block"
+        }
+      ]
+    },
+    {
+      "name": "block-form-page",
+      "type": "registry:block",
+      "title": "Full-page form",
+      "description": "Sticky header with Cancel and Create, section cards left, fixed-field cards right.",
+      "categories": [
+        "blocks"
+      ],
+      "files": [
+        {
+          "path": "blocks/form-page.tsx",
+          "type": "registry:block"
+        }
+      ]
+    },
+    {
+      "name": "block-home-dashboard",
+      "type": "registry:block",
+      "title": "Home",
+      "description": "Raised stat tiles, the work waiting on you as a table, latest activity.",
+      "categories": [
+        "blocks"
+      ],
+      "files": [
+        {
+          "path": "blocks/home-dashboard.tsx",
+          "type": "registry:block"
+        }
+      ]
+    },
+    {
+      "name": "template-users-page",
+      "type": "registry:block",
+      "title": "Organization · Users",
+      "description": "The people list inside the Organization section: invite in a dialog, deactivate with a reason.",
+      "categories": [
+        "templates"
+      ],
+      "files": [
+        {
+          "path": "templates/users-page.tsx",
+          "type": "registry:block"
+        },
+        {
+          "path": "templates/organization-nav.ts",
+          "type": "registry:block"
+        }
+      ]
+    },
+    {
+      "name": "template-trash-page",
+      "type": "registry:block",
+      "title": "Trash",
+      "description": "What was deleted, by whom, why, and how many days remain. Restore through a confirm.",
+      "categories": [
+        "templates"
+      ],
+      "files": [
+        {
+          "path": "templates/trash-page.tsx",
+          "type": "registry:block"
+        }
+      ]
+    },
+    {
+      "name": "template-setup-page",
+      "type": "registry:block",
+      "title": "Organization · Setup",
+      "description": "The checklist that ticks from real data, the services panel, and Finish setup.",
+      "categories": [
+        "templates"
+      ],
+      "files": [
+        {
+          "path": "templates/setup-page.tsx",
+          "type": "registry:block"
+        },
+        {
+          "path": "templates/organization-nav.ts",
+          "type": "registry:block"
+        }
+      ]
+    },
+    {
+      "name": "template-settings-page",
+      "type": "registry:block",
+      "title": "Settings · Profile",
+      "description": "The personal settings layout: profile, timezone and quiet hours, nothing platform-wide.",
+      "categories": [
+        "templates"
+      ],
+      "files": [
+        {
+          "path": "templates/settings-page.tsx",
+          "type": "registry:block"
+        }
+      ]
+    }
+  ]
+}

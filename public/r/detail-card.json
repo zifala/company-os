@@ -1,0 +1,44 @@
+{
+  "$schema": "https://ui.shadcn.com/schema/registry-item.json",
+  "name": "detail-card",
+  "type": "registry:ui",
+  "title": "DetailCard",
+  "description": "A record readout: a titled glass card of label and value pairs. Main facts left, fixed facts right. One job: State a set of labelled facts about one record.",
+  "registryDependencies": [
+    "http://localhost:5173/r/tokens.json",
+    "http://localhost:5173/r/cells.json"
+  ],
+  "files": [
+    {
+      "path": "registry/company-os/detail-card.tsx",
+      "content": "import type { ReactNode } from 'react';\nimport { EmptyValue } from '@/components/company-os/cells';\nimport { cn } from '@/lib/utils';\n\nexport type Detail = { label: string; value: ReactNode };\n\nexport function DetailList({ details }: { details: Detail[] }) {\n    return (\n        <dl className=\"grid grid-cols-[10rem_1fr] gap-x-4 gap-y-3 text-sm\">\n            {details.map((detail) => (\n                <div key={detail.label} className=\"contents\">\n                    <dt className=\"text-muted-foreground\">{detail.label}</dt>\n                    <dd className=\"text-slate-800\">{detail.value ?? <EmptyValue />}</dd>\n                </div>\n            ))}\n        </dl>\n    );\n}\n\nexport function DetailCard({\n    title,\n    details,\n    compact = false,\n    action,\n}: {\n    title: string;\n    details: Detail[];\n    compact?: boolean;\n    action?: ReactNode;\n}) {\n    return (\n        <section className=\"rounded-lg glass\">\n            <div className=\"flex items-center justify-between gap-3 border-b border-border px-5 py-3.5\">\n                <h2 className=\"text-sm font-semibold text-slate-800\">{title}</h2>\n                {action}\n            </div>\n            <dl className={cn('grid gap-x-6 gap-y-4 p-5', !compact && 'sm:grid-cols-2')}>\n                {details.map((detail) => (\n                    <div key={detail.label} className=\"grid gap-1\">\n                        <dt className=\"text-xs text-muted-foreground\">{detail.label}</dt>\n                        <dd className=\"text-sm font-medium text-slate-800\">{detail.value ?? <EmptyValue />}</dd>\n                    </div>\n                ))}\n            </dl>\n        </section>\n    );\n}\n",
+      "type": "registry:ui",
+      "target": "components/company-os/detail-card.tsx"
+    }
+  ],
+  "categories": [
+    "page-kit"
+  ],
+  "docs": "http://localhost:5173/llms/detail-card.md",
+  "meta": {
+    "system": "Company OS",
+    "pieces": [
+      7,
+      20,
+      27
+    ],
+    "job": "State a set of labelled facts about one record.",
+    "tags": [
+      "detail",
+      "record",
+      "readout",
+      "description list",
+      "show page"
+    ],
+    "exports": [
+      "DetailCard",
+      "DetailList",
+      "Detail"
+    ]
+  }
+}

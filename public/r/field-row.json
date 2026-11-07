@@ -1,0 +1,46 @@
+{
+  "$schema": "https://ui.shadcn.com/schema/registry-item.json",
+  "name": "field-row",
+  "type": "registry:ui",
+  "title": "FieldRow",
+  "description": "Label, control, hint, error. Plus the form's error summary and its Cancel. One job: Wrap one form control with its persistent label and its server error.",
+  "registryDependencies": [
+    "http://localhost:5173/r/tokens.json",
+    "label",
+    "alert",
+    "button"
+  ],
+  "files": [
+    {
+      "path": "registry/company-os/field-row.tsx",
+      "content": "import { AlertCircleIcon } from 'lucide-react';\nimport type { ReactNode } from 'react';\nimport { Alert, AlertDescription, AlertTitle } from '@/components/ui/alert';\nimport { Button } from '@/components/ui/button';\nimport { Label } from '@/components/ui/label';\nimport { Link } from '@/lib/navigation';\nimport type { Href } from '@/lib/navigation';\n\nexport function InputError({ message }: { message?: string }) {\n    return message ? <p className=\"text-sm text-rose-600\">{message}</p> : null;\n}\n\nexport function FieldRow({\n    id,\n    label,\n    error,\n    hint,\n    children,\n}: {\n    id: string;\n    label: string;\n    error?: string;\n    hint?: string;\n    children: ReactNode;\n}) {\n    return (\n        <div className=\"grid gap-2\">\n            <Label htmlFor={id}>{label}</Label>\n            {children}\n            {hint && !error && <p className=\"text-xs text-muted-foreground\">{hint}</p>}\n            <InputError message={error} />\n        </div>\n    );\n}\n\nexport function AlertError({\n    errors,\n    title = 'The form was not saved.',\n}: {\n    errors: string[];\n    title?: string;\n}) {\n    return (\n        <Alert variant=\"destructive\">\n            <AlertCircleIcon />\n            <AlertTitle>{title}</AlertTitle>\n            <AlertDescription>\n                <ul className=\"list-inside list-disc text-sm\">\n                    {Array.from(new Set(errors)).map((error) => (\n                        <li key={error}>{error}</li>\n                    ))}\n                </ul>\n            </AlertDescription>\n        </Alert>\n    );\n}\n\nexport function FormCancel({\n    href,\n    onCancel,\n    label = 'Cancel',\n}: {\n    href?: Href;\n    onCancel?: () => void;\n    label?: string;\n}) {\n    if (href) {\n        return (\n            <Button variant=\"outline\" asChild>\n                <Link href={href}>{label}</Link>\n            </Button>\n        );\n    }\n\n    if (!onCancel) {\n        return null;\n    }\n\n    return (\n        <Button type=\"button\" variant=\"outline\" onClick={onCancel}>\n            {label}\n        </Button>\n    );\n}\n",
+      "type": "registry:ui",
+      "target": "components/company-os/field-row.tsx"
+    }
+  ],
+  "categories": [
+    "page-kit"
+  ],
+  "docs": "http://localhost:5173/llms/field-row.md",
+  "meta": {
+    "system": "Company OS",
+    "pieces": [
+      20
+    ],
+    "job": "Wrap one form control with its persistent label and its server error.",
+    "tags": [
+      "form",
+      "field",
+      "label",
+      "error",
+      "validation",
+      "cancel"
+    ],
+    "exports": [
+      "FieldRow",
+      "InputError",
+      "AlertError",
+      "FormCancel"
+    ]
+  }
+}

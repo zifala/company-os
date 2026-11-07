@@ -1,0 +1,54 @@
+{
+  "$schema": "https://ui.shadcn.com/schema/registry-item.json",
+  "name": "notification-bell",
+  "type": "registry:ui",
+  "title": "NotificationBell",
+  "description": "The header bell. A count badge, then a Sheet with the work waiting for you and the recent activity. One job: Tell one person what needs them now and what just happened.",
+  "registryDependencies": [
+    "http://localhost:5173/r/tokens.json",
+    "button",
+    "sheet"
+  ],
+  "files": [
+    {
+      "path": "registry/company-os/notification-bell.tsx",
+      "content": "import { BellIcon } from 'lucide-react';\nimport { useState } from 'react';\nimport { NotificationList, notificationLabels } from '@/components/company-os/notification-list';\nimport type { NotificationData, NotificationLabels } from '@/components/company-os/notification-list';\nimport { Button } from '@/components/ui/button';\nimport { Sheet, SheetContent, SheetHeader, SheetTitle } from '@/components/ui/sheet';\nimport { Link } from '@/lib/navigation';\nimport type { Href } from '@/lib/navigation';\n\ntype Load = { status: 'loading' } | { status: 'failed' } | { status: 'ready'; data: NotificationData };\n\nexport function NotificationBell({\n    count,\n    onOpen,\n    markAllHref,\n    historyHref,\n    labels: custom,\n}: {\n    count: number;\n    onOpen: () => Promise<NotificationData>;\n    markAllHref?: Href;\n    historyHref?: Href;\n    labels?: Partial<NotificationLabels>;\n}) {\n    const labels = { ...notificationLabels, ...custom };\n    const [open, setOpen] = useState(false);\n    const [load, setLoad] = useState<Load>({ status: 'loading' });\n\n    const show = () => {\n        setOpen(true);\n        setLoad({ status: 'loading' });\n        onOpen()\n            .then((data) => setLoad({ status: 'ready', data }))\n            .catch(() => setLoad({ status: 'failed' }));\n    };\n\n    return (\n        <>\n            <Button variant=\"ghost\" size=\"icon\" className=\"relative\" aria-label={labels.title} data-tour=\"bell\" onClick={show}>\n                <BellIcon className=\"size-5\" />\n                {count > 0 && (\n                    <span className=\"absolute -top-0.5 -right-0.5 flex size-4 items-center justify-center rounded-full bg-primary text-[10px] font-bold text-primary-foreground tabular-nums\">\n                        {count > 9 ? '9+' : count}\n                    </span>\n                )}\n            </Button>\n            <Sheet open={open} onOpenChange={setOpen}>\n                <SheetContent className=\"w-full gap-0 p-0 sm:max-w-md\">\n                    <SheetHeader className=\"flex-row items-center justify-between border-b px-5 py-4\">\n                        <SheetTitle>{labels.title}</SheetTitle>\n                        {markAllHref && count > 0 && (\n                            <Link href={markAllHref} className=\"mr-6 text-xs text-primary hover:underline\" onClick={() => setOpen(false)}>\n                                {labels.markAll}\n                            </Link>\n                        )}\n                    </SheetHeader>\n                    <div className=\"min-h-0 flex-1 overflow-y-auto pb-4\">\n                        {load.status === 'loading' && <p className=\"px-5 py-6 text-sm text-muted-foreground\">{labels.loading}</p>}\n                        {load.status === 'failed' && <p className=\"px-5 py-6 text-sm text-rose-600\">{labels.failed}</p>}\n                        {load.status === 'ready' && (\n                            <NotificationList data={load.data} labels={labels} onPick={() => setOpen(false)} />\n                        )}\n                    </div>\n                    {historyHref && (\n                        <Link\n                            href={historyHref}\n                            onClick={() => setOpen(false)}\n                            className=\"block border-t px-5 py-3 text-center text-xs text-primary transition-all duration-300 hover:bg-primary/5\"\n                        >\n                            {labels.history}\n                        </Link>\n                    )}\n                </SheetContent>\n            </Sheet>\n        </>\n    );\n}\n",
+      "type": "registry:ui",
+      "target": "components/company-os/notification-bell.tsx"
+    },
+    {
+      "path": "registry/company-os/notification-list.tsx",
+      "content": "import { ChevronRightIcon } from 'lucide-react';\nimport { Link } from '@/lib/navigation';\nimport { cn } from '@/lib/utils';\n\nexport type WaitingItem = { key: string; label: string; count: number; href: string };\n\nexport type RecentItem = {\n    id: string;\n    message: string;\n    url: string | null;\n    read: boolean;\n    at_label: string;\n};\n\nexport type NotificationData = { waiting: WaitingItem[]; recent: RecentItem[] };\n\nexport type NotificationLabels = {\n    title: string;\n    waiting: string;\n    recent: string;\n    nothingWaiting: string;\n    noRecent: string;\n    loading: string;\n    failed: string;\n    markAll: string;\n    history: string;\n};\n\nexport const notificationLabels: NotificationLabels = {\n    title: 'Notifications',\n    waiting: 'Needs your attention',\n    recent: 'Recent',\n    nothingWaiting: 'Nothing is waiting for you.',\n    noRecent: 'Assignments, mentions, comments and reminders show here.',\n    loading: 'Loading',\n    failed: 'The list did not load. Close and open the bell again.',\n    markAll: 'Mark all read',\n    history: 'View all notifications',\n};\n\nfunction SectionTitle({ children }: { children: string }) {\n    return (\n        <h3 className=\"px-5 pt-5 pb-2 text-xs font-bold tracking-wide text-muted-foreground uppercase\">{children}</h3>\n    );\n}\n\nfunction Hint({ children }: { children: string }) {\n    return <p className=\"px-5 pb-2 text-sm text-muted-foreground\">{children}</p>;\n}\n\nexport function NotificationList({\n    data,\n    labels,\n    onPick,\n}: {\n    data: NotificationData;\n    labels: NotificationLabels;\n    onPick: () => void;\n}) {\n    const recentClass = 'grid gap-0.5 px-5 py-3 text-sm';\n\n    return (\n        <>\n            <SectionTitle>{labels.waiting}</SectionTitle>\n            {data.waiting.length === 0 && <Hint>{labels.nothingWaiting}</Hint>}\n            {data.waiting.length > 0 && (\n                <ul className=\"divide-y border-y\">\n                    {data.waiting.map((item) => (\n                        <li key={item.key}>\n                            <Link\n                                href={item.href}\n                                onClick={onPick}\n                                className=\"flex items-center gap-3 px-5 py-3 text-sm transition-all duration-300 hover:bg-primary/5\"\n                            >\n                                <span className=\"flex-1\">{item.label}</span>\n                                <span className=\"font-bold tabular-nums\">{item.count}</span>\n                                <ChevronRightIcon className=\"size-4 text-slate-400\" />\n                            </Link>\n                        </li>\n                    ))}\n                </ul>\n            )}\n            <SectionTitle>{labels.recent}</SectionTitle>\n            {data.recent.length === 0 && <Hint>{labels.noRecent}</Hint>}\n            {data.recent.length > 0 && (\n                <ul className=\"divide-y border-y\">\n                    {data.recent.map((item) => {\n                        const body = (\n                            <>\n                                <span className={item.read ? 'text-muted-foreground' : 'text-slate-800'}>{item.message}</span>\n                                <span className=\"text-xs text-muted-foreground\">{item.at_label}</span>\n                            </>\n                        );\n\n                        return (\n                            <li key={item.id}>\n                                {item.url ? (\n                                    <Link\n                                        href={item.url}\n                                        onClick={onPick}\n                                        className={cn(recentClass, 'transition-all duration-300 hover:bg-primary/5')}\n                                    >\n                                        {body}\n                                    </Link>\n                                ) : (\n                                    <div className={recentClass}>{body}</div>\n                                )}\n                            </li>\n                        );\n                    })}\n                </ul>\n            )}\n        </>\n    );\n}\n",
+      "type": "registry:ui",
+      "target": "components/company-os/notification-list.tsx"
+    }
+  ],
+  "categories": [
+    "shell"
+  ],
+  "docs": "http://localhost:5173/llms/notification-bell.md",
+  "meta": {
+    "system": "Company OS",
+    "pieces": [
+      10
+    ],
+    "job": "Tell one person what needs them now and what just happened.",
+    "tags": [
+      "notifications",
+      "bell",
+      "inbox",
+      "sheet",
+      "badge",
+      "attention"
+    ],
+    "exports": [
+      "NotificationBell",
+      "NotificationList",
+      "notificationLabels",
+      "NotificationData",
+      "NotificationLabels",
+      "WaitingItem",
+      "RecentItem"
+    ]
+  }
+}

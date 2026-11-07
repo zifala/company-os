@@ -1,0 +1,53 @@
+{
+  "$schema": "https://ui.shadcn.com/schema/registry-item.json",
+  "name": "phone-field",
+  "type": "registry:ui",
+  "title": "PhoneField",
+  "description": "The one phone input: country selector, as-you-type formatting, E.164 out, Somalia first. One job: Collect one valid phone number in international form.",
+  "registryDependencies": [
+    "http://localhost:5173/r/tokens.json",
+    "http://localhost:5173/r/field-row.json",
+    "command",
+    "popover"
+  ],
+  "files": [
+    {
+      "path": "registry/company-os/phone-field.tsx",
+      "content": "import { useState } from 'react';\nimport { FieldRow } from '@/components/company-os/field-row';\nimport { isValidPhone, PhoneInput } from '@/components/company-os/phone-input';\nimport type { PhoneLabels } from '@/components/company-os/phone-input';\n\nexport function PhoneField({\n    id,\n    label,\n    name,\n    value,\n    defaultValue,\n    onChange,\n    error,\n    disabled,\n    hint,\n    invalidMessage = 'Enter a valid phone number for the chosen country.',\n    labels,\n}: {\n    id: string;\n    label: string;\n    name?: string;\n    value?: string | null;\n    defaultValue?: string | null;\n    onChange?: (value: string) => void;\n    error?: string;\n    disabled?: boolean;\n    hint?: string;\n    invalidMessage?: string;\n    labels?: PhoneLabels;\n}) {\n    const [current, setCurrent] = useState<string>(value ?? defaultValue ?? '');\n    const [touched, setTouched] = useState(false);\n    const shown = value ?? current;\n    const clientError = touched && !isValidPhone(shown) ? invalidMessage : undefined;\n\n    return (\n        <FieldRow id={id} label={label} hint={hint} error={error ?? clientError}>\n            <PhoneInput\n                id={id}\n                value={shown}\n                disabled={disabled}\n                invalid={!!(error ?? clientError)}\n                onBlur={() => setTouched(true)}\n                labels={labels}\n                onChange={(next) => {\n                    setCurrent(next);\n                    onChange?.(next);\n                }}\n            />\n            {name && <input type=\"hidden\" name={name} value={shown} />}\n        </FieldRow>\n    );\n}\n",
+      "type": "registry:ui",
+      "target": "components/company-os/phone-field.tsx"
+    },
+    {
+      "path": "registry/company-os/phone-input.tsx",
+      "content": "import type { CountryCode } from 'libphonenumber-js';\nimport { AsYouType, getCountries, getCountryCallingCode, isValidPhoneNumber, parsePhoneNumberFromString } from 'libphonenumber-js';\nimport { Check, ChevronDown } from 'lucide-react';\nimport { useMemo, useState } from 'react';\nimport { Command, CommandEmpty, CommandGroup, CommandInput, CommandItem, CommandList } from '@/components/ui/command';\nimport { Popover, PopoverContent, PopoverTrigger } from '@/components/ui/popover';\nimport { cn } from '@/lib/utils';\n\nexport const DEFAULT_COUNTRY: CountryCode = 'SO';\n\nexport type PhoneLabels = { country: string; searchCountry: string; noMatch: string };\n\nconst defaultLabels: PhoneLabels = { country: 'Country code', searchCountry: 'Search country', noMatch: 'Nothing matches.' };\n\nfunction split(value: string | null | undefined, fallback: CountryCode) {\n    const parsed = value ? parsePhoneNumberFromString(value, fallback) : undefined;\n\n    return parsed\n        ? { country: parsed.country ?? fallback, national: parsed.formatNational() }\n        : { country: fallback, national: value ?? '' };\n}\n\nexport function isValidPhone(value: string | null | undefined, country: CountryCode = DEFAULT_COUNTRY): boolean {\n    return !value || isValidPhoneNumber(value, country);\n}\n\nexport function PhoneInput({\n    id,\n    value,\n    onChange,\n    disabled,\n    invalid,\n    onBlur,\n    defaultCountry = DEFAULT_COUNTRY,\n    locale = 'en',\n    labels = defaultLabels,\n}: {\n    id: string;\n    value: string | null | undefined;\n    onChange: (value: string) => void;\n    disabled?: boolean;\n    invalid?: boolean;\n    onBlur?: () => void;\n    defaultCountry?: CountryCode;\n    locale?: string;\n    labels?: PhoneLabels;\n}) {\n    const [open, setOpen] = useState(false);\n    const [initial] = useState(() => split(value, defaultCountry));\n    const [country, setCountry] = useState<CountryCode>(initial.country);\n    const [national, setNational] = useState(initial.national);\n    const countries = useMemo(() => {\n        const names = new Intl.DisplayNames([locale, 'en'], { type: 'region' });\n\n        return getCountries()\n            .map((code) => ({ code, name: names.of(code) ?? code, dial: getCountryCallingCode(code) }))\n            .sort((a, b) => a.name.localeCompare(b.name));\n    }, [locale]);\n\n    const emit = (nextCountry: CountryCode, nextNational: string) => {\n        const digits = nextNational.replace(/\\D/g, '');\n        onChange(digits ? `+${getCountryCallingCode(nextCountry)}${digits.replace(/^0+/, '')}` : '');\n    };\n\n    return (\n        <div\n            className={cn(\n                'flex h-9 w-full items-stretch rounded-lg border border-input bg-card/70 shadow-xs transition-[color,box-shadow] focus-within:border-ring focus-within:ring-[3px] focus-within:ring-ring/20',\n                invalid && 'border-destructive ring-destructive/20',\n                disabled && 'opacity-50',\n            )}\n        >\n            <Popover open={open} onOpenChange={setOpen}>\n                <PopoverTrigger asChild>\n                    <button\n                        type=\"button\"\n                        disabled={disabled}\n                        aria-label={labels.country}\n                        className=\"flex shrink-0 cursor-pointer items-center gap-1 border-r border-input px-3 text-sm font-medium tabular-nums disabled:cursor-not-allowed\"\n                    >\n                        {country} +{getCountryCallingCode(country)}\n                        <ChevronDown className=\"size-3.5 text-slate-400\" />\n                    </button>\n                </PopoverTrigger>\n                <PopoverContent className=\"w-72 p-0\" align=\"start\">\n                    <Command>\n                        <CommandInput placeholder={labels.searchCountry} />\n                        <CommandList>\n                            <CommandEmpty>{labels.noMatch}</CommandEmpty>\n                            <CommandGroup>\n                                {countries.map((item) => (\n                                    <CommandItem\n                                        key={item.code}\n                                        value={`${item.name} ${item.dial} ${item.code}`}\n                                        onSelect={() => {\n                                            setCountry(item.code);\n                                            setOpen(false);\n                                            emit(item.code, national);\n                                        }}\n                                    >\n                                        <span className=\"flex-1 truncate\">{item.name}</span>\n                                        <span className=\"text-xs text-muted-foreground tabular-nums\">+{item.dial}</span>\n                                        <Check className={cn('text-primary', item.code === country ? 'opacity-100' : 'opacity-0')} />\n                                    </CommandItem>\n                                ))}\n                            </CommandGroup>\n                        </CommandList>\n                    </Command>\n                </PopoverContent>\n            </Popover>\n            <input\n                id={id}\n                type=\"tel\"\n                inputMode=\"tel\"\n                autoComplete=\"tel-national\"\n                disabled={disabled}\n                value={national}\n                placeholder={country === DEFAULT_COUNTRY ? '61 234 5678' : ''}\n                aria-invalid={invalid ? true : undefined}\n                onBlur={onBlur}\n                onChange={(event) => {\n                    const typed = event.target.value;\n                    const international = typed.trim().startsWith('+') ? parsePhoneNumberFromString(typed) : undefined;\n\n                    if (international?.country) {\n                        setCountry(international.country);\n                        setNational(international.formatNational());\n                        onChange(international.number);\n\n                        return;\n                    }\n\n                    const formatted = new AsYouType(country).input(typed);\n                    setNational(formatted);\n                    emit(country, formatted);\n                }}\n                className=\"min-w-0 flex-1 bg-transparent px-3 text-sm tabular-nums outline-none placeholder:text-slate-400 disabled:cursor-not-allowed\"\n            />\n        </div>\n    );\n}\n",
+      "type": "registry:ui",
+      "target": "components/company-os/phone-input.tsx"
+    }
+  ],
+  "categories": [
+    "forms"
+  ],
+  "docs": "http://localhost:5173/llms/phone-field.md",
+  "meta": {
+    "system": "Company OS",
+    "pieces": [
+      6,
+      27
+    ],
+    "job": "Collect one valid phone number in international form.",
+    "tags": [
+      "phone",
+      "input",
+      "country",
+      "libphonenumber",
+      "E.164",
+      "form"
+    ],
+    "exports": [
+      "PhoneField",
+      "PhoneInput",
+      "isValidPhone",
+      "DEFAULT_COUNTRY"
+    ]
+  }
+}

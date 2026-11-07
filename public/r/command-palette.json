@@ -1,0 +1,73 @@
+{
+  "$schema": "https://ui.shadcn.com/schema/registry-item.json",
+  "name": "command-palette",
+  "type": "registry:ui",
+  "title": "CommandPalette",
+  "description": "One ⌘K dialog that finds records, runs actions and goes to pages. The server searches; the nav list supplies Go to. One job: Reach any record, verb or page from the keyboard in one box.",
+  "registryDependencies": [
+    "http://localhost:5173/r/tokens.json",
+    "http://localhost:5173/r/nav.json",
+    "command",
+    "dialog",
+    "kbd",
+    "skeleton"
+  ],
+  "files": [
+    {
+      "path": "registry/company-os/command-palette.tsx",
+      "content": "import { CornerDownLeftIcon } from 'lucide-react';\nimport { goItems, matchesTerm, paletteLabels } from '@/components/company-os/command-palette-items';\nimport type { PaletteItem, PaletteLabels } from '@/components/company-os/command-palette-items';\nimport { canSee } from '@/components/company-os/nav';\nimport type { NavGroup } from '@/components/company-os/nav';\nimport { useRecordSearch } from '@/components/company-os/use-record-search';\nimport type { RecordSearch } from '@/components/company-os/use-record-search';\nimport {\n    Command,\n    CommandEmpty,\n    CommandGroup,\n    CommandInput,\n    CommandItem,\n    CommandList,\n} from '@/components/ui/command';\nimport { Dialog, DialogContent, DialogTitle } from '@/components/ui/dialog';\nimport { Kbd } from '@/components/ui/kbd';\nimport { Skeleton } from '@/components/ui/skeleton';\n\nfunction PaletteGroup({\n    heading,\n    items,\n    onRun,\n}: {\n    heading: string;\n    items: PaletteItem[];\n    onRun: (run: PaletteItem['run']) => void;\n}) {\n    if (items.length === 0) {\n        return null;\n    }\n\n    return (\n        <CommandGroup heading={heading}>\n            {items.map((item) => (\n                <CommandItem key={item.label} value={`${heading} ${item.label}`} onSelect={() => onRun(item.run)}>\n                    <item.icon />\n                    {item.label}\n                    {item.shortcut && (\n                        <span className=\"ml-auto flex gap-1\">\n                            {item.shortcut.split(' ').map((key) => (\n                                <Kbd key={key}>{key}</Kbd>\n                            ))}\n                        </span>\n                    )}\n                </CommandItem>\n            ))}\n        </CommandGroup>\n    );\n}\n\nexport function CommandPalette({\n    open,\n    onOpenChange,\n    placeholder = 'Search a record or type a command',\n    groups,\n    permissions,\n    actions,\n    onSearch,\n    onNavigate,\n    labels: custom,\n}: {\n    open: boolean;\n    onOpenChange: (open: boolean) => void;\n    placeholder?: string;\n    groups: NavGroup[];\n    permissions: string[];\n    actions: PaletteItem[];\n    onSearch?: RecordSearch;\n    onNavigate: (url: string) => void;\n    labels?: Partial<PaletteLabels>;\n}) {\n    const labels = { ...paletteLabels, ...custom };\n    const { query, setQuery, searching, groups: found, failed } = useRecordSearch(onSearch);\n    const term = query.trim().toLowerCase();\n    const allowedActions = matchesTerm(actions.filter((item) => canSee(item, permissions)), term);\n    const allowedGoTo = matchesTerm(goItems(groups, permissions), term);\n\n    const close = () => {\n        onOpenChange(false);\n        setQuery('');\n    };\n\n    const run = (target: PaletteItem['run']) => {\n        close();\n\n        if (typeof target === 'function') {\n            target();\n        } else {\n            onNavigate(target);\n        }\n    };\n\n    return (\n        <Dialog open={open} onOpenChange={(next) => (next ? onOpenChange(true) : close())}>\n            <DialogContent className=\"top-24 translate-y-0 gap-0 overflow-hidden p-0 sm:max-w-xl\" showCloseButton={false}>\n                <DialogTitle className=\"sr-only\">{labels.title}</DialogTitle>\n                <Command shouldFilter={false} loop>\n                    <CommandInput autoFocus placeholder={placeholder} value={query} onValueChange={setQuery} />\n                    <CommandList className=\"max-h-96\">\n                        {searching && found.length === 0 && (\n                            <div className=\"grid gap-2 p-2\">\n                                <Skeleton className=\"h-7 rounded-md\" />\n                                <Skeleton className=\"h-7 rounded-md\" />\n                            </div>\n                        )}\n                        {failed && <p className=\"px-3 py-2 text-sm text-rose-600\">{labels.failed}</p>}\n                        {found.map((group) => (\n                            <CommandGroup key={group.name} heading={group.name}>\n                                {group.items.map((item) => (\n                                    <CommandItem key={item.id} value={`${group.name} ${item.id}`} onSelect={() => run(item.url)}>\n                                        <span className=\"truncate\">{item.label}</span>\n                                        <CornerDownLeftIcon className=\"ml-auto opacity-0 in-data-[selected=true]:opacity-100\" />\n                                    </CommandItem>\n                                ))}\n                            </CommandGroup>\n                        ))}\n                        <PaletteGroup heading={labels.actions} items={allowedActions} onRun={run} />\n                        <PaletteGroup heading={labels.goTo} items={allowedGoTo} onRun={run} />\n                        {!searching && (\n                            <CommandEmpty>\n                                {labels.empty} “{query.trim()}”.\n                            </CommandEmpty>\n                        )}\n                    </CommandList>\n                </Command>\n            </DialogContent>\n        </Dialog>\n    );\n}\n",
+      "type": "registry:ui",
+      "target": "components/company-os/command-palette.tsx"
+    },
+    {
+      "path": "registry/company-os/command-palette-items.ts",
+      "content": "import { HouseIcon } from 'lucide-react';\nimport type { LucideIcon } from 'lucide-react';\nimport { visibleGroups } from '@/components/company-os/nav';\nimport type { NavGroup } from '@/components/company-os/nav';\nimport { toUrl } from '@/lib/navigation';\n\nexport type PaletteItem = {\n    label: string;\n    icon: LucideIcon;\n    shortcut?: string;\n    permission?: string;\n    anyPermission?: string[];\n    run: string | (() => void);\n};\n\nexport type FoundGroup = {\n    name: string;\n    items: { id: string; label: string; url: string }[];\n};\n\nexport type PaletteLabels = {\n    title: string;\n    actions: string;\n    goTo: string;\n    failed: string;\n    empty: string;\n};\n\nexport const paletteLabels: PaletteLabels = {\n    title: 'Command palette',\n    actions: 'Actions',\n    goTo: 'Go to',\n    failed: 'Search failed. Check your connection and type again.',\n    empty: 'No records or commands match',\n};\n\nexport const goItems = (groups: NavGroup[], permissions: string[]): PaletteItem[] =>\n    visibleGroups(groups, permissions)\n        .flatMap((group) => group.items)\n        .map((item) => ({\n            label: item.title,\n            icon: item.icon ?? HouseIcon,\n            shortcut: item.goKey ? `G ${item.goKey.toUpperCase()}` : undefined,\n            run: toUrl(item.href),\n        }));\n\nexport const matchesTerm = (items: PaletteItem[], term: string): PaletteItem[] =>\n    items.filter((item) => item.label.toLowerCase().includes(term));\n",
+      "type": "registry:ui",
+      "target": "components/company-os/command-palette-items.ts"
+    },
+    {
+      "path": "registry/company-os/use-record-search.ts",
+      "content": "import { useEffect, useRef, useState } from 'react';\nimport type { FoundGroup } from '@/components/company-os/command-palette-items';\n\nexport type RecordSearch = (term: string) => Promise<FoundGroup[]>;\n\nconst minLength = 2;\nconst debounceMs = 200;\n\nexport function useRecordSearch(onSearch?: RecordSearch) {\n    const [query, setQuery] = useState('');\n    const [groups, setGroups] = useState<FoundGroup[]>([]);\n    const [searching, setSearching] = useState(false);\n    const [failed, setFailed] = useState(false);\n    const search = useRef(onSearch);\n\n    useEffect(() => {\n        search.current = onSearch;\n    }, [onSearch]);\n\n    const term = query.trim();\n    const active = term.length >= minLength;\n\n    useEffect(() => {\n        if (!active) {\n            return;\n        }\n\n        let cancelled = false;\n        const timer = window.setTimeout(() => {\n            const run = search.current;\n\n            if (!run) {\n                return;\n            }\n\n            setSearching(true);\n            setFailed(false);\n            run(term)\n                .then((found) => {\n                    if (!cancelled) {\n                        setGroups(found);\n                    }\n                })\n                .catch(() => {\n                    if (!cancelled) {\n                        setFailed(true);\n                    }\n                })\n                .finally(() => {\n                    if (!cancelled) {\n                        setSearching(false);\n                    }\n                });\n        }, debounceMs);\n\n        return () => {\n            cancelled = true;\n            window.clearTimeout(timer);\n        };\n    }, [term, active]);\n\n    const change = (value: string) => {\n        setQuery(value);\n\n        if (value.trim().length < minLength) {\n            setGroups([]);\n            setFailed(false);\n            setSearching(false);\n        }\n    };\n\n    return { query, setQuery: change, searching, groups: active ? groups : [], failed };\n}\n",
+      "type": "registry:ui",
+      "target": "components/company-os/use-record-search.ts"
+    },
+    {
+      "path": "registry/company-os/use-shortcuts.ts",
+      "content": "import { useEffect, useRef } from 'react';\nimport { goShortcuts } from '@/components/company-os/nav';\nimport type { NavGroup } from '@/components/company-os/nav';\n\nexport type ShortcutHandlers = {\n    groups: NavGroup[];\n    permissions: string[];\n    onPalette: () => void;\n    onQuickCreate: () => void;\n    onHelp: () => void;\n    onCreate?: () => void;\n    onNavigate: (url: string) => void;\n};\n\nconst goWindowMs = 1200;\n\nconst isTyping = (target: EventTarget | null): boolean =>\n    target instanceof HTMLElement &&\n    (target.isContentEditable || ['INPUT', 'TEXTAREA', 'SELECT'].includes(target.tagName));\n\nconst dialogOpen = (): boolean => document.querySelector('[role=\"dialog\"]') !== null;\n\nexport function useShortcuts(handlers: ShortcutHandlers) {\n    const latest = useRef(handlers);\n\n    useEffect(() => {\n        latest.current = handlers;\n    }, [handlers]);\n\n    useEffect(() => {\n        let awaitingGo = 0;\n\n        const onKey = (event: KeyboardEvent) => {\n            const { groups, permissions, onPalette, onQuickCreate, onHelp, onCreate, onNavigate } =\n                latest.current;\n            const key = event.key.toLowerCase();\n\n            if ((event.metaKey || event.ctrlKey) && key === 'k') {\n                event.preventDefault();\n                onPalette();\n\n                return;\n            }\n\n            if (isTyping(event.target) || dialogOpen() || event.metaKey || event.ctrlKey || event.altKey) {\n                return;\n            }\n\n            const destination = goShortcuts(groups, permissions).find((shortcut) => shortcut.key === key);\n\n            if (destination && Date.now() - awaitingGo < goWindowMs) {\n                awaitingGo = 0;\n                event.preventDefault();\n                onNavigate(destination.url);\n\n                return;\n            }\n\n            if (key === 'g') {\n                awaitingGo = Date.now();\n\n                return;\n            }\n\n            const single: Record<string, (() => void) | undefined> = {\n                '?': onHelp,\n                '/': onPalette,\n                n: onQuickCreate,\n                c: onCreate,\n            };\n            const handler = single[event.key] ?? single[key];\n\n            if (handler) {\n                event.preventDefault();\n                handler();\n            }\n        };\n\n        window.addEventListener('keydown', onKey);\n\n        return () => window.removeEventListener('keydown', onKey);\n    }, []);\n}\n",
+      "type": "registry:ui",
+      "target": "components/company-os/use-shortcuts.ts"
+    }
+  ],
+  "categories": [
+    "shell"
+  ],
+  "docs": "http://localhost:5173/llms/command-palette.md",
+  "meta": {
+    "system": "Company OS",
+    "pieces": [
+      13
+    ],
+    "job": "Reach any record, verb or page from the keyboard in one box.",
+    "tags": [
+      "palette",
+      "search",
+      "command",
+      "shortcuts",
+      "cmdk",
+      "go-to"
+    ],
+    "exports": [
+      "CommandPalette",
+      "useRecordSearch",
+      "useShortcuts",
+      "goItems",
+      "matchesTerm",
+      "paletteLabels",
+      "PaletteItem",
+      "FoundGroup",
+      "PaletteLabels",
+      "RecordSearch",
+      "ShortcutHandlers"
+    ]
+  }
+}

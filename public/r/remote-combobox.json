@@ -1,0 +1,42 @@
+{
+  "$schema": "https://ui.shadcn.com/schema/registry-item.json",
+  "name": "remote-combobox",
+  "type": "registry:ui",
+  "title": "RemoteCombobox",
+  "description": "A searchable picker whose options come from the server as you type. One job: Pick one record from a list too long to send with the page.",
+  "registryDependencies": [
+    "http://localhost:5173/r/tokens.json",
+    "command",
+    "popover"
+  ],
+  "files": [
+    {
+      "path": "registry/company-os/remote-combobox.tsx",
+      "content": "import { useEffect, useState } from 'react';\nimport { Combobox } from '@/components/ui/combobox';\nimport type { ComboboxProps } from '@/components/ui/combobox';\n\nexport type RemoteOption = { value: string; label: string };\n\nexport function RemoteCombobox({\n    search,\n    selected = null,\n    fixed = [],\n    exclude,\n    debounceMs = 150,\n    ...props\n}: {\n    search: (term: string) => Promise<RemoteOption[]>;\n    selected?: RemoteOption | null;\n    fixed?: RemoteOption[];\n    exclude?: string;\n    debounceMs?: number;\n} & Omit<ComboboxProps, 'options' | 'onSearchChange' | 'onOpenChange'>) {\n    const [found, setFound] = useState<RemoteOption[]>([]);\n    const [term, setTerm] = useState<string | null>(null);\n\n    useEffect(() => {\n        if (term === null) {\n            return;\n        }\n\n        let cancelled = false;\n        const timer = setTimeout(() => {\n            search(term)\n                .then((options) => {\n                    if (!cancelled) setFound(options);\n                })\n                .catch(() => {\n                    if (!cancelled) setFound([]);\n                });\n        }, debounceMs);\n\n        return () => {\n            cancelled = true;\n            clearTimeout(timer);\n        };\n    }, [term, search, debounceMs]);\n\n    const options = [\n        ...fixed,\n        ...(selected ? [selected] : []),\n        ...found.filter((option) => option.value !== selected?.value),\n    ].filter((option) => option.value !== exclude);\n\n    return (\n        <Combobox\n            {...props}\n            options={options}\n            onSearchChange={setTerm}\n            onOpenChange={(open) => open && term === null && setTerm('')}\n        />\n    );\n}\n",
+      "type": "registry:ui",
+      "target": "components/company-os/remote-combobox.tsx"
+    }
+  ],
+  "categories": [
+    "forms"
+  ],
+  "docs": "http://localhost:5173/llms/remote-combobox.md",
+  "meta": {
+    "system": "Company OS",
+    "pieces": [
+      20
+    ],
+    "job": "Pick one record from a list too long to send with the page.",
+    "tags": [
+      "combobox",
+      "search",
+      "picker",
+      "remote",
+      "select"
+    ],
+    "exports": [
+      "RemoteCombobox",
+      "RemoteOption"
+    ]
+  }
+}

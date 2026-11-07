@@ -1,0 +1,43 @@
+{
+  "$schema": "https://ui.shadcn.com/schema/registry-item.json",
+  "name": "setup-checklist",
+  "type": "registry:ui",
+  "title": "SetupChecklist",
+  "description": "Steps that tick from real data, each with a link to where it gets done, and one \"Finish setup\". One job: Walk the super admin through the first configuration without storing a single tick.",
+  "registryDependencies": [
+    "http://localhost:5173/r/tokens.json",
+    "http://localhost:5173/r/pill.json",
+    "button"
+  ],
+  "files": [
+    {
+      "path": "registry/company-os/setup-checklist.tsx",
+      "content": "import { CheckIcon, CircleDashedIcon, EyeIcon } from 'lucide-react';\nimport type { ReactNode } from 'react';\nimport { Pill } from '@/components/company-os/pill';\nimport { Button } from '@/components/ui/button';\nimport { Link } from '@/lib/navigation';\nimport { cn } from '@/lib/utils';\n\nexport type SetupStep = {\n    key: string;\n    title: string;\n    done: boolean | null;\n    links: { label: string; href: string }[];\n};\n\nexport type SetupLabels = { done: string; todo: string; review: string; finish: string };\n\nexport const setupLabels: SetupLabels = { done: 'Done', todo: 'To do', review: 'Review', finish: 'Finish setup' };\n\nfunction StepRow({ step, labels }: { step: SetupStep; labels: SetupLabels }) {\n    const state = step.done === null ? 'review' : step.done ? 'done' : 'todo';\n    const Icon = state === 'done' ? CheckIcon : state === 'review' ? EyeIcon : CircleDashedIcon;\n    const color = state === 'done' ? 'emerald' : state === 'review' ? 'slate' : 'amber';\n\n    return (\n        <li className=\"flex flex-wrap items-center gap-3 border-b border-border px-5 py-3 last:border-0\">\n            <span className={cn('flex size-8 items-center justify-center rounded-full', state === 'done' ? 'bg-emerald-500/10 text-emerald-600' : state === 'review' ? 'bg-slate-500/10 text-slate-600' : 'bg-amber-500/10 text-amber-600')}>\n                <Icon className=\"size-4\" />\n            </span>\n            <span className=\"min-w-0 flex-1 text-sm font-medium text-slate-800\">{step.title}</span>\n            <Pill name={labels[state]} color={color} />\n            {step.links.map((link) => (\n                <Button key={`${link.label}:${link.href}`} variant=\"outline\" size=\"sm\" asChild>\n                    <Link href={link.href}>{link.label}</Link>\n                </Button>\n            ))}\n        </li>\n    );\n}\n\nexport function SetupChecklist({\n    steps,\n    onFinish,\n    finishing,\n    labels = setupLabels,\n    children,\n}: {\n    steps: SetupStep[];\n    onFinish: () => void;\n    finishing: boolean;\n    labels?: SetupLabels;\n    children?: ReactNode;\n}) {\n    return (\n        <div className=\"grid gap-6\">\n            <ol className=\"rounded-lg glass\">\n                {steps.map((step) => (\n                    <StepRow key={step.key} step={step} labels={labels} />\n                ))}\n            </ol>\n            {children}\n            <div className=\"flex justify-end\">\n                <Button onClick={onFinish} disabled={finishing}>\n                    {labels.finish}\n                </Button>\n            </div>\n        </div>\n    );\n}\n",
+      "type": "registry:ui",
+      "target": "components/company-os/setup-checklist.tsx"
+    }
+  ],
+  "categories": [
+    "setup"
+  ],
+  "docs": "http://localhost:5173/llms/setup-checklist.md",
+  "meta": {
+    "system": "Company OS",
+    "pieces": [
+      8
+    ],
+    "job": "Walk the super admin through the first configuration without storing a single tick.",
+    "tags": [
+      "setup",
+      "checklist",
+      "onboarding",
+      "super admin",
+      "first run"
+    ],
+    "exports": [
+      "SetupChecklist",
+      "SetupStep",
+      "SetupLabels"
+    ]
+  }
+}

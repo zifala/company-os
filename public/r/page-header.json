@@ -1,0 +1,39 @@
+{
+  "$schema": "https://ui.shadcn.com/schema/registry-item.json",
+  "name": "page-header",
+  "type": "registry:ui",
+  "title": "PageHeader",
+  "description": "The one h1 of a page, with its own create and export actions on the right. One job: Name the page and hold the actions that belong to the whole page.",
+  "registryDependencies": [
+    "http://localhost:5173/r/tokens.json"
+  ],
+  "files": [
+    {
+      "path": "registry/company-os/page-header.tsx",
+      "content": "import type { ReactNode } from 'react';\n\nexport function PageHeader({\n    title,\n    meta,\n    children,\n}: {\n    title: string;\n    meta?: ReactNode;\n    children?: ReactNode;\n}) {\n    return (\n        <div className=\"flex min-h-9 flex-wrap items-center justify-between gap-4\">\n            <div className=\"flex min-w-0 items-center gap-3\">\n                <h1 className=\"truncate text-xl font-semibold text-slate-800\">\n                    {title}\n                </h1>\n                {meta}\n            </div>\n            {children && (\n                <div className=\"flex flex-wrap items-center gap-2\">\n                    {children}\n                </div>\n            )}\n        </div>\n    );\n}\n",
+      "type": "registry:ui",
+      "target": "components/company-os/page-header.tsx"
+    }
+  ],
+  "categories": [
+    "page-kit"
+  ],
+  "docs": "http://localhost:5173/llms/page-header.md",
+  "meta": {
+    "system": "Company OS",
+    "pieces": [
+      20
+    ],
+    "job": "Name the page and hold the actions that belong to the whole page.",
+    "tags": [
+      "header",
+      "title",
+      "h1",
+      "create",
+      "actions"
+    ],
+    "exports": [
+      "PageHeader"
+    ]
+  }
+}

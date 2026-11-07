@@ -1,0 +1,104 @@
+# Company OS
+
+> The standard every company operating system gets, and the React components that ship it.
+> Laravel + Inertia React + shadcn/ui. Source distribution (shadcn-compatible registry at http://localhost:5173/r/).
+> Install: npx shadcn@latest add http://localhost:5173/r/<name>.json
+
+## The standard
+
+- 1. [Actions](http://localhost:5173/pieces/actions): One Action per verb. Guard, write, audit, notify inside. Thin controllers.
+- 2. [Audit](http://localhost:5173/pieces/audit): noun.verb_past events, reason on serious changes, audit log page + CSV.
+- 3. [Event bus](http://localhost:5173/pieces/event-bus): Activity row = event bus for automations and webhooks.
+- 4. [Permissions](http://localhost:5173/pieces/permissions): Config registry → spatie sync. Roles in UI. Grant only what you hold. Perms shared to Inertia.
+- 5. [Scoped permissions](http://localhost:5173/pieces/scoped-permissions): Scope per permission: firm / department / assigned / own. Sensitive switches. Delegated grants.
+- 6. [People lifecycle](http://localhost:5173/pieces/people-lifecycle): Invite, deactivate with successor + handover, reactivate, forced password change, 2FA for privileged.
+- 7. [Settings](http://localhost:5173/pieces/settings): Workspace singleton + per-user timezone, quiet hours. Secrets in env; UI shows ok / missing.
+- 8. [Setup checklist](http://localhost:5173/pieces/setup-checklist): Checklist ticks from real data. Super admin redirected until done.
+- 9. [Tour](http://localhost:5173/pieces/tour): One-time tour, skips hidden steps, replay ?tour=1.
+- 10. [Notifications](http://localhost:5173/pieces/notifications): After commit, recipient filter, per-event channel matrix, quiet hours, digest, inbox + bell.
+- 11. [Signals](http://localhost:5173/pieces/signals): Morning brief, reminders with a sent-ledger, rule signals.
+- 12. [Calendar feed](http://localhost:5173/pieces/calendar-feed): Per-user ICS feed.
+- 13. [Command palette](http://localhost:5173/pieces/command-palette): ⌘K palette (search + actions + go-to), g-keys, one global "New".
+- 14. [Trash](http://localhost:5173/pieces/trash): Soft delete, 30-day restore, purge job.
+- 15. [Views, import, export](http://localhost:5173/pieces/views-import-export): Saved views, favorites, CSV import with preview, export.
+- 16. [Status dialog](http://localhost:5173/pieces/status-dialog): Every status change through a confirm / reason dialog.
+- 17. [Print layouts](http://localhost:5173/pieces/print-layouts): Print / PDF layouts for official documents.
+- 18. [Bilingual](http://localhost:5173/pieces/bilingual): lang/en + lang/so, enum labels from lang. Day one.
+- 19. [Shell](http://localhost:5173/pieces/shell): Sidebar groups daily → setup, header search + bell, Settings/ vs Organization/.
+- 20. [Page kit](http://localhost:5173/pieces/page-kit): PageHeader, FilterBar + DataTable (typed cells) + EmptyState, TabNav, ActionsMenu, ReasonDialog, ActivityTimeline, StatTile, skeleton, load-error.
+- 21. [Docs & CI](http://localhost:5173/pieces/docs-ci): Docs system, agent files, CI ci:check + audits, Larastan 7.
+- 22. [Webhooks](http://localhost:5173/pieces/webhooks): Signed endpoints, delivery log + retry, SSRF IP pinning, auto-disable on repeated failure.
+- 23. [Audit channel](http://localhost:5173/pieces/audit-channel): Every activity row stamped via web / api / automation / agent.
+- 24. [Insights](http://localhost:5173/pieces/insights): Rule signals raise one live insight per kind + scope, dismiss with quiet period, apply suggestion.
+- 25. [Setup lists](http://localhost:5173/pieces/setup-lists): Values a company adds or renames are rows. Enums only where code branches.
+- 26. [Section nav](http://localhost:5173/pieces/section-nav): Setup and Organization open a grouped inner sidebar; landing redirects to first permitted page.
+- 27. [Onboarding](http://localhost:5173/pieces/onboarding): Relationship records born only from an approved onboarding. Steps, review, send back, guest link.
+
+## Foundations
+
+- [Tokens](http://localhost:5173/r/tokens.json): the required CSS token set (shadcn + success, warning, info, field) and the navigation seam.
+
+## Components
+
+- [AppShell](http://localhost:5173/llms/app-shell.md): Sidebar left, thin header, content below. The one layout every signed-in page renders in. One job: Hold the sidebar, the header and the page in the one frame the product has.
+- [AppSidebar](http://localhost:5173/llms/app-sidebar.md): Logo, New, favorites, permission-gated groups, user menu. Collapses to icons. One job: Put every page one click away, in the order people work.
+- [Nav](http://localhost:5173/llms/nav.md): The nav list as data. One array of gated groups drives the sidebar, the section nav, the palette and the g-keys. One job: Declare every page once, with its permission, icon, tour key and go-key.
+- [AppHeader](http://localhost:5173/llms/app-header.md): A thin bar: sidebar trigger left, then trigger · search · locale · bell. Nothing else. One job: Hold the three global controls without stealing the page title.
+- [QuickCreate](http://localhost:5173/llms/quick-create.md): The one global New menu, top of the sidebar. Items the user may create, nothing else. One job: Create any record from anywhere in two keystrokes.
+- [CommandPalette](http://localhost:5173/llms/command-palette.md): One ⌘K dialog that finds records, runs actions and goes to pages. The server searches; the nav list supplies Go to. One job: Reach any record, verb or page from the keyboard in one box.
+- [ShortcutHelp](http://localhost:5173/llms/shortcut-help.md): The ? sheet. Every key the shell answers to, grouped, with the go-keys generated from the nav. One job: Show the keyboard once so people stop using the mouse.
+- [NotificationBell](http://localhost:5173/llms/notification-bell.md): The header bell. A count badge, then a Sheet with the work waiting for you and the recent activity. One job: Tell one person what needs them now and what just happened.
+- [LocaleSwitch](http://localhost:5173/llms/locale-switch.md): A globe with the current language code. Pick another and the page reloads in it. One job: Switch the interface language in one click from any page.
+- [SectionLayout](http://localhost:5173/llms/section-layout.md): Title, grouped inner nav on the left, page on the right. Setup, Organization and Settings open in it. One job: Give a section with many pages one place to switch between them.
+- [AppTour](http://localhost:5173/llms/app-tour.md): One short overlay tour over the shell, once per user. Hidden targets are skipped by size. One job: Walk a new user through navigation, New and search in under a minute.
+- [PageHeader](http://localhost:5173/llms/page-header.md): The one h1 of a page, with its own create and export actions on the right. One job: Name the page and hold the actions that belong to the whole page.
+- [FilterBar](http://localhost:5173/llms/filter-bar.md): Search, inline filters, an overflow popover, and removable chips. The query string is the state. One job: Narrow one index table from the URL, one field per filterable column.
+- [DataTable](http://localhost:5173/llms/data-table.md): The index table frame: sticky header, scrolling rows, pager footer, and an empty state that keeps the table. One job: Frame one paginated table so it fills the page and always shows the shape the data will take.
+- [Cells](http://localhost:5173/llms/cells.md): One cell per data kind. Laravel formats, the cell only places. One job: Render one typed value in one table cell, aligned and styled for its kind.
+- [Pill](http://localhost:5173/llms/pill.md): A tinted label for a status, a stage or a count. The tint is the colour; there is no dot. One job: State one status or category in one word.
+- [EmptyState](http://localhost:5173/llms/empty-state.md): An icon chip, why the region is empty, and the first action. For regions that are not tables. One job: Say why a region is empty and what fills it.
+- [TabNav](http://localhost:5173/llms/tab-nav.md): Tabs that are routes. The active tab comes from the URL, never from state. One job: Switch between the sections of one record or one area, each on its own URL.
+- [ActionsMenu](http://localhost:5173/llms/actions-menu.md): The "…" menu for a row or a record header. Destructive items in rose, dialogs opened by state. One job: Hold the secondary and destructive actions of one record.
+- [StatTile](http://localhost:5173/llms/stat-tile.md): One number with its label, unit and hint. Quiet by default, raised glass above a list. One job: State one figure the server computed.
+- [ActivityTimeline](http://localhost:5173/llms/activity-timeline.md): The audit log as a timeline: day groups, kind icon, actor, from → to pills, the reason. One job: Show the history of one record, or of everything, as the audit log recorded it.
+- [DetailCard](http://localhost:5173/llms/detail-card.md): A record readout: a titled glass card of label and value pairs. Main facts left, fixed facts right. One job: State a set of labelled facts about one record.
+- [FormLayout](http://localhost:5173/llms/form-layout.md): The full-page form: sticky header with Cancel and Save, section cards left, small fixed-field cards right. One job: Lay out a create or edit page with more than five fields.
+- [FieldRow](http://localhost:5173/llms/field-row.md): Label, control, hint, error. Plus the form's error summary and its Cancel. One job: Wrap one form control with its persistent label and its server error.
+- [ListSkeleton](http://localhost:5173/llms/list-skeleton.md): Placeholder bars for a non-table list while its deferred prop loads. One job: Hold the space of a list that is still arriving.
+- [LoadError](http://localhost:5173/llms/load-error.md): The fourth state of a data region: it did not load, and here is the button that tries again. One job: Say a region failed to load and offer one retry.
+- [ConfirmDialog](http://localhost:5173/llms/confirm-dialog.md): Title, one sentence of consequence, Keep it, and a button that names the verb. For the light status changes. One job: Stop a one-click state change long enough to read what it does.
+- [ReasonDialog](http://localhost:5173/llms/reason-dialog.md): A confirm with a required reason, and a typed name for deletes. The reason lands in the audit log. One job: Make every serious change say why before it happens.
+- [FormDialog](http://localhost:5173/llms/form-dialog.md): A dialog that is a form: title, your fields, Cancel and a submit that names the object. One job: Create or rename a small record without leaving the page.
+- [PhoneField](http://localhost:5173/llms/phone-field.md): The one phone input: country selector, as-you-type formatting, E.164 out, Somalia first. One job: Collect one valid phone number in international form.
+- [PasswordInput](http://localhost:5173/llms/password-input.md): A password input with a show / hide toggle that stays out of the tab order. One job: Collect a password the user can check before submitting.
+- [RemoteCombobox](http://localhost:5173/llms/remote-combobox.md): A searchable picker whose options come from the server as you type. One job: Pick one record from a list too long to send with the page.
+- [VerifyPhoneDialog](http://localhost:5173/llms/verify-phone-dialog.md): Fixed title, the phone, "Send code", then six digits and one confirm. One job: Prove a phone number belongs to the person in front of the screen.
+- [SavedViewsMenu](http://localhost:5173/llms/saved-views-menu.md): Saved filter sets for a list. The menu knows which one is active by comparing the URL. One job: Save the current query of a list under a name and return to it in one click.
+- [FavoriteButton](http://localhost:5173/llms/favorite-button.md): A star that pins any viewable record or saved view to the sidebar. One job: Toggle one record in the user's favorites.
+- [ExportButton](http://localhost:5173/llms/export-button.md): A plain download link styled as an outline button. Exports what the list shows. One job: Download the current list as CSV.
+- [CsvImport](http://localhost:5173/llms/csv-import.md): Pick a file, preview what would change, then import. Nothing writes before the preview. One job: Import records from CSV with a dry run first.
+- [SetupChecklist](http://localhost:5173/llms/setup-checklist.md): Steps that tick from real data, each with a link to where it gets done, and one "Finish setup". One job: Walk the super admin through the first configuration without storing a single tick.
+- [OnboardingCard](http://localhost:5173/llms/onboarding-card.md): The side card on a record born from an onboarding: reference, who started it, who approved it, when, and the source. One job: Show where a relationship record came from.
+- [InsightItem](http://localhost:5173/llms/insight-item.md): One insight: severity, title, body, folded evidence, suggestions you can apply, mark seen, dismiss. One job: Present one rule signal and let the reader act on it or close it.
+
+## Blocks
+
+- Index page (`block-index-page`): PageHeader with its create action, FilterBar with export, one DataTable of typed cells, the pager.
+- Record page (`block-record-page`): Header actions, tabs that are routes, detail cards main-left and fixed-right, activity.
+- Full-page form (`block-form-page`): Sticky header with Cancel and Create, section cards left, fixed-field cards right.
+- Home (`block-home-dashboard`): Raised stat tiles, the work waiting on you as a table, latest activity.
+
+## Templates
+
+- Organization · Users (`template-users-page`): The people list inside the Organization section: invite in a dialog, deactivate with a reason.
+- Trash (`template-trash-page`): What was deleted, by whom, why, and how many days remain. Restore through a confirm.
+- Organization · Setup (`template-setup-page`): The checklist that ticks from real data, the services panel, and Finish setup.
+- Settings · Profile (`template-settings-page`): The personal settings layout: profile, timezone and quiet hours, nothing platform-wide.
+
+## Rules that bind every component
+
+- Semantic tokens only. The consumer's app.css owns palette, radius and fonts.
+- Nothing above a page title. The page header owns its create action.
+- Lists are tables. Every cell is typed. Empty keeps the table.
+- Every status change goes through a confirm or reason dialog.
+- Navigation is data: one list drives the sidebar, the landing redirect and the palette.

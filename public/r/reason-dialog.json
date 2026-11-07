@@ -1,0 +1,63 @@
+{
+  "$schema": "https://ui.shadcn.com/schema/registry-item.json",
+  "name": "reason-dialog",
+  "type": "registry:ui",
+  "title": "ReasonDialog",
+  "description": "A confirm with a required reason, and a typed name for deletes. The reason lands in the audit log. One job: Make every serious change say why before it happens.",
+  "registryDependencies": [
+    "http://localhost:5173/r/tokens.json",
+    "http://localhost:5173/r/confirm-dialog.json",
+    "button",
+    "dialog",
+    "input",
+    "label",
+    "textarea"
+  ],
+  "files": [
+    {
+      "path": "registry/company-os/reason-dialog.tsx",
+      "content": "import { useState } from 'react';\nimport type { ConfirmDialogProps } from '@/components/company-os/confirm-dialog';\nimport { Button } from '@/components/ui/button';\nimport {\n    Dialog,\n    DialogContent,\n    DialogDescription,\n    DialogFooter,\n    DialogHeader,\n    DialogTitle,\n    DialogTrigger,\n} from '@/components/ui/dialog';\nimport { Input } from '@/components/ui/input';\nimport { Label } from '@/components/ui/label';\nimport { Textarea } from '@/components/ui/textarea';\nimport { useControllableOpen } from '@/hooks/use-controllable-open';\n\nexport type ReasonLabels = {\n    reason: string;\n    typeName: (name: string) => string;\n};\n\nexport const reasonLabels: ReasonLabels = {\n    reason: 'Reason',\n    typeName: (name) => `Type ${name} to confirm`,\n};\n\nexport function ReasonDialog({\n    trigger,\n    open: controlledOpen,\n    onOpenChange,\n    title,\n    consequence,\n    confirmLabel,\n    cancelLabel = 'Keep it',\n    destructive = true,\n    processing = false,\n    error,\n    onConfirm,\n    confirmName,\n    reason,\n    onReasonChange,\n    errors = {},\n    minLength = 3,\n    labels: custom,\n}: ConfirmDialogProps & {\n    confirmName?: string;\n    reason: string;\n    onReasonChange: (reason: string) => void;\n    errors?: { reason?: string };\n    minLength?: number;\n    labels?: Partial<ReasonLabels>;\n}) {\n    const labels = { ...reasonLabels, ...custom };\n    const [open, setOpen] = useControllableOpen(controlledOpen, onOpenChange);\n    const [typedName, setTypedName] = useState('');\n    const nameMatches = confirmName === undefined || typedName.trim() === confirmName.trim();\n    const ready = nameMatches && reason.trim().length >= minLength;\n\n    const change = (next: boolean) => {\n        setOpen(next);\n\n        if (!next) {\n            setTypedName('');\n        }\n    };\n\n    return (\n        <Dialog open={open} onOpenChange={change}>\n            {trigger && <DialogTrigger asChild>{trigger}</DialogTrigger>}\n            <DialogContent>\n                <DialogHeader>\n                    <DialogTitle>{title}</DialogTitle>\n                    <DialogDescription>{consequence}</DialogDescription>\n                </DialogHeader>\n                <div className=\"grid gap-2\">\n                    <Label htmlFor=\"reason-dialog-reason\">{labels.reason}</Label>\n                    <Textarea\n                        id=\"reason-dialog-reason\"\n                        value={reason}\n                        onChange={(event) => onReasonChange(event.target.value)}\n                    />\n                    {errors.reason && <p className=\"text-sm text-rose-600\">{errors.reason}</p>}\n                </div>\n                {confirmName !== undefined && (\n                    <div className=\"grid gap-2\">\n                        <Label htmlFor=\"reason-dialog-name\">{labels.typeName(confirmName)}</Label>\n                        <Input\n                            id=\"reason-dialog-name\"\n                            autoComplete=\"off\"\n                            value={typedName}\n                            onChange={(event) => setTypedName(event.target.value)}\n                        />\n                    </div>\n                )}\n                {error && <p className=\"text-sm text-rose-600\">{error}</p>}\n                <DialogFooter>\n                    <Button type=\"button\" variant=\"outline\" onClick={() => change(false)}>\n                        {cancelLabel}\n                    </Button>\n                    <Button\n                        type=\"button\"\n                        variant={destructive ? 'destructive' : 'default'}\n                        disabled={processing || !ready}\n                        onClick={onConfirm}\n                    >\n                        {confirmLabel}\n                    </Button>\n                </DialogFooter>\n            </DialogContent>\n        </Dialog>\n    );\n}\n",
+      "type": "registry:ui",
+      "target": "components/company-os/reason-dialog.tsx"
+    },
+    {
+      "path": "registry/company-os/confirm-dialog.tsx",
+      "content": "import type { ReactNode } from 'react';\nimport { Button } from '@/components/ui/button';\nimport {\n    Dialog,\n    DialogContent,\n    DialogDescription,\n    DialogFooter,\n    DialogHeader,\n    DialogTitle,\n    DialogTrigger,\n} from '@/components/ui/dialog';\nimport { useControllableOpen } from '@/hooks/use-controllable-open';\n\nexport type ConfirmDialogProps = {\n    trigger?: ReactNode;\n    open?: boolean;\n    onOpenChange?: (open: boolean) => void;\n    title: string;\n    consequence: string;\n    confirmLabel: string;\n    cancelLabel?: string;\n    destructive?: boolean;\n    processing?: boolean;\n    error?: string;\n    onConfirm: () => void;\n};\n\nexport function ConfirmDialog({\n    trigger,\n    open: controlledOpen,\n    onOpenChange,\n    title,\n    consequence,\n    confirmLabel,\n    cancelLabel = 'Keep it',\n    destructive = true,\n    processing = false,\n    error,\n    onConfirm,\n}: ConfirmDialogProps) {\n    const [open, setOpen] = useControllableOpen(controlledOpen, onOpenChange);\n\n    return (\n        <Dialog open={open} onOpenChange={setOpen}>\n            {trigger && <DialogTrigger asChild>{trigger}</DialogTrigger>}\n            <DialogContent>\n                <DialogHeader>\n                    <DialogTitle>{title}</DialogTitle>\n                    <DialogDescription>{consequence}</DialogDescription>\n                </DialogHeader>\n                {error && <p className=\"text-sm text-rose-600\">{error}</p>}\n                <DialogFooter>\n                    <Button type=\"button\" variant=\"outline\" onClick={() => setOpen(false)}>\n                        {cancelLabel}\n                    </Button>\n                    <Button\n                        type=\"button\"\n                        variant={destructive ? 'destructive' : 'default'}\n                        disabled={processing}\n                        onClick={onConfirm}\n                    >\n                        {confirmLabel}\n                    </Button>\n                </DialogFooter>\n            </DialogContent>\n        </Dialog>\n    );\n}\n",
+      "type": "registry:ui",
+      "target": "components/company-os/confirm-dialog.tsx"
+    },
+    {
+      "path": "registry/company-os/use-controllable-open.ts",
+      "content": "import { useState } from 'react';\n\nexport function useControllableOpen(\n    open?: boolean,\n    onOpenChange?: (open: boolean) => void,\n): [boolean, (open: boolean) => void] {\n    const [ownOpen, setOwnOpen] = useState(false);\n\n    return [open ?? ownOpen, onOpenChange ?? setOwnOpen];\n}\n",
+      "type": "registry:ui",
+      "target": "hooks/use-controllable-open.ts"
+    }
+  ],
+  "categories": [
+    "dialogs"
+  ],
+  "docs": "http://localhost:5173/llms/reason-dialog.md",
+  "meta": {
+    "system": "Company OS",
+    "pieces": [
+      6,
+      14,
+      16
+    ],
+    "job": "Make every serious change say why before it happens.",
+    "tags": [
+      "dialog",
+      "reason",
+      "audit",
+      "delete",
+      "disable",
+      "reject",
+      "typed-name"
+    ],
+    "exports": [
+      "ReasonDialog",
+      "reasonLabels",
+      "ReasonLabels"
+    ]
+  }
+}

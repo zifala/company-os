@@ -1,0 +1,45 @@
+{
+  "$schema": "https://ui.shadcn.com/schema/registry-item.json",
+  "name": "block-record-page",
+  "type": "registry:block",
+  "title": "Record page",
+  "description": "Header actions, tabs that are routes, detail cards main-left and fixed-right, activity.",
+  "registryDependencies": [
+    "http://localhost:5173/r/tokens.json",
+    "http://localhost:5173/r/page-header.json",
+    "http://localhost:5173/r/pill.json",
+    "http://localhost:5173/r/tab-nav.json",
+    "http://localhost:5173/r/actions-menu.json",
+    "http://localhost:5173/r/favorite-button.json",
+    "http://localhost:5173/r/detail-card.json",
+    "http://localhost:5173/r/onboarding-card.json",
+    "http://localhost:5173/r/activity-timeline.json"
+  ],
+  "files": [
+    {
+      "path": "registry/company-os/blocks/record-page.tsx",
+      "content": "import { useState } from 'react';\nimport { ActionsMenu, ActivityTimeline, DetailCard, FavoriteButton, OnboardingCard, PageHeader, Pill, TabNav } from '@/components/company-os';\nimport type { ActivityEntry } from '@/components/company-os';\nimport { Button } from '@/components/ui/button';\n\nconst activity: ActivityEntry[] = [\n    { id: '1', kind: 'updated', actor: { name: 'Hodan Ali', initials: 'HA' }, action: 'changed the owner', via: 'web', at: '2026-11-06T10:20:00Z', at_label: '6 Nov 2026, 10:20', time_label: '10:20', day_label: 'Yesterday', changes: [{ label: 'Owner', from: 'Mahad Yusuf', to: 'Hodan Ali' }], reason: null },\n    { id: '2', kind: 'created', actor: { name: 'Ayaan Warsame', initials: 'AW' }, action: 'approved the onboarding', via: 'web', at: '2026-11-03T14:02:00Z', at_label: '3 Nov 2026, 14:02', time_label: '14:02', day_label: '3 Nov 2026', changes: [], reason: null },\n];\n\nexport function RecordPage() {\n    const [saved, setSaved] = useState(true);\n\n    return (\n        <div className=\"flex flex-col gap-6\">\n            <PageHeader title=\"Halcyon Freight\" meta={<Pill name=\"Active\" color=\"emerald\" />}>\n                <FavoriteButton saved={saved} label=\"Halcyon Freight\" onToggle={() => setSaved((value) => !value)} />\n                <Button variant=\"outline\">Log interaction</Button>\n                <ActionsMenu\n                    items={[\n                        { label: 'Export company', onSelect: () => undefined },\n                        { label: 'Merge into another', onSelect: () => undefined },\n                        { label: 'Deactivate company', destructive: true, onSelect: () => undefined },\n                    ]}\n                />\n            </PageHeader>\n            <TabNav\n                label=\"Company sections\"\n                tabs={[\n                    { label: 'Overview', href: '/blocks' },\n                    { label: 'Contacts', href: '/blocks?tab=contacts', count: 4 },\n                    { label: 'Deals', href: '/blocks?tab=deals', count: 2 },\n                    { label: 'Activity', href: '/blocks?tab=activity' },\n                ]}\n            />\n            <div className=\"grid items-start gap-6 lg:grid-cols-[minmax(0,1fr)_20rem]\">\n                <div className=\"grid gap-6\">\n                    <DetailCard\n                        title=\"Company\"\n                        action={<Button variant=\"outline\" size=\"sm\">Update</Button>}\n                        details={[\n                            { label: 'Legal name', value: 'Halcyon Freight Ltd' },\n                            { label: 'Registration', value: <span className=\"font-mono text-xs\">REG-2019-4471</span> },\n                            { label: 'Industry', value: 'Logistics' },\n                            { label: 'Website', value: 'halcyon.example' },\n                            { label: 'Owner', value: 'Hodan Ali' },\n                            { label: 'Phone', value: '+252 61 234 5678' },\n                        ]}\n                    />\n                    <section className=\"rounded-lg glass p-5\">\n                        <h2 className=\"mb-4 text-sm font-semibold text-slate-800\">Activity</h2>\n                        <ActivityTimeline entries={activity} />\n                    </section>\n                </div>\n                <div className=\"grid gap-6\">\n                    <DetailCard compact title=\"Finance\" details={[{ label: 'Payment terms', value: 'Net 30' }, { label: 'Currency', value: 'USD' }, { label: 'Open balance', value: <span className=\"font-bold tabular-nums\">USD 12,960.00</span> }]} />\n                    <OnboardingCard onboarding={{ reference: 'ONB-0007', href: '#', started_by: 'Hodan Ali', approved_by: 'Ayaan Warsame', approved_at: '3 Nov 2026', source: 'Referral', referrer: null }} />\n                </div>\n            </div>\n        </div>\n    );\n}\n",
+      "type": "registry:ui",
+      "target": "components/company-os/blocks/record-page.tsx"
+    }
+  ],
+  "categories": [
+    "blocks"
+  ],
+  "meta": {
+    "system": "Company OS",
+    "kind": "block",
+    "pieces": [
+      20,
+      2,
+      27
+    ],
+    "tags": [
+      "record",
+      "show",
+      "detail",
+      "tabs",
+      "activity"
+    ]
+  }
+}

@@ -1,0 +1,39 @@
+{
+  "$schema": "https://ui.shadcn.com/schema/registry-item.json",
+  "name": "template-trash-page",
+  "type": "registry:block",
+  "title": "Trash",
+  "description": "What was deleted, by whom, why, and how many days remain. Restore through a confirm.",
+  "registryDependencies": [
+    "http://localhost:5173/r/tokens.json",
+    "http://localhost:5173/r/page-header.json",
+    "http://localhost:5173/r/filter-bar.json",
+    "http://localhost:5173/r/data-table.json",
+    "http://localhost:5173/r/cells.json",
+    "http://localhost:5173/r/confirm-dialog.json"
+  ],
+  "files": [
+    {
+      "path": "registry/company-os/templates/trash-page.tsx",
+      "content": "import { useState } from 'react';\nimport { ConfirmDialog, DataTable, DateCell, FilterBar, NumberCell, PageHeader, StatusCell, TextCell } from '@/components/company-os';\nimport type { FilterState, Paginated } from '@/components/company-os';\nimport { Button } from '@/components/ui/button';\nimport { Table, TableBody, TableHead, TableHeader, TableRow } from '@/components/ui/table';\n\ntype Trashed = { id: string; label: string; context: string; type: { label: string; color: string }; deleted: { label: string; relative: string }; by: string; reason: string; days_left: string };\n\nconst rows: Trashed[] = [\n    { id: '1', label: 'Scope v2.pdf', context: 'Harbour terminal rollout', type: { label: 'Document', color: 'cyan' }, deleted: { label: '6 Nov 2026', relative: 'yesterday' }, by: 'Mahad Yusuf', reason: 'Superseded by Scope v3; the client signed the new version.', days_left: '29' },\n    { id: '2', label: 'Duplicate of Halcyon Freight', context: 'Companies', type: { label: 'Company', color: 'indigo' }, deleted: { label: '2 Nov 2026', relative: '5 days ago' }, by: 'Hodan Ali', reason: 'Created twice during import.', days_left: '25' },\n    { id: '3', label: 'ZW-118 Old packaging spec', context: 'Store refit, phase 2', type: { label: 'Task', color: 'slate' }, deleted: { label: '14 Oct 2026', relative: '3 weeks ago' }, by: 'Ayaan Warsame', reason: 'Out of scope after the phase 2 re-plan.', days_left: '6' },\n];\n\nconst page: Paginated<Trashed> = { data: rows, from: 1, to: 3, total: 3, current_page: 1, last_page: 1, prev_page_url: null, next_page_url: null };\n\nconst state: FilterState = {\n    url: '/templates/trash-page',\n    filters: {},\n    fields: [{ key: 'type', label: 'Type', inline: true, placeholder: 'All types', options: [{ value: 'document', label: 'Documents' }, { value: 'company', label: 'Companies' }, { value: 'task', label: 'Tasks' }] }],\n};\n\nexport function TrashPage() {\n    const [restoring, setRestoring] = useState<Trashed | null>(null);\n\n    return (\n        <div className=\"flex flex-col gap-6\">\n            <PageHeader title=\"Trash\" />\n            <FilterBar state={state} />\n            <DataTable page={page}>\n                <Table>\n                    <TableHeader>\n                        <TableRow>\n                            <TableHead>Item</TableHead>\n                            <TableHead>Type</TableHead>\n                            <TableHead>Deleted</TableHead>\n                            <TableHead>By</TableHead>\n                            <TableHead className=\"text-right\">Days left</TableHead>\n                            <TableHead className=\"w-28\" />\n                        </TableRow>\n                    </TableHeader>\n                    <TableBody>\n                        {rows.map((row) => (\n                            <TableRow key={row.id}>\n                                <TextCell detail={row.context}>\n                                    <span className=\"font-semibold text-slate-800\">{row.label}</span>\n                                </TextCell>\n                                <StatusCell value={row.type} />\n                                <DateCell value={row.deleted} />\n                                <TextCell detail={row.reason}>{row.by}</TextCell>\n                                <NumberCell value={row.days_left} />\n                                <TextCell>\n                                    <Button size=\"sm\" variant=\"outline\" onClick={() => setRestoring(row)}>\n                                        Restore\n                                    </Button>\n                                </TextCell>\n                            </TableRow>\n                        ))}\n                    </TableBody>\n                </Table>\n            </DataTable>\n            <ConfirmDialog\n                open={restoring !== null}\n                onOpenChange={(open) => !open && setRestoring(null)}\n                title={`Restore ${restoring?.label ?? ''}`}\n                consequence=\"It returns to where it was. Nothing is re-sent and no automation runs again.\"\n                confirmLabel=\"Restore item\"\n                destructive={false}\n                processing={false}\n                onConfirm={() => setRestoring(null)}\n            />\n        </div>\n    );\n}\n",
+      "type": "registry:ui",
+      "target": "components/company-os/templates/trash-page.tsx"
+    }
+  ],
+  "categories": [
+    "templates"
+  ],
+  "meta": {
+    "system": "Company OS",
+    "kind": "template",
+    "pieces": [
+      14,
+      16
+    ],
+    "tags": [
+      "trash",
+      "restore",
+      "soft delete"
+    ]
+  }
+}

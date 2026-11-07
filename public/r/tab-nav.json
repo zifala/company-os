@@ -1,0 +1,39 @@
+{
+  "$schema": "https://ui.shadcn.com/schema/registry-item.json",
+  "name": "tab-nav",
+  "type": "registry:ui",
+  "title": "TabNav",
+  "description": "Tabs that are routes. The active tab comes from the URL, never from state. One job: Switch between the sections of one record or one area, each on its own URL.",
+  "registryDependencies": [
+    "http://localhost:5173/r/tokens.json"
+  ],
+  "files": [
+    {
+      "path": "registry/company-os/tab-nav.tsx",
+      "content": "import { Link, toUrl, useCurrentUrl } from '@/lib/navigation';\nimport type { Href } from '@/lib/navigation';\nimport { cn } from '@/lib/utils';\n\nexport type TabLink = {\n    label: string;\n    href: Href;\n    count?: number;\n};\n\nconst base = 'http://localhost';\n\nconst sameTab = (href: Href, current: string): boolean => {\n    const target = new URL(toUrl(href), base);\n    const here = new URL(current, base);\n    const query = [...target.searchParams];\n\n    return (\n        target.pathname === here.pathname &&\n        query.every(([key, value]) => here.searchParams.get(key) === value) &&\n        (query.length > 0 || [...here.searchParams].length === 0)\n    );\n};\n\nexport function TabNav({ tabs, label }: { tabs: TabLink[]; label: string }) {\n    const current = useCurrentUrl();\n\n    return (\n        <nav className=\"flex gap-1 overflow-x-auto border-b border-border\" aria-label={label}>\n            {tabs.map((tab) => {\n                const active = sameTab(tab.href, current);\n\n                return (\n                    <Link\n                        key={tab.label}\n                        href={tab.href}\n                        preserveScroll\n                        aria-current={active ? 'page' : undefined}\n                        className={cn(\n                            'flex items-center gap-1.5 border-b-2 px-3 py-2 text-sm whitespace-nowrap transition-all duration-300',\n                            active ? 'border-primary text-primary' : 'border-transparent hover:text-primary',\n                        )}\n                    >\n                        {tab.label}\n                        {tab.count !== undefined && tab.count > 0 && (\n                            <span className=\"rounded-full bg-slate-900/5 px-1.5 text-xs tabular-nums\">{tab.count}</span>\n                        )}\n                    </Link>\n                );\n            })}\n        </nav>\n    );\n}\n",
+      "type": "registry:ui",
+      "target": "components/company-os/tab-nav.tsx"
+    }
+  ],
+  "categories": [
+    "page-kit"
+  ],
+  "docs": "http://localhost:5173/llms/tab-nav.md",
+  "meta": {
+    "system": "Company OS",
+    "pieces": [
+      20
+    ],
+    "job": "Switch between the sections of one record or one area, each on its own URL.",
+    "tags": [
+      "tabs",
+      "routes",
+      "record page",
+      "navigation"
+    ],
+    "exports": [
+      "TabNav",
+      "TabLink"
+    ]
+  }
+}

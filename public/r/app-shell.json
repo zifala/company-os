@@ -1,0 +1,42 @@
+{
+  "$schema": "https://ui.shadcn.com/schema/registry-item.json",
+  "name": "app-shell",
+  "type": "registry:ui",
+  "title": "AppShell",
+  "description": "Sidebar left, thin header, content below. The one layout every signed-in page renders in. One job: Hold the sidebar, the header and the page in the one frame the product has.",
+  "registryDependencies": [
+    "http://localhost:5173/r/tokens.json",
+    "http://localhost:5173/r/app-sidebar.json",
+    "http://localhost:5173/r/app-header.json",
+    "sidebar"
+  ],
+  "files": [
+    {
+      "path": "registry/company-os/app-shell.tsx",
+      "content": "import type { ReactNode } from 'react';\nimport { SidebarInset, SidebarProvider } from '@/components/ui/sidebar';\n\nexport function AppShell({\n    sidebar,\n    header,\n    children,\n    defaultOpen = true,\n    className,\n}: {\n    sidebar: ReactNode;\n    header: ReactNode;\n    children: ReactNode;\n    defaultOpen?: boolean;\n    className?: string;\n}) {\n    return (\n        <SidebarProvider defaultOpen={defaultOpen} className={className}>\n            {sidebar}\n            <SidebarInset className=\"min-w-0 overflow-x-clip\">\n                {header}\n                <div className=\"flex flex-1 flex-col gap-6 p-4 md:p-6\">{children}</div>\n            </SidebarInset>\n        </SidebarProvider>\n    );\n}\n",
+      "type": "registry:ui",
+      "target": "components/company-os/app-shell.tsx"
+    }
+  ],
+  "categories": [
+    "shell"
+  ],
+  "docs": "http://localhost:5173/llms/app-shell.md",
+  "meta": {
+    "system": "Company OS",
+    "pieces": [
+      19
+    ],
+    "job": "Hold the sidebar, the header and the page in the one frame the product has.",
+    "tags": [
+      "shell",
+      "layout",
+      "sidebar",
+      "header",
+      "frame"
+    ],
+    "exports": [
+      "AppShell"
+    ]
+  }
+}

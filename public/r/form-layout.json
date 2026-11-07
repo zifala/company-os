@@ -1,0 +1,41 @@
+{
+  "$schema": "https://ui.shadcn.com/schema/registry-item.json",
+  "name": "form-layout",
+  "type": "registry:ui",
+  "title": "FormLayout",
+  "description": "The full-page form: sticky header with Cancel and Save, section cards left, small fixed-field cards right. One job: Lay out a create or edit page with more than five fields.",
+  "registryDependencies": [
+    "http://localhost:5173/r/tokens.json",
+    "http://localhost:5173/r/page-header.json"
+  ],
+  "files": [
+    {
+      "path": "registry/company-os/form-layout.tsx",
+      "content": "import type { ReactNode } from 'react';\nimport { PageHeader } from '@/components/company-os/page-header';\nimport { cn } from '@/lib/utils';\n\nexport function FormLayout({\n    title,\n    actions,\n    side,\n    children,\n}: {\n    title: string;\n    actions: ReactNode;\n    side?: ReactNode;\n    children: ReactNode;\n}) {\n    return (\n        <div className=\"flex flex-col gap-6\">\n            <div className=\"sticky top-0 z-10 -mx-4 border-b border-border bg-background/80 px-4 py-3 backdrop-blur-sm md:-mx-6 md:px-6\">\n                <PageHeader title={title}>{actions}</PageHeader>\n            </div>\n            <div className=\"grid items-start gap-6 lg:grid-cols-[minmax(0,1fr)_22rem]\">\n                <div className=\"grid gap-6\">{children}</div>\n                {side && <div className=\"grid gap-6\">{side}</div>}\n            </div>\n        </div>\n    );\n}\n\nexport function FormSection({\n    title,\n    compact = false,\n    children,\n}: {\n    title: string;\n    compact?: boolean;\n    children: ReactNode;\n}) {\n    return (\n        <section className=\"rounded-lg glass\">\n            <h2 className=\"border-b border-border px-5 py-3 text-sm font-semibold text-slate-800\">{title}</h2>\n            <div className={cn('grid gap-x-4 gap-y-4 p-5', !compact && 'sm:grid-cols-2')}>{children}</div>\n        </section>\n    );\n}\n",
+      "type": "registry:ui",
+      "target": "components/company-os/form-layout.tsx"
+    }
+  ],
+  "categories": [
+    "page-kit"
+  ],
+  "docs": "http://localhost:5173/llms/form-layout.md",
+  "meta": {
+    "system": "Company OS",
+    "pieces": [
+      20
+    ],
+    "job": "Lay out a create or edit page with more than five fields.",
+    "tags": [
+      "form",
+      "create page",
+      "edit page",
+      "sections",
+      "layout"
+    ],
+    "exports": [
+      "FormLayout",
+      "FormSection"
+    ]
+  }
+}

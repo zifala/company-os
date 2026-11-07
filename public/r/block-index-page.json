@@ -1,0 +1,40 @@
+{
+  "$schema": "https://ui.shadcn.com/schema/registry-item.json",
+  "name": "block-index-page",
+  "type": "registry:block",
+  "title": "Index page",
+  "description": "PageHeader with its create action, FilterBar with export, one DataTable of typed cells, the pager.",
+  "registryDependencies": [
+    "http://localhost:5173/r/tokens.json",
+    "http://localhost:5173/r/page-header.json",
+    "http://localhost:5173/r/filter-bar.json",
+    "http://localhost:5173/r/data-table.json",
+    "http://localhost:5173/r/cells.json",
+    "http://localhost:5173/r/export-button.json"
+  ],
+  "files": [
+    {
+      "path": "registry/company-os/blocks/index-page.tsx",
+      "content": "import { PlusIcon } from 'lucide-react';\nimport { DataTable, DateCell, ExportButton, FilterBar, LinkCell, MoneyCell, PageHeader, PersonCell, StatusCell } from '@/components/company-os';\nimport type { FilterState, Paginated } from '@/components/company-os';\nimport { Button } from '@/components/ui/button';\nimport { Table, TableBody, TableHead, TableHeader, TableRow } from '@/components/ui/table';\n\ntype Deal = {\n    id: string;\n    name: string;\n    company: string;\n    stage: { label: string; color: string };\n    stage_since: string;\n    owner: { name: string; detail: string };\n    value: { formatted: string; currency: string };\n    expected: { label: string; relative: string };\n};\n\nconst deals: Deal[] = [\n    { id: '1', name: 'Harbour terminal rollout', company: 'Halcyon Freight', stage: { label: 'Proposal', color: 'indigo' }, stage_since: 'Since 28 Oct 2026', owner: { name: 'Hodan Ali', detail: 'Sales' }, value: { formatted: '84,000.00', currency: 'USD' }, expected: { label: '30 Nov 2026', relative: 'in 3 weeks' } },\n    { id: '2', name: 'Cold chain audit', company: 'Northwind Trading', stage: { label: 'Qualified', color: 'cyan' }, stage_since: 'Since 2 Nov 2026', owner: { name: 'Mahad Yusuf', detail: 'Sales' }, value: { formatted: '22,500.00', currency: 'USD' }, expected: { label: '15 Dec 2026', relative: 'in 5 weeks' } },\n    { id: '3', name: 'Fleet telematics', company: 'Kestrel Logistics', stage: { label: 'Negotiation', color: 'amber' }, stage_since: 'Since 20 Oct 2026', owner: { name: 'Hodan Ali', detail: 'Sales' }, value: { formatted: '61,200.00', currency: 'USD' }, expected: { label: '21 Nov 2026', relative: 'in 2 weeks' } },\n    { id: '4', name: 'Store refit, phase 2', company: 'Bluepeak Retail', stage: { label: 'Won', color: 'emerald' }, stage_since: 'Won 1 Nov 2026', owner: { name: 'Ayaan Warsame', detail: 'Delivery' }, value: { formatted: '38,750.00', currency: 'USD' }, expected: { label: '1 Nov 2026', relative: '6 days ago' } },\n];\n\nconst page: Paginated<Deal> = { data: deals, from: 1, to: 4, total: 37, current_page: 1, last_page: 10, prev_page_url: null, next_page_url: '?page=2' };\n\nconst state: FilterState = {\n    url: '/blocks',\n    filters: { stage: 'open' },\n    searchPlaceholder: 'Search deals',\n    fields: [\n        { key: 'stage', label: 'Stage', inline: true, placeholder: 'All stages', options: [{ value: 'open', label: 'Open' }, { value: 'won', label: 'Won' }, { value: 'lost', label: 'Lost' }] },\n        { key: 'owner', label: 'Owner', inline: true, placeholder: 'Anyone', searchable: true, options: [{ value: 'hodan', label: 'Hodan Ali' }, { value: 'mahad', label: 'Mahad Yusuf' }, { value: 'ayaan', label: 'Ayaan Warsame' }] },\n        { key: 'company', label: 'Company', placeholder: 'Any company', searchable: true, options: [{ value: '1', label: 'Halcyon Freight' }, { value: '2', label: 'Northwind Trading' }] },\n        { key: 'expected', label: 'Expected close', placeholder: 'Any time', options: [{ value: 'month', label: 'This month' }, { value: 'quarter', label: 'This quarter' }] },\n    ],\n};\n\nexport function IndexPage() {\n    return (\n        <div className=\"flex flex-col gap-6\">\n            <PageHeader title=\"Deals\">\n                <Button>\n                    <PlusIcon /> Create deal\n                </Button>\n            </PageHeader>\n            <FilterBar state={state} end={<ExportButton href=\"#\" />} />\n            <DataTable page={page}>\n                <Table>\n                    <TableHeader>\n                        <TableRow>\n                            <TableHead>Deal</TableHead>\n                            <TableHead>Stage</TableHead>\n                            <TableHead>Owner</TableHead>\n                            <TableHead className=\"text-right\">Value</TableHead>\n                            <TableHead>Expected close</TableHead>\n                        </TableRow>\n                    </TableHeader>\n                    <TableBody>\n                        {deals.map((deal) => (\n                            <TableRow key={deal.id}>\n                                <LinkCell value={{ label: deal.name, href: '#', detail: deal.company }} />\n                                <StatusCell value={deal.stage} detail={deal.stage_since} />\n                                <PersonCell value={deal.owner} />\n                                <MoneyCell value={deal.value} />\n                                <DateCell value={deal.expected} />\n                            </TableRow>\n                        ))}\n                    </TableBody>\n                </Table>\n            </DataTable>\n        </div>\n    );\n}\n",
+      "type": "registry:ui",
+      "target": "components/company-os/blocks/index-page.tsx"
+    }
+  ],
+  "categories": [
+    "blocks"
+  ],
+  "meta": {
+    "system": "Company OS",
+    "kind": "block",
+    "pieces": [
+      20,
+      15
+    ],
+    "tags": [
+      "index",
+      "list",
+      "table",
+      "filters"
+    ]
+  }
+}

@@ -1,0 +1,56 @@
+{
+  "$schema": "https://ui.shadcn.com/schema/registry-item.json",
+  "name": "csv-import",
+  "type": "registry:ui",
+  "title": "CsvImport",
+  "description": "Pick a file, preview what would change, then import. Nothing writes before the preview. One job: Import records from CSV with a dry run first.",
+  "registryDependencies": [
+    "http://localhost:5173/r/tokens.json",
+    "http://localhost:5173/r/field-row.json",
+    "http://localhost:5173/r/empty-state.json",
+    "http://localhost:5173/r/pill.json",
+    "button",
+    "input",
+    "label",
+    "select",
+    "table"
+  ],
+  "files": [
+    {
+      "path": "registry/company-os/csv-import.tsx",
+      "content": "import { FileUpIcon } from 'lucide-react';\nimport { useState } from 'react';\nimport { InputError } from '@/components/company-os/field-row';\nimport { ImportPreviewSection } from '@/components/company-os/import-preview';\nimport type { ImportPreview, ImportPreviewLabels } from '@/components/company-os/import-preview';\nimport { Button } from '@/components/ui/button';\nimport { Input } from '@/components/ui/input';\nimport { Label } from '@/components/ui/label';\nimport { OptionSelect } from '@/components/ui/option-select';\n\nexport type CsvImportLabels = {\n    file: string;\n    existing: string;\n    skip: string;\n    update: string;\n    preview: string;\n    import: (count: number, noun: string) => string;\n};\n\nexport const csvImportLabels: CsvImportLabels = {\n    file: 'CSV file',\n    existing: 'Rows that already exist',\n    skip: 'Skip existing',\n    update: 'Update existing',\n    preview: 'Preview import',\n    import: (count, noun) => `Import ${count} ${noun}`,\n};\n\nexport function CsvImport({\n    noun,\n    help,\n    detailLabel,\n    preview,\n    processing,\n    fileError,\n    onPreview,\n    onImport,\n    labels = csvImportLabels,\n    previewLabels,\n}: {\n    noun: string;\n    help: string;\n    detailLabel: string;\n    preview: ImportPreview | null;\n    processing: boolean;\n    fileError?: string;\n    onPreview: (file: File, updateExisting: boolean) => void;\n    onImport: (file: File, updateExisting: boolean) => void;\n    labels?: CsvImportLabels;\n    previewLabels?: ImportPreviewLabels;\n}) {\n    const [file, setFile] = useState<File | null>(null);\n    const [previewed, setPreviewed] = useState<{ file: File; updateExisting: boolean } | null>(null);\n    const [mode, setMode] = useState('skip');\n    const updateExisting = mode === 'update';\n    const current = preview !== null && previewed?.file === file && previewed.updateExisting === updateExisting;\n    const changes = current && preview ? preview.creates.length + preview.updates.length : 0;\n\n    return (\n        <>\n            <div className=\"max-w-2xl rounded-lg glass p-6\">\n                <div className=\"grid gap-4\">\n                    <div className=\"grid gap-2\">\n                        <Label htmlFor=\"csv-file\">{labels.file}</Label>\n                        <Input\n                            id=\"csv-file\"\n                            type=\"file\"\n                            accept=\".csv,.txt,text/csv\"\n                            onChange={(event) => setFile(event.target.files?.[0] ?? null)}\n                        />\n                        <InputError message={fileError} />\n                        <p className=\"text-sm text-muted-foreground\">{help}</p>\n                    </div>\n                    <div className=\"grid gap-2\">\n                        <Label>{labels.existing}</Label>\n                        <OptionSelect\n                            aria-label={labels.existing}\n                            value={mode}\n                            onValueChange={setMode}\n                            options={[\n                                { value: 'skip', label: labels.skip },\n                                { value: 'update', label: labels.update },\n                            ]}\n                        />\n                    </div>\n                    <div className=\"flex gap-2\">\n                        <Button\n                            variant={current ? 'outline' : 'default'}\n                            disabled={file === null || processing}\n                            onClick={() => {\n                                if (file) {\n                                    setPreviewed({ file, updateExisting });\n                                    onPreview(file, updateExisting);\n                                }\n                            }}\n                        >\n                            <FileUpIcon />\n                            {labels.preview}\n                        </Button>\n                        {current && (\n                            <Button disabled={changes === 0 || processing || file === null} onClick={() => file && onImport(file, updateExisting)}>\n                                {labels.import(changes, noun)}\n                            </Button>\n                        )}\n                    </div>\n                </div>\n            </div>\n            {current && preview && <ImportPreviewSection preview={preview} detailLabel={detailLabel} labels={previewLabels} />}\n        </>\n    );\n}\n",
+      "type": "registry:ui",
+      "target": "components/company-os/csv-import.tsx"
+    },
+    {
+      "path": "registry/company-os/import-preview.tsx",
+      "content": "import { FileSpreadsheetIcon } from 'lucide-react';\nimport { EmptyState } from '@/components/company-os/empty-state';\nimport { Pill } from '@/components/company-os/pill';\nimport { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table';\n\nexport type ImportRowView = {\n    line: number;\n    name: string;\n    detail: string | null;\n    note: string | null;\n    warnings: string[];\n};\n\nexport type ImportPreview = Record<'creates' | 'updates' | 'duplicates' | 'invalid', ImportRowView[]>;\n\nexport type ImportPreviewLabels = {\n    creates: string;\n    updates: string;\n    duplicates: string;\n    invalid: string;\n    line: string;\n    name: string;\n    note: string;\n    emptyTitle: string;\n    emptyMessage: string;\n};\n\nexport const importPreviewLabels: ImportPreviewLabels = {\n    creates: 'New',\n    updates: 'Updates',\n    duplicates: 'Skipped',\n    invalid: 'Rows with errors',\n    line: 'Line',\n    name: 'Name',\n    note: 'Note',\n    emptyTitle: 'No rows found',\n    emptyMessage: 'The file has a header but no rows under it.',\n};\n\nconst sections: { key: keyof ImportPreview; color: string }[] = [\n    { key: 'creates', color: 'emerald' },\n    { key: 'updates', color: 'indigo' },\n    { key: 'duplicates', color: 'cyan' },\n    { key: 'invalid', color: 'rose' },\n];\n\nexport function ImportPreviewSection({\n    preview,\n    detailLabel,\n    labels = importPreviewLabels,\n}: {\n    preview: ImportPreview;\n    detailLabel: string;\n    labels?: ImportPreviewLabels;\n}) {\n    if (sections.every(({ key }) => preview[key].length === 0)) {\n        return <EmptyState icon={FileSpreadsheetIcon} title={labels.emptyTitle} message={labels.emptyMessage} />;\n    }\n\n    return (\n        <div className=\"grid gap-6\">\n            {sections\n                .filter(({ key }) => preview[key].length > 0)\n                .map(({ key, color }) => (\n                    <section key={key} className=\"rounded-lg glass\">\n                        <div className=\"flex items-center gap-2 border-b border-border px-5 py-3.5\">\n                            <h2 className=\"text-sm font-semibold text-slate-800\">{labels[key]}</h2>\n                            <Pill name={String(preview[key].length)} color={color} />\n                        </div>\n                        <Table>\n                            <TableHeader>\n                                <TableRow>\n                                    <TableHead className=\"w-16\">{labels.line}</TableHead>\n                                    <TableHead>{labels.name}</TableHead>\n                                    <TableHead>{detailLabel}</TableHead>\n                                    <TableHead>{labels.note}</TableHead>\n                                </TableRow>\n                            </TableHeader>\n                            <TableBody>\n                                {preview[key].map((row) => (\n                                    <TableRow key={row.line}>\n                                        <TableCell className=\"font-mono text-xs text-muted-foreground\">{row.line}</TableCell>\n                                        <TableCell className=\"font-medium text-slate-800\">{row.name || '—'}</TableCell>\n                                        <TableCell>{row.detail ?? '—'}</TableCell>\n                                        <TableCell className={key === 'invalid' ? 'text-rose-600' : 'text-muted-foreground'}>\n                                            {row.note}\n                                            {row.warnings.map((warning) => (\n                                                <span key={warning} className=\"block text-xs text-rose-600\">\n                                                    {warning}\n                                                </span>\n                                            ))}\n                                        </TableCell>\n                                    </TableRow>\n                                ))}\n                            </TableBody>\n                        </Table>\n                    </section>\n                ))}\n        </div>\n    );\n}\n",
+      "type": "registry:ui",
+      "target": "components/company-os/import-preview.tsx"
+    }
+  ],
+  "categories": [
+    "views"
+  ],
+  "docs": "http://localhost:5173/llms/csv-import.md",
+  "meta": {
+    "system": "Company OS",
+    "pieces": [
+      15
+    ],
+    "job": "Import records from CSV with a dry run first.",
+    "tags": [
+      "import",
+      "csv",
+      "preview",
+      "dry run",
+      "upload"
+    ],
+    "exports": [
+      "CsvImport",
+      "ImportPreviewSection",
+      "ImportPreview",
+      "ImportRowView"
+    ]
+  }
+}

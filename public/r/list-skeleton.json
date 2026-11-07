@@ -1,0 +1,39 @@
+{
+  "$schema": "https://ui.shadcn.com/schema/registry-item.json",
+  "name": "list-skeleton",
+  "type": "registry:ui",
+  "title": "ListSkeleton",
+  "description": "Placeholder bars for a non-table list while its deferred prop loads. One job: Hold the space of a list that is still arriving.",
+  "registryDependencies": [
+    "http://localhost:5173/r/tokens.json",
+    "skeleton"
+  ],
+  "files": [
+    {
+      "path": "registry/company-os/list-skeleton.tsx",
+      "content": "import { Skeleton } from '@/components/ui/skeleton';\n\nexport function ListSkeleton({ rows = 6 }: { rows?: number }) {\n    return (\n        <div className=\"space-y-2\">\n            {Array.from({ length: rows }, (_, index) => (\n                <Skeleton key={index} className=\"h-10 w-full rounded-lg\" />\n            ))}\n        </div>\n    );\n}\n",
+      "type": "registry:ui",
+      "target": "components/company-os/list-skeleton.tsx"
+    }
+  ],
+  "categories": [
+    "page-kit"
+  ],
+  "docs": "http://localhost:5173/llms/list-skeleton.md",
+  "meta": {
+    "system": "Company OS",
+    "pieces": [
+      20
+    ],
+    "job": "Hold the space of a list that is still arriving.",
+    "tags": [
+      "skeleton",
+      "loading",
+      "deferred",
+      "list"
+    ],
+    "exports": [
+      "ListSkeleton"
+    ]
+  }
+}

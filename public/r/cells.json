@@ -1,0 +1,52 @@
+{
+  "$schema": "https://ui.shadcn.com/schema/registry-item.json",
+  "name": "cells",
+  "type": "registry:ui",
+  "title": "Cells",
+  "description": "One cell per data kind. Laravel formats, the cell only places. One job: Render one typed value in one table cell, aligned and styled for its kind.",
+  "registryDependencies": [
+    "http://localhost:5173/r/tokens.json",
+    "http://localhost:5173/r/pill.json",
+    "table"
+  ],
+  "files": [
+    {
+      "path": "registry/company-os/cells.tsx",
+      "content": "import { CheckIcon, MinusIcon } from 'lucide-react';\nimport type { ReactNode } from 'react';\nimport { Pill } from '@/components/company-os/pill';\nimport { TableCell } from '@/components/ui/table';\nimport { Link } from '@/lib/navigation';\nimport type { Href } from '@/lib/navigation';\nimport { cn } from '@/lib/utils';\n\nexport type Money = { formatted: string; currency: string } | null;\nexport type Day = { label: string; relative: string } | null;\nexport type Status = { label: string; color: string };\nexport type Person = { name: string; detail?: string | null } | null;\nexport type Flag = { value: boolean; label: string };\nexport type Target = { label: string; href: Href; detail?: string | null };\n\nexport function EmptyValue() {\n    return <span className=\"text-muted-foreground\">—</span>;\n}\n\nfunction Stacked({ main, detail }: { main: ReactNode; detail?: string | null }) {\n    return (\n        <span className=\"grid min-w-0 gap-0.5\">\n            <span className=\"truncate\">{main}</span>\n            {detail && <span className=\"truncate text-xs text-muted-foreground\">{detail}</span>}\n        </span>\n    );\n}\n\nexport function MoneyCell({ value, strong = true }: { value: Money; strong?: boolean }) {\n    return (\n        <TableCell className={cn('text-right tabular-nums', strong && 'font-bold text-slate-800')}>\n            {value ? (\n                <>\n                    <span className=\"mr-1 text-xs font-light text-muted-foreground\">{value.currency}</span>\n                    {value.formatted}\n                </>\n            ) : (\n                <EmptyValue />\n            )}\n        </TableCell>\n    );\n}\n\nexport function NumberCell({ value, unit }: { value: string | null; unit?: string }) {\n    return (\n        <TableCell className=\"text-right tabular-nums\">\n            {value ?? <EmptyValue />}\n            {value !== null && unit && <span className=\"ml-1 text-xs text-muted-foreground\">{unit}</span>}\n        </TableCell>\n    );\n}\n\nexport function DateCell({ value }: { value: Day }) {\n    return (\n        <TableCell className=\"text-sm tabular-nums\" title={value?.relative}>\n            {value?.label ?? <EmptyValue />}\n        </TableCell>\n    );\n}\n\nexport function StatusCell({ value, detail }: { value: Status | null; detail?: string | null }) {\n    return (\n        <TableCell>\n            {value ? <Stacked main={<Pill name={value.label} color={value.color} />} detail={detail} /> : <EmptyValue />}\n        </TableCell>\n    );\n}\n\nexport function PersonCell({ value }: { value: Person }) {\n    return <TableCell>{value ? <Stacked main={value.name} detail={value.detail} /> : <EmptyValue />}</TableCell>;\n}\n\nexport function CodeCell({ value }: { value: string | null }) {\n    return (\n        <TableCell className=\"font-mono text-xs text-muted-foreground\">{value ?? <EmptyValue />}</TableCell>\n    );\n}\n\nexport function BooleanCell({ value }: { value: Flag }) {\n    const Icon = value.value ? CheckIcon : MinusIcon;\n\n    return (\n        <TableCell>\n            <span className=\"inline-flex items-center gap-1.5\">\n                <Icon className={cn('size-4', value.value ? 'text-emerald-600' : 'text-slate-400')} />\n                {value.label}\n            </span>\n        </TableCell>\n    );\n}\n\nexport function LinkCell({ value }: { value: Target }) {\n    return (\n        <TableCell className=\"font-semibold text-slate-800\">\n            <Stacked\n                main={\n                    <Link href={value.href} className=\"transition-all duration-300 hover:text-primary\">\n                        {value.label}\n                    </Link>\n                }\n                detail={value.detail}\n            />\n        </TableCell>\n    );\n}\n\nexport function TextCell({ children, detail }: { children: ReactNode; detail?: string | null }) {\n    return <TableCell className=\"text-sm\">{children ? <Stacked main={children} detail={detail} /> : <EmptyValue />}</TableCell>;\n}\n",
+      "type": "registry:ui",
+      "target": "components/company-os/cells.tsx"
+    }
+  ],
+  "categories": [
+    "page-kit"
+  ],
+  "docs": "http://localhost:5173/llms/cells.md",
+  "meta": {
+    "system": "Company OS",
+    "pieces": [
+      20
+    ],
+    "job": "Render one typed value in one table cell, aligned and styled for its kind.",
+    "tags": [
+      "table",
+      "cell",
+      "money",
+      "date",
+      "status",
+      "person",
+      "typed"
+    ],
+    "exports": [
+      "MoneyCell",
+      "NumberCell",
+      "DateCell",
+      "StatusCell",
+      "PersonCell",
+      "CodeCell",
+      "BooleanCell",
+      "LinkCell",
+      "TextCell",
+      "EmptyValue"
+    ]
+  }
+}

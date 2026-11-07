@@ -1,0 +1,43 @@
+{
+  "$schema": "https://ui.shadcn.com/schema/registry-item.json",
+  "name": "app-header",
+  "type": "registry:ui",
+  "title": "AppHeader",
+  "description": "A thin bar: sidebar trigger left, then trigger · search · locale · bell. Nothing else. One job: Hold the three global controls without stealing the page title.",
+  "registryDependencies": [
+    "http://localhost:5173/r/tokens.json",
+    "button",
+    "kbd",
+    "sidebar"
+  ],
+  "files": [
+    {
+      "path": "registry/company-os/app-header.tsx",
+      "content": "import { SearchIcon } from 'lucide-react';\nimport type { ReactNode } from 'react';\nimport { Button } from '@/components/ui/button';\nimport { Kbd } from '@/components/ui/kbd';\nimport { SidebarTrigger } from '@/components/ui/sidebar';\n\nexport function AppHeader({ children }: { children?: ReactNode }) {\n    return (\n        <header className=\"flex h-16 shrink-0 items-center gap-2 border-b border-sidebar-border/50 px-6 transition-[width,height] ease-linear group-has-data-[collapsible=icon]/sidebar-wrapper:h-12 md:px-4\">\n            <SidebarTrigger className=\"-ml-1\" />\n            <div className=\"ml-auto flex items-center gap-2\">{children}</div>\n        </header>\n    );\n}\n\nexport function SearchButton({\n    onClick,\n    label = 'Search',\n    shortcut = '⌘K',\n}: {\n    onClick: () => void;\n    label?: string;\n    shortcut?: string;\n}) {\n    return (\n        <Button\n            variant=\"outline\"\n            size=\"sm\"\n            className=\"w-56 justify-start text-muted-foreground\"\n            data-tour=\"search\"\n            onClick={onClick}\n        >\n            <SearchIcon className=\"size-4\" />\n            {label}\n            <Kbd className=\"ml-auto\">{shortcut}</Kbd>\n        </Button>\n    );\n}\n",
+      "type": "registry:ui",
+      "target": "components/company-os/app-header.tsx"
+    }
+  ],
+  "categories": [
+    "shell"
+  ],
+  "docs": "http://localhost:5173/llms/app-header.md",
+  "meta": {
+    "system": "Company OS",
+    "pieces": [
+      19
+    ],
+    "job": "Hold the three global controls without stealing the page title.",
+    "tags": [
+      "header",
+      "search",
+      "bell",
+      "locale",
+      "trigger"
+    ],
+    "exports": [
+      "AppHeader",
+      "SearchButton"
+    ]
+  }
+}

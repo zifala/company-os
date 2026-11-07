@@ -1,0 +1,55 @@
+{
+  "$schema": "https://ui.shadcn.com/schema/registry-item.json",
+  "name": "nav",
+  "type": "registry:ui",
+  "title": "Nav",
+  "description": "The nav list as data. One array of gated groups drives the sidebar, the section nav, the palette and the g-keys. One job: Declare every page once, with its permission, icon, tour key and go-key.",
+  "registryDependencies": [
+    "http://localhost:5173/r/tokens.json"
+  ],
+  "files": [
+    {
+      "path": "registry/company-os/nav.ts",
+      "content": "import type { LucideIcon } from 'lucide-react';\nimport type { Href } from '@/lib/navigation';\nimport { toUrl } from '@/lib/navigation';\n\nexport type NavItem = {\n    title: string;\n    href: Href;\n    icon?: LucideIcon;\n    tour?: string;\n    goKey?: string;\n};\n\nexport type GatedItem = NavItem & {\n    permission?: string;\n    anyPermission?: string[];\n};\n\nexport type NavGroup = {\n    label?: string;\n    items: GatedItem[];\n};\n\nexport type GoShortcut = {\n    key: string;\n    title: string;\n    url: string;\n};\n\nexport const canSee = (\n    item: Pick<GatedItem, 'permission' | 'anyPermission'>,\n    granted: string[],\n): boolean =>\n    (!item.permission || granted.includes(item.permission)) &&\n    (!item.anyPermission ||\n        item.anyPermission.some((permission) => granted.includes(permission)));\n\nexport const visibleGroups = (groups: NavGroup[], granted: string[]): NavGroup[] =>\n    groups\n        .map((group) => ({\n            ...group,\n            items: group.items.filter((item) => canSee(item, granted)),\n        }))\n        .filter((group) => group.items.length > 0);\n\nexport const permissionsIn = (groups: NavGroup[]): string[] =>\n    groups.flatMap((group) =>\n        group.items.flatMap((item) => (item.permission ? [item.permission] : [])),\n    );\n\nexport const goShortcuts = (groups: NavGroup[], granted: string[]): GoShortcut[] =>\n    visibleGroups(groups, granted)\n        .flatMap((group) => group.items)\n        .flatMap((item) =>\n            item.goKey ? [{ key: item.goKey, title: item.title, url: toUrl(item.href) }] : [],\n        );\n",
+      "type": "registry:ui",
+      "target": "components/company-os/nav.ts"
+    },
+    {
+      "path": "registry/company-os/use-active-nav-href.ts",
+      "content": "import { useCurrentUrl } from '@/lib/navigation';\n\nconst base = 'http://localhost';\n\nconst matchScore = (href: string, current: URL): number => {\n    const target = new URL(href, base);\n    const path = target.pathname.replace(/\\/$/, '');\n    const params = [...target.searchParams];\n    const onPath =\n        current.pathname === target.pathname ||\n        current.pathname.startsWith(`${path}/`);\n    const onQuery = params.every(\n        ([key, value]) => current.searchParams.get(key) === value,\n    );\n\n    return onPath && onQuery ? path.length * 100 + params.length : -1;\n};\n\nexport function useActiveNavHref(hrefs: string[]): string | null {\n    const current = new URL(useCurrentUrl(), base);\n\n    return hrefs.reduce<{ href: string | null; score: number }>(\n        (best, href) => {\n            const score = matchScore(href, current);\n\n            return score > best.score ? { href, score } : best;\n        },\n        { href: null, score: -1 },\n    ).href;\n}\n",
+      "type": "registry:ui",
+      "target": "components/company-os/use-active-nav-href.ts"
+    }
+  ],
+  "categories": [
+    "shell"
+  ],
+  "docs": "http://localhost:5173/llms/nav.md",
+  "meta": {
+    "system": "Company OS",
+    "pieces": [
+      4,
+      19
+    ],
+    "job": "Declare every page once, with its permission, icon, tour key and go-key.",
+    "tags": [
+      "nav",
+      "navigation",
+      "permissions",
+      "gating",
+      "active",
+      "shortcuts"
+    ],
+    "exports": [
+      "canSee",
+      "visibleGroups",
+      "permissionsIn",
+      "goShortcuts",
+      "useActiveNavHref",
+      "NavItem",
+      "GatedItem",
+      "NavGroup",
+      "GoShortcut"
+    ]
+  }
+}

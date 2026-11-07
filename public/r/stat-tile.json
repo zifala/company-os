@@ -1,0 +1,39 @@
+{
+  "$schema": "https://ui.shadcn.com/schema/registry-item.json",
+  "name": "stat-tile",
+  "type": "registry:ui",
+  "title": "StatTile",
+  "description": "One number with its label, unit and hint. Quiet by default, raised glass above a list. One job: State one figure the server computed.",
+  "registryDependencies": [
+    "http://localhost:5173/r/tokens.json"
+  ],
+  "files": [
+    {
+      "path": "registry/company-os/stat-tile.tsx",
+      "content": "import type { ReactNode } from 'react';\nimport { Link } from '@/lib/navigation';\nimport type { Href } from '@/lib/navigation';\nimport { cn } from '@/lib/utils';\n\nexport function StatTile({\n    label,\n    value,\n    unit,\n    hint,\n    href,\n    raised = false,\n}: {\n    label: string;\n    value: ReactNode;\n    unit?: string;\n    hint?: string;\n    href?: Href;\n    raised?: boolean;\n}) {\n    const className = cn(\n        'block rounded-lg px-4 py-3',\n        raised ? 'glass shadow-sm' : 'bg-slate-900/5',\n        href && 'transition-all duration-300 hover:bg-primary/5',\n    );\n    const body = (\n        <>\n            <p className=\"text-xl font-bold text-slate-800 tabular-nums\">\n                {value}\n                {unit && <span className=\"ml-1 text-sm font-light text-muted-foreground\">{unit}</span>}\n            </p>\n            <p className=\"text-xs text-muted-foreground\">{label}</p>\n            {hint && <p className=\"text-xs text-slate-400\">{hint}</p>}\n        </>\n    );\n\n    return href ? (\n        <Link href={href} className={className}>\n            {body}\n        </Link>\n    ) : (\n        <div className={className}>{body}</div>\n    );\n}\n",
+      "type": "registry:ui",
+      "target": "components/company-os/stat-tile.tsx"
+    }
+  ],
+  "categories": [
+    "page-kit"
+  ],
+  "docs": "http://localhost:5173/llms/stat-tile.md",
+  "meta": {
+    "system": "Company OS",
+    "pieces": [
+      20
+    ],
+    "job": "State one figure the server computed.",
+    "tags": [
+      "kpi",
+      "stat",
+      "tile",
+      "dashboard",
+      "number"
+    ],
+    "exports": [
+      "StatTile"
+    ]
+  }
+}

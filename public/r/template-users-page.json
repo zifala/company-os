@@ -1,0 +1,51 @@
+{
+  "$schema": "https://ui.shadcn.com/schema/registry-item.json",
+  "name": "template-users-page",
+  "type": "registry:block",
+  "title": "Organization · Users",
+  "description": "The people list inside the Organization section: invite in a dialog, deactivate with a reason.",
+  "registryDependencies": [
+    "http://localhost:5173/r/tokens.json",
+    "http://localhost:5173/r/section-layout.json",
+    "http://localhost:5173/r/page-header.json",
+    "http://localhost:5173/r/data-table.json",
+    "http://localhost:5173/r/cells.json",
+    "http://localhost:5173/r/actions-menu.json",
+    "http://localhost:5173/r/form-dialog.json",
+    "http://localhost:5173/r/reason-dialog.json",
+    "http://localhost:5173/r/field-row.json"
+  ],
+  "files": [
+    {
+      "path": "registry/company-os/templates/users-page.tsx",
+      "content": "import { PlusIcon } from 'lucide-react';\nimport { useState } from 'react';\nimport { ActionsMenu, DataTable, DateCell, FieldRow, FormDialog, PageHeader, ReasonDialog, SectionLayout, StatusCell, TextCell } from '@/components/company-os';\nimport type { Paginated } from '@/components/company-os';\nimport { Button } from '@/components/ui/button';\nimport { Input } from '@/components/ui/input';\nimport { OptionSelect } from '@/components/ui/option-select';\nimport { Table, TableBody, TableHead, TableHeader, TableRow } from '@/components/ui/table';\nimport { adminPermissions, organizationGroups } from './organization-nav';\n\ntype Member = { id: string; name: string; email: string; role: { label: string; color: string }; status: { label: string; color: string }; last_login: { label: string; relative: string } | null };\n\nconst members: Member[] = [\n    { id: '1', name: 'Ayaan Warsame', email: 'ayaan@halcyon.example', role: { label: 'Administrator', color: 'indigo' }, status: { label: 'Active', color: 'emerald' }, last_login: { label: '7 Nov 2026', relative: '2 hours ago' } },\n    { id: '2', name: 'Hodan Ali', email: 'hodan@halcyon.example', role: { label: 'Sales manager', color: 'cyan' }, status: { label: 'Active', color: 'emerald' }, last_login: { label: '6 Nov 2026', relative: 'yesterday' } },\n    { id: '3', name: 'Mahad Yusuf', email: 'mahad@halcyon.example', role: { label: 'Member', color: 'slate' }, status: { label: 'Invited', color: 'amber' }, last_login: null },\n    { id: '4', name: 'Farah Nur', email: 'farah@halcyon.example', role: { label: 'Member', color: 'slate' }, status: { label: 'Deactivated', color: 'rose' }, last_login: { label: '12 Sep 2026', relative: '8 weeks ago' } },\n];\n\nconst page: Paginated<Member> = { data: members, from: 1, to: 4, total: 4, current_page: 1, last_page: 1, prev_page_url: null, next_page_url: null };\nconst roles = [{ value: 'admin', label: 'Administrator' }, { value: 'sales', label: 'Sales manager' }, { value: 'member', label: 'Member' }];\n\nexport function UsersPage() {\n    const [inviting, setInviting] = useState(false);\n    const [deactivating, setDeactivating] = useState<Member | null>(null);\n    const [reason, setReason] = useState('');\n\n    return (\n        <SectionLayout title=\"Organization\" groups={organizationGroups} permissions={adminPermissions}>\n            <div className=\"flex flex-col gap-6\">\n                <PageHeader title=\"Users\">\n                    <Button onClick={() => setInviting(true)}>\n                        <PlusIcon /> Invite user\n                    </Button>\n                </PageHeader>\n                <DataTable page={page}>\n                    <Table>\n                        <TableHeader>\n                            <TableRow>\n                                <TableHead>User</TableHead>\n                                <TableHead>Role</TableHead>\n                                <TableHead>Status</TableHead>\n                                <TableHead>Last login</TableHead>\n                                <TableHead className=\"w-12\" />\n                            </TableRow>\n                        </TableHeader>\n                        <TableBody>\n                            {members.map((member) => (\n                                <TableRow key={member.id}>\n                                    <TextCell detail={member.email}>\n                                        <span className=\"font-semibold text-slate-800\">{member.name}</span>\n                                    </TextCell>\n                                    <StatusCell value={member.role} />\n                                    <StatusCell value={member.status} />\n                                    <DateCell value={member.last_login} />\n                                    <TextCell>\n                                        <ActionsMenu items={[{ label: 'Change role', onSelect: () => undefined }, { label: 'Deactivate user', destructive: true, onSelect: () => setDeactivating(member) }]} />\n                                    </TextCell>\n                                </TableRow>\n                            ))}\n                        </TableBody>\n                    </Table>\n                </DataTable>\n            </div>\n            <FormDialog open={inviting} onOpenChange={setInviting} title=\"Invite user\" submitLabel=\"Send invitation\" processing={false} onSubmit={() => setInviting(false)}>\n                <FieldRow id=\"invite-name\" label=\"Name\">\n                    <Input id=\"invite-name\" />\n                </FieldRow>\n                <FieldRow id=\"invite-email\" label=\"Email\">\n                    <Input id=\"invite-email\" type=\"email\" />\n                </FieldRow>\n                <FieldRow id=\"invite-role\" label=\"Role\" hint=\"You can grant only roles you hold.\">\n                    <OptionSelect id=\"invite-role\" placeholder=\"Pick a role\" options={roles} />\n                </FieldRow>\n            </FormDialog>\n            <ReasonDialog\n                open={deactivating !== null}\n                onOpenChange={(open) => !open && setDeactivating(null)}\n                title={`Deactivate ${deactivating?.name ?? ''}`}\n                consequence=\"They lose access right away. Open work needs a successor. The audit log keeps who did this and why.\"\n                confirmLabel=\"Deactivate user\"\n                reason={reason}\n                onReasonChange={setReason}\n                processing={false}\n                onConfirm={() => {\n                    setReason('');\n                    setDeactivating(null);\n                }}\n            />\n        </SectionLayout>\n    );\n}\n",
+      "type": "registry:ui",
+      "target": "components/company-os/templates/users-page.tsx"
+    },
+    {
+      "path": "registry/company-os/templates/organization-nav.ts",
+      "content": "import { BotIcon, PlugIcon, Settings2Icon, ShieldCheckIcon, UsersIcon } from 'lucide-react';\nimport type { NavGroup } from '@/components/company-os';\n\nexport const organizationGroups: NavGroup[] = [\n    {\n        label: 'People',\n        items: [\n            { title: 'Users', href: '/templates/users-page', icon: UsersIcon, permission: 'users.view-any' },\n            { title: 'Roles', href: '/templates/roles', icon: ShieldCheckIcon, permission: 'roles.manage' },\n        ],\n    },\n    {\n        label: 'System',\n        items: [\n            { title: 'Workspace', href: '/templates/workspace', icon: Settings2Icon, permission: 'settings.manage' },\n            { title: 'Setup', href: '/templates/setup-page', icon: Settings2Icon, permission: 'settings.manage' },\n            { title: 'AI agents', href: '/templates/agents', icon: BotIcon, permission: 'agents.manage' },\n            { title: 'Integrations', href: '/templates/integrations', icon: PlugIcon, permission: 'integrations.manage' },\n        ],\n    },\n];\n\nexport const adminPermissions = ['users.view-any', 'roles.manage', 'settings.manage', 'agents.manage', 'integrations.manage'];\n",
+      "type": "registry:ui",
+      "target": "components/company-os/templates/organization-nav.ts"
+    }
+  ],
+  "categories": [
+    "templates"
+  ],
+  "meta": {
+    "system": "Company OS",
+    "kind": "template",
+    "pieces": [
+      6,
+      26,
+      16
+    ],
+    "tags": [
+      "users",
+      "organization",
+      "people",
+      "invite",
+      "deactivate"
+    ]
+  }
+}

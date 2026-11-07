@@ -1,0 +1,77 @@
+{
+  "$schema": "https://ui.shadcn.com/schema/registry-item.json",
+  "name": "app-sidebar",
+  "type": "registry:ui",
+  "title": "AppSidebar",
+  "description": "Logo, New, favorites, permission-gated groups, user menu. Collapses to icons. One job: Put every page one click away, in the order people work.",
+  "registryDependencies": [
+    "http://localhost:5173/r/tokens.json",
+    "http://localhost:5173/r/nav.json",
+    "sidebar",
+    "dropdown-menu",
+    "avatar"
+  ],
+  "files": [
+    {
+      "path": "registry/company-os/app-sidebar.tsx",
+      "content": "import type { ComponentProps, ReactNode } from 'react';\nimport { visibleGroups } from '@/components/company-os/nav';\nimport type { NavGroup } from '@/components/company-os/nav';\nimport { NavFavorites, NavMain } from '@/components/company-os/nav-main';\nimport type { Favorite } from '@/components/company-os/nav-main';\nimport { useActiveNavHref } from '@/components/company-os/use-active-nav-href';\nimport {\n    Sidebar,\n    SidebarContent,\n    SidebarFooter,\n    SidebarHeader,\n    SidebarMenu,\n    SidebarMenuButton,\n    SidebarMenuItem,\n} from '@/components/ui/sidebar';\nimport { Link, toUrl } from '@/lib/navigation';\nimport type { Href } from '@/lib/navigation';\n\nexport function AppSidebar({\n    logo,\n    homeHref,\n    groups,\n    permissions,\n    favorites = [],\n    create,\n    footer,\n    collapsible = 'icon',\n    variant = 'inset',\n}: {\n    logo: ReactNode;\n    homeHref: Href;\n    groups: NavGroup[];\n    permissions: string[];\n    favorites?: Favorite[];\n    create?: ReactNode;\n    footer?: ReactNode;\n    collapsible?: ComponentProps<typeof Sidebar>['collapsible'];\n    variant?: ComponentProps<typeof Sidebar>['variant'];\n}) {\n    const visible = visibleGroups(groups, permissions);\n    const activeHref = useActiveNavHref([\n        ...favorites.map((favorite) => toUrl(favorite.href)),\n        ...visible.flatMap((group) => group.items.map((item) => toUrl(item.href))),\n    ]);\n\n    return (\n        <Sidebar collapsible={collapsible} variant={variant} data-tour=\"sidebar\">\n            <SidebarHeader>\n                <SidebarMenu>\n                    <SidebarMenuItem>\n                        <SidebarMenuButton size=\"lg\" asChild>\n                            <Link href={homeHref} prefetch>\n                                {logo}\n                            </Link>\n                        </SidebarMenuButton>\n                    </SidebarMenuItem>\n                </SidebarMenu>\n                {create}\n            </SidebarHeader>\n\n            <SidebarContent>\n                <NavFavorites favorites={favorites} activeHref={activeHref} />\n                {visible.map((group, index) => (\n                    <NavMain\n                        key={group.label ?? index}\n                        label={group.label}\n                        items={group.items}\n                        activeHref={activeHref}\n                    />\n                ))}\n            </SidebarContent>\n\n            {footer && <SidebarFooter>{footer}</SidebarFooter>}\n        </Sidebar>\n    );\n}\n\nexport function AppLogo({ icon, name }: { icon: ReactNode; name: string }) {\n    return (\n        <>\n            <div className=\"flex aspect-square size-8 items-center justify-center text-primary\">\n                {icon}\n            </div>\n            <div className=\"ml-1 grid flex-1 text-left text-sm\">\n                <span className=\"mb-0.5 truncate leading-tight font-bold text-slate-800\">\n                    {name}\n                </span>\n            </div>\n        </>\n    );\n}\n",
+      "type": "registry:ui",
+      "target": "components/company-os/app-sidebar.tsx"
+    },
+    {
+      "path": "registry/company-os/nav-main.tsx",
+      "content": "import { BookmarkIcon } from 'lucide-react';\nimport type { LucideIcon } from 'lucide-react';\nimport type { NavItem } from '@/components/company-os/nav';\nimport {\n    SidebarGroup,\n    SidebarGroupLabel,\n    SidebarMenu,\n    SidebarMenuButton,\n    SidebarMenuItem,\n} from '@/components/ui/sidebar';\nimport { Link, toUrl } from '@/lib/navigation';\nimport type { Href } from '@/lib/navigation';\n\nexport type Favorite = {\n    id: string;\n    title: string;\n    href: Href;\n    icon?: LucideIcon;\n};\n\nexport function NavMain({\n    label,\n    items,\n    activeHref,\n}: {\n    label?: string;\n    items: NavItem[];\n    activeHref: string | null;\n}) {\n    return (\n        <SidebarGroup className=\"px-2 py-0\">\n            {label && <SidebarGroupLabel>{label}</SidebarGroupLabel>}\n            <SidebarMenu>\n                {items.map((item) => (\n                    <SidebarMenuItem key={item.title} data-tour={item.tour}>\n                        <SidebarMenuButton\n                            asChild\n                            isActive={toUrl(item.href) === activeHref}\n                            tooltip={{ children: item.title }}\n                        >\n                            <Link href={item.href} prefetch>\n                                {item.icon && <item.icon />}\n                                <span>{item.title}</span>\n                            </Link>\n                        </SidebarMenuButton>\n                    </SidebarMenuItem>\n                ))}\n            </SidebarMenu>\n        </SidebarGroup>\n    );\n}\n\nexport function NavFavorites({\n    favorites,\n    activeHref,\n    label = 'Favorites',\n}: {\n    favorites: Favorite[];\n    activeHref: string | null;\n    label?: string;\n}) {\n    if (favorites.length === 0) {\n        return null;\n    }\n\n    return (\n        <NavMain\n            label={label}\n            activeHref={activeHref}\n            items={favorites.map((favorite) => ({\n                title: favorite.title,\n                href: favorite.href,\n                icon: favorite.icon ?? BookmarkIcon,\n            }))}\n        />\n    );\n}\n",
+      "type": "registry:ui",
+      "target": "components/company-os/nav-main.tsx"
+    },
+    {
+      "path": "registry/company-os/nav-user.tsx",
+      "content": "import { ChevronsUpDown } from 'lucide-react';\nimport type { LucideIcon } from 'lucide-react';\nimport { UserInfo } from '@/components/company-os/user-info';\nimport type { UserSummary } from '@/components/company-os/user-info';\nimport {\n    DropdownMenu,\n    DropdownMenuContent,\n    DropdownMenuGroup,\n    DropdownMenuItem,\n    DropdownMenuLabel,\n    DropdownMenuSeparator,\n    DropdownMenuTrigger,\n} from '@/components/ui/dropdown-menu';\nimport {\n    SidebarMenu,\n    SidebarMenuButton,\n    SidebarMenuItem,\n    useSidebar,\n} from '@/components/ui/sidebar';\nimport { useIsMobile } from '@/hooks/use-mobile';\nimport { Link } from '@/lib/navigation';\nimport type { Href } from '@/lib/navigation';\n\nexport type UserMenuItem = {\n    label: string;\n    icon?: LucideIcon;\n    href?: Href;\n    onSelect?: () => void;\n};\n\nfunction MenuEntry({ item }: { item: UserMenuItem }) {\n    if (item.href) {\n        return (\n            <DropdownMenuItem asChild>\n                <Link className=\"block w-full cursor-pointer\" href={item.href} onClick={item.onSelect}>\n                    {item.icon && <item.icon className=\"mr-2\" />}\n                    {item.label}\n                </Link>\n            </DropdownMenuItem>\n        );\n    }\n\n    return (\n        <DropdownMenuItem onSelect={item.onSelect}>\n            {item.icon && <item.icon className=\"mr-2\" />}\n            {item.label}\n        </DropdownMenuItem>\n    );\n}\n\nexport function NavUser({\n    user,\n    items,\n    logout,\n}: {\n    user: UserSummary;\n    items: UserMenuItem[];\n    logout: UserMenuItem;\n}) {\n    const { state } = useSidebar();\n    const isMobile = useIsMobile();\n\n    return (\n        <SidebarMenu>\n            <SidebarMenuItem>\n                <DropdownMenu>\n                    <DropdownMenuTrigger asChild>\n                        <SidebarMenuButton\n                            size=\"lg\"\n                            className=\"group text-sidebar-accent-foreground data-[state=open]:bg-sidebar-accent\"\n                        >\n                            <UserInfo user={user} />\n                            <ChevronsUpDown className=\"ml-auto size-4\" />\n                        </SidebarMenuButton>\n                    </DropdownMenuTrigger>\n                    <DropdownMenuContent\n                        className=\"w-(--radix-dropdown-menu-trigger-width) min-w-56 rounded-lg\"\n                        align=\"end\"\n                        side={isMobile ? 'bottom' : state === 'collapsed' ? 'left' : 'bottom'}\n                    >\n                        <DropdownMenuLabel className=\"p-0 font-normal\">\n                            <div className=\"flex items-center gap-2 px-1 py-1.5 text-left text-sm\">\n                                <UserInfo user={user} showEmail />\n                            </div>\n                        </DropdownMenuLabel>\n                        <DropdownMenuSeparator />\n                        <DropdownMenuGroup>\n                            {items.map((item) => (\n                                <MenuEntry key={item.label} item={item} />\n                            ))}\n                        </DropdownMenuGroup>\n                        <DropdownMenuSeparator />\n                        <MenuEntry item={logout} />\n                    </DropdownMenuContent>\n                </DropdownMenu>\n            </SidebarMenuItem>\n        </SidebarMenu>\n    );\n}\n",
+      "type": "registry:ui",
+      "target": "components/company-os/nav-user.tsx"
+    },
+    {
+      "path": "registry/company-os/user-info.tsx",
+      "content": "import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';\n\nexport type UserSummary = {\n    name: string;\n    email?: string;\n    avatar?: string | null;\n};\n\nexport function initialsOf(name: string): string {\n    const parts = name.trim().split(/\\s+/u).filter(Boolean);\n\n    if (parts.length === 0) {\n        return '';\n    }\n\n    const first = Array.from(parts[0])[0] ?? '';\n    const last = parts.length > 1 ? (Array.from(parts[parts.length - 1])[0] ?? '') : '';\n\n    return `${first}${last}`.toUpperCase();\n}\n\nexport function UserInfo({\n    user,\n    showEmail = false,\n}: {\n    user: UserSummary;\n    showEmail?: boolean;\n}) {\n    return (\n        <>\n            <Avatar className=\"h-8 w-8 overflow-hidden rounded-full\">\n                {user.avatar && <AvatarImage src={user.avatar} alt={user.name} />}\n                <AvatarFallback className=\"rounded-lg bg-primary/10 text-xs font-semibold text-primary\">\n                    {initialsOf(user.name)}\n                </AvatarFallback>\n            </Avatar>\n            <div className=\"grid flex-1 text-left text-sm leading-tight\">\n                <span className=\"truncate font-medium\">{user.name}</span>\n                {showEmail && user.email && (\n                    <span className=\"truncate text-xs text-muted-foreground\">\n                        {user.email}\n                    </span>\n                )}\n            </div>\n        </>\n    );\n}\n",
+      "type": "registry:ui",
+      "target": "components/company-os/user-info.tsx"
+    },
+    {
+      "path": "registry/company-os/use-mobile.ts",
+      "content": "import { useSyncExternalStore } from 'react';\n\nconst MOBILE_BREAKPOINT = 768;\n\nconst mql =\n    typeof window === 'undefined'\n        ? undefined\n        : window.matchMedia(`(max-width: ${MOBILE_BREAKPOINT - 1}px)`);\n\nfunction subscribe(callback: (event: MediaQueryListEvent) => void) {\n    if (!mql) {\n        return () => {};\n    }\n\n    mql.addEventListener('change', callback);\n\n    return () => mql.removeEventListener('change', callback);\n}\n\nexport function useIsMobile(): boolean {\n    return useSyncExternalStore(\n        subscribe,\n        () => mql?.matches ?? false,\n        () => false,\n    );\n}\n",
+      "type": "registry:ui",
+      "target": "hooks/use-mobile.ts"
+    }
+  ],
+  "categories": [
+    "shell"
+  ],
+  "docs": "http://localhost:5173/llms/app-sidebar.md",
+  "meta": {
+    "system": "Company OS",
+    "pieces": [
+      19
+    ],
+    "job": "Put every page one click away, in the order people work.",
+    "tags": [
+      "sidebar",
+      "navigation",
+      "groups",
+      "favorites",
+      "user-menu",
+      "logo"
+    ],
+    "exports": [
+      "AppSidebar",
+      "AppLogo",
+      "NavMain",
+      "NavFavorites",
+      "NavUser",
+      "UserInfo",
+      "initialsOf",
+      "Favorite",
+      "UserMenuItem",
+      "UserSummary"
+    ]
+  }
+}

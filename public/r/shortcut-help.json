@@ -1,0 +1,46 @@
+{
+  "$schema": "https://ui.shadcn.com/schema/registry-item.json",
+  "name": "shortcut-help",
+  "type": "registry:ui",
+  "title": "ShortcutHelp",
+  "description": "The ? sheet. Every key the shell answers to, grouped, with the go-keys generated from the nav. One job: Show the keyboard once so people stop using the mouse.",
+  "registryDependencies": [
+    "http://localhost:5173/r/tokens.json",
+    "http://localhost:5173/r/nav.json",
+    "sheet",
+    "kbd"
+  ],
+  "files": [
+    {
+      "path": "registry/company-os/shortcut-help.tsx",
+      "content": "import type { GoShortcut } from '@/components/company-os/nav';\nimport { Kbd } from '@/components/ui/kbd';\nimport { Sheet, SheetContent, SheetHeader, SheetTitle } from '@/components/ui/sheet';\n\nexport type ShortcutGroup = {\n    name: string;\n    items: { keys: string[]; label: string }[];\n};\n\nexport type ShellShortcutLabels = {\n    anywhere: string;\n    goTo: string;\n    palette: string;\n    search: string;\n    quickCreate: string;\n    help: string;\n    create?: string;\n};\n\nexport const shellShortcutLabels: ShellShortcutLabels = {\n    anywhere: 'Anywhere',\n    goTo: 'Go to',\n    palette: 'Command palette',\n    search: 'Search',\n    quickCreate: 'Create anything',\n    help: 'Show shortcuts',\n};\n\nexport function shellShortcutGroups(\n    goShortcuts: GoShortcut[],\n    custom: Partial<ShellShortcutLabels> = {},\n): ShortcutGroup[] {\n    const labels = { ...shellShortcutLabels, ...custom };\n    const anywhere: ShortcutGroup['items'] = [\n        { keys: ['⌘', 'K'], label: labels.palette },\n        { keys: ['/'], label: labels.search },\n        ...(labels.create ? [{ keys: ['C'], label: labels.create }] : []),\n        { keys: ['N'], label: labels.quickCreate },\n        { keys: ['?'], label: labels.help },\n    ];\n    const goTo = goShortcuts.map((shortcut) => ({\n        keys: ['G', shortcut.key.toUpperCase()],\n        label: shortcut.title,\n    }));\n\n    return [\n        { name: labels.anywhere, items: anywhere },\n        ...(goTo.length > 0 ? [{ name: labels.goTo, items: goTo }] : []),\n    ];\n}\n\nexport function ShortcutHelp({\n    open,\n    onOpenChange,\n    groups,\n    title = 'Keyboard shortcuts',\n}: {\n    open: boolean;\n    onOpenChange: (open: boolean) => void;\n    groups: ShortcutGroup[];\n    title?: string;\n}) {\n    return (\n        <Sheet open={open} onOpenChange={onOpenChange}>\n            <SheetContent className=\"overflow-y-auto\">\n                <SheetHeader>\n                    <SheetTitle>{title}</SheetTitle>\n                </SheetHeader>\n                <div className=\"grid gap-6 px-4 pb-6\">\n                    {groups.map((group) => (\n                        <section key={group.name} className=\"grid gap-2\">\n                            <h2 className=\"text-xs font-bold tracking-wide text-muted-foreground uppercase\">\n                                {group.name}\n                            </h2>\n                            {group.items.map((item) => (\n                                <div key={item.label} className=\"flex items-center justify-between gap-4 text-sm\">\n                                    <span>{item.label}</span>\n                                    <span className=\"flex shrink-0 gap-1\">\n                                        {item.keys.map((key) => (\n                                            <Kbd key={key}>{key}</Kbd>\n                                        ))}\n                                    </span>\n                                </div>\n                            ))}\n                        </section>\n                    ))}\n                </div>\n            </SheetContent>\n        </Sheet>\n    );\n}\n",
+      "type": "registry:ui",
+      "target": "components/company-os/shortcut-help.tsx"
+    }
+  ],
+  "categories": [
+    "shell"
+  ],
+  "docs": "http://localhost:5173/llms/shortcut-help.md",
+  "meta": {
+    "system": "Company OS",
+    "pieces": [
+      13
+    ],
+    "job": "Show the keyboard once so people stop using the mouse.",
+    "tags": [
+      "shortcuts",
+      "keyboard",
+      "help",
+      "sheet",
+      "kbd"
+    ],
+    "exports": [
+      "ShortcutHelp",
+      "shellShortcutGroups",
+      "shellShortcutLabels",
+      "ShortcutGroup",
+      "ShellShortcutLabels"
+    ]
+  }
+}

@@ -1,0 +1,39 @@
+{
+  "$schema": "https://ui.shadcn.com/schema/registry-item.json",
+  "name": "favorite-button",
+  "type": "registry:ui",
+  "title": "FavoriteButton",
+  "description": "A star that pins any viewable record or saved view to the sidebar. One job: Toggle one record in the user's favorites.",
+  "registryDependencies": [
+    "http://localhost:5173/r/tokens.json",
+    "button"
+  ],
+  "files": [
+    {
+      "path": "registry/company-os/favorite-button.tsx",
+      "content": "import { StarIcon } from 'lucide-react';\nimport { Button } from '@/components/ui/button';\nimport { cn } from '@/lib/utils';\n\nexport function FavoriteButton({\n    saved,\n    label,\n    onToggle,\n    addLabel = (name) => `Add ${name} to favorites`,\n    removeLabel = (name) => `Remove ${name} from favorites`,\n}: {\n    saved: boolean;\n    label: string;\n    onToggle: () => void;\n    addLabel?: (name: string) => string;\n    removeLabel?: (name: string) => string;\n}) {\n    return (\n        <Button\n            size=\"icon\"\n            variant=\"ghost\"\n            aria-pressed={saved}\n            aria-label={saved ? removeLabel(label) : addLabel(label)}\n            onClick={onToggle}\n        >\n            <StarIcon className={cn(saved && 'fill-primary text-primary')} />\n        </Button>\n    );\n}\n",
+      "type": "registry:ui",
+      "target": "components/company-os/favorite-button.tsx"
+    }
+  ],
+  "categories": [
+    "views"
+  ],
+  "docs": "http://localhost:5173/llms/favorite-button.md",
+  "meta": {
+    "system": "Company OS",
+    "pieces": [
+      15
+    ],
+    "job": "Toggle one record in the user's favorites.",
+    "tags": [
+      "favorite",
+      "pin",
+      "star",
+      "sidebar"
+    ],
+    "exports": [
+      "FavoriteButton"
+    ]
+  }
+}

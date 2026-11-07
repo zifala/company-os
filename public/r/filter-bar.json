@@ -1,0 +1,64 @@
+{
+  "$schema": "https://ui.shadcn.com/schema/registry-item.json",
+  "name": "filter-bar",
+  "type": "registry:ui",
+  "title": "FilterBar",
+  "description": "Search, inline filters, an overflow popover, and removable chips. The query string is the state. One job: Narrow one index table from the URL, one field per filterable column.",
+  "registryDependencies": [
+    "http://localhost:5173/r/tokens.json",
+    "button",
+    "input",
+    "label",
+    "popover",
+    "select",
+    "command"
+  ],
+  "files": [
+    {
+      "path": "registry/company-os/filter-bar.tsx",
+      "content": "import { ListFilterIcon, SearchIcon } from 'lucide-react';\nimport type { ReactNode } from 'react';\nimport { activeFilters, applyFilters, FilterChips } from '@/components/company-os/filter-chips';\nimport type { FilterState } from '@/components/company-os/filter-chips';\nimport { FilterControl } from '@/components/company-os/filter-control';\nimport { Button } from '@/components/ui/button';\nimport { Input } from '@/components/ui/input';\nimport { Label } from '@/components/ui/label';\nimport { Popover, PopoverContent, PopoverTrigger } from '@/components/ui/popover';\n\nexport type FilterBarLabels = { filters: string; clearFilters: string; search: string };\n\nconst defaultLabels: FilterBarLabels = { filters: 'Filters', clearFilters: 'Clear filters', search: 'Search' };\n\nexport function FilterBar({\n    state,\n    end,\n    labels = defaultLabels,\n}: {\n    state: FilterState;\n    end?: ReactNode;\n    labels?: FilterBarLabels;\n}) {\n    const inline = state.fields.filter((field) => field.inline);\n    const overflow = state.fields.filter((field) => !field.inline);\n    const overflowKeys = overflow.map((field) => field.key);\n    const overflowActive = activeFilters(state).filter((filter) => overflowKeys.includes(filter.key)).length;\n\n    return (\n        <div className=\"grid gap-3\">\n            <div className=\"flex flex-wrap items-center gap-2\">\n                {state.searchPlaceholder && (\n                    <div className=\"relative w-full sm:w-56\">\n                        <SearchIcon className=\"pointer-events-none absolute top-1/2 left-3 size-4 -translate-y-1/2 text-slate-400\" />\n                        <Input\n                            aria-label={labels.search}\n                            className=\"pl-9\"\n                            placeholder={state.searchPlaceholder}\n                            defaultValue={state.filters.search ?? ''}\n                            onKeyDown={(event) =>\n                                event.key === 'Enter' && applyFilters(state, { search: event.currentTarget.value })\n                            }\n                        />\n                    </div>\n                )}\n                {inline.map((field) => (\n                    <FilterControl key={field.key} field={field} state={state} className=\"w-36 shrink-0\" />\n                ))}\n                {overflow.length > 0 && (\n                    <Popover>\n                        <PopoverTrigger asChild>\n                            <Button variant=\"outline\" className=\"shrink-0\">\n                                <ListFilterIcon />\n                                {labels.filters}\n                                {overflowActive > 0 && (\n                                    <span className=\"rounded-full bg-primary/10 px-1.5 text-xs text-primary tabular-nums\">\n                                        {overflowActive}\n                                    </span>\n                                )}\n                            </Button>\n                        </PopoverTrigger>\n                        <PopoverContent className=\"grid gap-3\">\n                            {overflow.map((field) => (\n                                <div key={field.key} className=\"grid gap-1.5\">\n                                    <Label className=\"font-light\">{field.label}</Label>\n                                    <FilterControl field={field} state={state} />\n                                </div>\n                            ))}\n                        </PopoverContent>\n                    </Popover>\n                )}\n                {end && <div className=\"flex flex-wrap items-center gap-2 lg:ml-auto\">{end}</div>}\n            </div>\n            <FilterChips state={state} className=\"justify-start\" clearLabel={labels.clearFilters} />\n        </div>\n    );\n}\n",
+      "type": "registry:ui",
+      "target": "components/company-os/filter-bar.tsx"
+    },
+    {
+      "path": "registry/company-os/filter-chips.tsx",
+      "content": "import { XIcon } from 'lucide-react';\nimport { Button } from '@/components/ui/button';\nimport { navigateWithQuery } from '@/lib/navigation';\nimport { cn } from '@/lib/utils';\n\nexport type Option = { value: string; label: string };\n\nexport type FilterField = {\n    key: string;\n    label: string;\n    options?: Option[];\n    placeholder?: string;\n    defaultValue?: string;\n    inline?: boolean;\n    searchable?: boolean;\n    text?: boolean;\n};\n\nexport type FilterState = {\n    url: string;\n    filters: Record<string, string>;\n    fields: FilterField[];\n    searchPlaceholder?: string;\n};\n\nexport type ActiveFilter = { key: string; label: string };\n\nexport function applyFilters(\n    { url, filters }: Pick<FilterState, 'url' | 'filters'>,\n    changes: Record<string, string>,\n) {\n    const query = Object.fromEntries(\n        Object.entries({ ...filters, ...changes }).filter(([, value]) => value !== ''),\n    );\n\n    navigateWithQuery(url, query, { preserveState: true, preserveScroll: true, replace: true });\n}\n\nexport function activeFilters({ filters, fields }: FilterState): ActiveFilter[] {\n    const search = filters.search ? [{ key: 'search', label: `“${filters.search}”` }] : [];\n\n    return [\n        ...search,\n        ...fields.flatMap((field) => {\n            const value = filters[field.key] ?? '';\n\n            if (value === '' || value === (field.defaultValue ?? '')) {\n                return [];\n            }\n\n            const option = field.options?.find((choice) => choice.value === value);\n\n            return [{ key: field.key, label: `${field.label}: ${option?.label ?? value}` }];\n        }),\n    ];\n}\n\nexport function FilterChips({\n    state,\n    className,\n    clearLabel = 'Clear filters',\n}: {\n    state: FilterState;\n    className?: string;\n    clearLabel?: string;\n}) {\n    const active = activeFilters(state);\n\n    if (active.length === 0) {\n        return null;\n    }\n\n    const clearAll = Object.fromEntries(\n        [...state.fields.map((field) => field.key), 'search'].map((key) => [key, '']),\n    );\n\n    return (\n        <div className={cn('flex flex-wrap items-center justify-center gap-2', className)}>\n            {active.map((filter) => (\n                <span\n                    key={filter.key}\n                    className=\"inline-flex items-center gap-1 rounded-full bg-primary/10 py-0.5 pr-1 pl-2.5 text-xs font-medium text-primary\"\n                >\n                    {filter.label}\n                    <button\n                        type=\"button\"\n                        aria-label={`Remove ${filter.label}`}\n                        className=\"rounded-full p-0.5 hover:bg-primary/15\"\n                        onClick={() => applyFilters(state, { [filter.key]: '' })}\n                    >\n                        <XIcon className=\"size-3\" />\n                    </button>\n                </span>\n            ))}\n            <Button variant=\"outline\" size=\"sm\" className=\"h-6 px-2 text-xs\" onClick={() => applyFilters(state, clearAll)}>\n                {clearLabel}\n            </Button>\n        </div>\n    );\n}\n",
+      "type": "registry:ui",
+      "target": "components/company-os/filter-chips.tsx"
+    },
+    {
+      "path": "registry/company-os/filter-control.tsx",
+      "content": "import { applyFilters } from '@/components/company-os/filter-chips';\nimport type { FilterField, FilterState } from '@/components/company-os/filter-chips';\nimport { Combobox } from '@/components/ui/combobox';\nimport { Input } from '@/components/ui/input';\nimport { OptionSelect } from '@/components/ui/option-select';\n\nexport function FilterControl({\n    field,\n    state,\n    className,\n}: {\n    field: FilterField;\n    state: FilterState;\n    className?: string;\n}) {\n    const value = state.filters[field.key] ?? field.defaultValue ?? '';\n    const set = (next: string) => applyFilters(state, { [field.key]: next });\n\n    if (field.text) {\n        return (\n            <Input\n                aria-label={field.label}\n                placeholder={field.placeholder}\n                defaultValue={value}\n                className={className}\n                onKeyDown={(event) => event.key === 'Enter' && set(event.currentTarget.value)}\n            />\n        );\n    }\n\n    return field.searchable ? (\n        <Combobox\n            aria-label={field.label}\n            placeholder={field.placeholder}\n            options={field.options ?? []}\n            value={value}\n            onValueChange={set}\n            className={className}\n        />\n    ) : (\n        <OptionSelect\n            aria-label={field.label}\n            placeholder={field.placeholder}\n            options={field.options ?? []}\n            value={value}\n            onValueChange={set}\n            className={className}\n        />\n    );\n}\n",
+      "type": "registry:ui",
+      "target": "components/company-os/filter-control.tsx"
+    }
+  ],
+  "categories": [
+    "page-kit"
+  ],
+  "docs": "http://localhost:5173/llms/filter-bar.md",
+  "meta": {
+    "system": "Company OS",
+    "pieces": [
+      20,
+      15
+    ],
+    "job": "Narrow one index table from the URL, one field per filterable column.",
+    "tags": [
+      "filters",
+      "search",
+      "chips",
+      "query string",
+      "index"
+    ],
+    "exports": [
+      "FilterBar",
+      "FilterChips",
+      "FilterControl",
+      "applyFilters",
+      "activeFilters",
+      "FilterState",
+      "FilterField"
+    ]
+  }
+}

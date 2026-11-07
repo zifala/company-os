@@ -1,0 +1,45 @@
+{
+  "$schema": "https://ui.shadcn.com/schema/registry-item.json",
+  "name": "insight-item",
+  "type": "registry:ui",
+  "title": "InsightItem",
+  "description": "One insight: severity, title, body, folded evidence, suggestions you can apply, mark seen, dismiss. One job: Present one rule signal and let the reader act on it or close it.",
+  "registryDependencies": [
+    "http://localhost:5173/r/tokens.json",
+    "http://localhost:5173/r/pill.json",
+    "button",
+    "collapsible"
+  ],
+  "files": [
+    {
+      "path": "registry/company-os/insight-item.tsx",
+      "content": "import { CheckIcon, ChevronRightIcon, SparklesIcon } from 'lucide-react';\nimport { Pill } from '@/components/company-os/pill';\nimport { Button } from '@/components/ui/button';\nimport { Collapsible, CollapsibleContent, CollapsibleTrigger } from '@/components/ui/collapsible';\nimport { Link } from '@/lib/navigation';\n\nexport type Insight = {\n    id: string;\n    title: string;\n    body: string;\n    agent: string;\n    kind: string;\n    written: boolean;\n    severity: { label: string; color: string };\n    status: { value: string; label: string; live: boolean };\n    updated_label: string;\n    date_label: string | null;\n    evidence: { text: string; links: { label: string; href: string }[] }[];\n    suggestions: { index: number; type: string; label: string; reason: string; applied: boolean }[];\n};\n\nexport type InsightLabels = { evidence: string; written: string; applied: string; applying: string; markSeen: string; dismiss: string };\n\nexport const insightLabels: InsightLabels = {\n    evidence: 'Evidence',\n    written: 'Worded by the model from the cited numbers',\n    applied: 'Applied',\n    applying: 'Applying',\n    markSeen: 'Mark seen',\n    dismiss: 'Dismiss',\n};\n\nexport function InsightItem({\n    insight,\n    evidenceOpen = false,\n    pending,\n    onApply,\n    onAcknowledge,\n    onDismiss,\n    labels = insightLabels,\n}: {\n    insight: Insight;\n    evidenceOpen?: boolean;\n    pending?: number | null;\n    onApply: (index: number) => void;\n    onAcknowledge: () => void;\n    onDismiss: () => void;\n    labels?: InsightLabels;\n}) {\n    return (\n        <article className=\"grid gap-2.5\">\n            <div className=\"flex flex-wrap items-center gap-2 text-xs text-muted-foreground\">\n                <Pill name={insight.severity.label} color={insight.severity.color} />\n                <span>\n                    {insight.agent} · {insight.kind}\n                </span>\n                {!insight.status.live && <span>· {insight.status.label}</span>}\n                <time className=\"ml-auto\" title={insight.date_label ?? undefined}>\n                    {insight.updated_label}\n                </time>\n            </div>\n            <h3 className=\"text-sm font-bold text-slate-800\">{insight.title}</h3>\n            <p className=\"text-sm whitespace-pre-wrap\">{insight.body}</p>\n            {insight.written && (\n                <p className=\"inline-flex items-center gap-1 text-xs text-muted-foreground\">\n                    <SparklesIcon className=\"size-3.5 text-primary\" />\n                    {labels.written}\n                </p>\n            )}\n            <Collapsible defaultOpen={evidenceOpen} className=\"group/evidence\">\n                <CollapsibleTrigger className=\"inline-flex items-center gap-1 rounded-md text-xs text-muted-foreground transition-all duration-300 hover:text-primary focus-visible:ring-2 focus-visible:ring-ring/50 focus-visible:outline-none\">\n                    <ChevronRightIcon className=\"size-3.5 transition-transform duration-300 group-data-[state=open]/evidence:rotate-90\" />\n                    {labels.evidence} · {insight.evidence.length}\n                </CollapsibleTrigger>\n                <CollapsibleContent>\n                    <ol className=\"mt-2 grid gap-2 rounded-lg bg-slate-900/5 px-3 py-2.5\">\n                        {insight.evidence.map((line, index) => (\n                            <li key={index} className=\"grid gap-1 text-xs leading-relaxed\">\n                                <span className=\"tabular-nums\">{line.text}</span>\n                                {line.links.length > 0 && (\n                                    <span className=\"flex flex-wrap gap-1.5\">\n                                        {line.links.map((link) => (\n                                            <Link key={link.href} href={link.href} className=\"rounded-full bg-white/60 px-2 py-0.5 font-medium text-slate-800 transition-all duration-300 hover:bg-primary/5 hover:text-primary\">\n                                                {link.label}\n                                            </Link>\n                                        ))}\n                                    </span>\n                                )}\n                            </li>\n                        ))}\n                    </ol>\n                </CollapsibleContent>\n            </Collapsible>\n            {insight.suggestions.length > 0 && (\n                <ul className=\"grid gap-2\">\n                    {insight.suggestions.map((suggestion) => (\n                        <li key={suggestion.index} className=\"flex items-start justify-between gap-3 text-sm\">\n                            <div className=\"grid min-w-0 gap-0.5\">\n                                <span className=\"font-medium text-slate-800\">{suggestion.label}</span>\n                                <span className=\"text-xs text-muted-foreground\">{suggestion.reason}</span>\n                            </div>\n                            {suggestion.applied ? (\n                                <span className=\"inline-flex h-8 shrink-0 items-center gap-1 text-xs text-emerald-600\">\n                                    <CheckIcon className=\"size-3.5\" />\n                                    {labels.applied}\n                                </span>\n                            ) : (\n                                <Button size=\"sm\" variant=\"outline\" className=\"shrink-0\" disabled={!insight.status.live || pending != null} onClick={() => onApply(suggestion.index)}>\n                                    {pending === suggestion.index ? labels.applying : suggestion.type}\n                                </Button>\n                            )}\n                        </li>\n                    ))}\n                </ul>\n            )}\n            {insight.status.live && (\n                <div className=\"flex items-center justify-end gap-2\">\n                    {insight.status.value === 'open' && (\n                        <Button size=\"sm\" variant=\"ghost\" onClick={onAcknowledge}>\n                            {labels.markSeen}\n                        </Button>\n                    )}\n                    <Button size=\"sm\" variant=\"ghost\" onClick={onDismiss}>\n                        {labels.dismiss}\n                    </Button>\n                </div>\n            )}\n        </article>\n    );\n}\n",
+      "type": "registry:ui",
+      "target": "components/company-os/insight-item.tsx"
+    }
+  ],
+  "categories": [
+    "setup"
+  ],
+  "docs": "http://localhost:5173/llms/insight-item.md",
+  "meta": {
+    "system": "Company OS",
+    "pieces": [
+      24,
+      11
+    ],
+    "job": "Present one rule signal and let the reader act on it or close it.",
+    "tags": [
+      "insight",
+      "signal",
+      "inbox",
+      "suggestion",
+      "evidence"
+    ],
+    "exports": [
+      "InsightItem",
+      "Insight",
+      "InsightLabels"
+    ]
+  }
+}

@@ -1,0 +1,43 @@
+{
+  "$schema": "https://ui.shadcn.com/schema/registry-item.json",
+  "name": "app-tour",
+  "type": "registry:ui",
+  "title": "AppTour",
+  "description": "One short overlay tour over the shell, once per user. Hidden targets are skipped by size. One job: Walk a new user through navigation, New and search in under a minute.",
+  "registryDependencies": [
+    "http://localhost:5173/r/tokens.json"
+  ],
+  "files": [
+    {
+      "path": "registry/company-os/app-tour.tsx",
+      "content": "import { driver } from 'driver.js';\nimport type { DriveStep } from 'driver.js';\nimport { useEffect, useRef } from 'react';\nimport { useCurrentUrl } from '@/lib/navigation';\nimport 'driver.js/dist/driver.css';\n\nexport type TourStep = { target: string; title: string; description: string };\n\nexport type TourLabels = { next: string; back: string; done: string };\n\nexport const tourLabels: TourLabels = { next: 'Next', back: 'Back', done: 'Done' };\n\nconst isShown = (element: Element | null): element is Element => {\n    const rect = element?.getBoundingClientRect();\n\n    return rect !== undefined && rect.width > 0 && rect.height > 0;\n};\n\nexport const visibleSteps = (steps: TourStep[]): DriveStep[] =>\n    steps.flatMap(({ target, title, description }) => {\n        const element = document.querySelector(`[data-tour=\"${target}\"]`);\n\n        return isShown(element) ? [{ element, popover: { title, description } }] : [];\n    });\n\nexport function AppTour({\n    steps,\n    run,\n    onFinish,\n    labels: custom,\n    delayMs = 1200,\n}: {\n    steps: TourStep[];\n    run: boolean;\n    onFinish: () => void;\n    labels?: Partial<TourLabels>;\n    delayMs?: number;\n}) {\n    const url = useCurrentUrl();\n    const startedOnUrl = useRef<string | null>(null);\n    const latest = useRef({ steps, onFinish, labels: { ...tourLabels, ...custom } });\n\n    useEffect(() => {\n        latest.current = { steps, onFinish, labels: { ...tourLabels, ...custom } };\n    }, [steps, onFinish, custom]);\n\n    useEffect(() => {\n        if (!run || startedOnUrl.current === url) {\n            return;\n        }\n\n        const start = window.setTimeout(() => {\n            const { steps: current, onFinish: finish, labels } = latest.current;\n            const tourSteps = visibleSteps(current);\n\n            if (tourSteps.length === 0) {\n                return;\n            }\n\n            startedOnUrl.current = url;\n            driver({\n                steps: tourSteps,\n                showProgress: true,\n                overlayColor: 'var(--color-slate-900)',\n                overlayOpacity: 0.55,\n                stagePadding: 6,\n                stageRadius: 8,\n                disableActiveInteraction: true,\n                animate: !window.matchMedia('(prefers-reduced-motion: reduce)').matches,\n                nextBtnText: labels.next,\n                prevBtnText: labels.back,\n                doneBtnText: labels.done,\n                onDestroyed: () => {\n                    startedOnUrl.current = null;\n                    finish();\n                },\n            }).drive();\n        }, delayMs);\n\n        return () => window.clearTimeout(start);\n    }, [url, run, delayMs]);\n\n    return null;\n}\n",
+      "type": "registry:ui",
+      "target": "components/company-os/app-tour.tsx"
+    }
+  ],
+  "categories": [
+    "shell"
+  ],
+  "docs": "http://localhost:5173/llms/app-tour.md",
+  "meta": {
+    "system": "Company OS",
+    "pieces": [
+      9
+    ],
+    "job": "Walk a new user through navigation, New and search in under a minute.",
+    "tags": [
+      "tour",
+      "onboarding",
+      "driver",
+      "overlay",
+      "walkthrough"
+    ],
+    "exports": [
+      "AppTour",
+      "visibleSteps",
+      "tourLabels",
+      "TourStep",
+      "TourLabels"
+    ]
+  }
+}

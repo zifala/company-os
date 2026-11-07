@@ -1,0 +1,40 @@
+{
+  "$schema": "https://ui.shadcn.com/schema/registry-item.json",
+  "name": "load-error",
+  "type": "registry:ui",
+  "title": "LoadError",
+  "description": "The fourth state of a data region: it did not load, and here is the button that tries again. One job: Say a region failed to load and offer one retry.",
+  "registryDependencies": [
+    "http://localhost:5173/r/tokens.json",
+    "button"
+  ],
+  "files": [
+    {
+      "path": "registry/company-os/load-error.tsx",
+      "content": "import { Button } from '@/components/ui/button';\nimport { reload } from '@/lib/navigation';\n\nexport function LoadError({\n    noun,\n    prop,\n    onRetry,\n    message,\n    label,\n}: {\n    noun: string;\n    prop?: string;\n    onRetry?: () => void;\n    message?: string;\n    label?: string;\n}) {\n    const retry = onRetry ?? (() => reload(prop ? { only: [prop] } : {}));\n\n    return (\n        <div className=\"flex items-center justify-between gap-4 rounded-lg bg-rose-500/10 px-4 py-3 text-sm text-rose-600\">\n            {message ?? `The ${noun} did not load.`}\n            <Button size=\"sm\" variant=\"outline\" onClick={retry}>\n                {label ?? `Load ${noun} again`}\n            </Button>\n        </div>\n    );\n}\n",
+      "type": "registry:ui",
+      "target": "components/company-os/load-error.tsx"
+    }
+  ],
+  "categories": [
+    "page-kit"
+  ],
+  "docs": "http://localhost:5173/llms/load-error.md",
+  "meta": {
+    "system": "Company OS",
+    "pieces": [
+      20
+    ],
+    "job": "Say a region failed to load and offer one retry.",
+    "tags": [
+      "error",
+      "retry",
+      "deferred",
+      "rescue",
+      "state"
+    ],
+    "exports": [
+      "LoadError"
+    ]
+  }
+}

@@ -1,0 +1,40 @@
+{
+  "$schema": "https://ui.shadcn.com/schema/registry-item.json",
+  "name": "template-settings-page",
+  "type": "registry:block",
+  "title": "Settings · Profile",
+  "description": "The personal settings layout: profile, timezone and quiet hours, nothing platform-wide.",
+  "registryDependencies": [
+    "http://localhost:5173/r/tokens.json",
+    "http://localhost:5173/r/section-layout.json",
+    "http://localhost:5173/r/page-header.json",
+    "http://localhost:5173/r/form-layout.json",
+    "http://localhost:5173/r/field-row.json",
+    "http://localhost:5173/r/phone-field.json"
+  ],
+  "files": [
+    {
+      "path": "registry/company-os/templates/settings-page.tsx",
+      "content": "import { FieldRow, FormSection, PageHeader, PhoneField, SectionLayout } from '@/components/company-os';\nimport type { NavGroup } from '@/components/company-os';\nimport { Button } from '@/components/ui/button';\nimport { Input } from '@/components/ui/input';\nimport { OptionSelect } from '@/components/ui/option-select';\n\nconst settingsGroups: NavGroup[] = [\n    {\n        items: [\n            { title: 'Profile', href: '/templates/settings-page' },\n            { title: 'Password', href: '/templates/settings/password' },\n            { title: 'Security', href: '/templates/settings/security' },\n            { title: 'Notifications', href: '/templates/settings/notifications' },\n        ],\n    },\n];\n\nconst timezones = [{ value: 'Africa/Mogadishu', label: 'Africa/Mogadishu' }, { value: 'Africa/Nairobi', label: 'Africa/Nairobi' }, { value: 'Europe/London', label: 'Europe/London' }];\nconst hours = Array.from({ length: 24 }, (_, hour) => ({ value: `${String(hour).padStart(2, '0')}:00`, label: `${String(hour).padStart(2, '0')}:00` }));\n\nexport function SettingsPage() {\n    return (\n        <SectionLayout title=\"Settings\" groups={settingsGroups} permissions={[]}>\n            <div className=\"flex max-w-3xl flex-col gap-6\">\n                <PageHeader title=\"Profile\">\n                    <Button>Save profile</Button>\n                </PageHeader>\n                <FormSection title=\"You\">\n                    <FieldRow id=\"sp-name\" label=\"Name\">\n                        <Input id=\"sp-name\" defaultValue=\"Ayaan Warsame\" />\n                    </FieldRow>\n                    <FieldRow id=\"sp-email\" label=\"Email\">\n                        <Input id=\"sp-email\" type=\"email\" defaultValue=\"ayaan@halcyon.example\" />\n                    </FieldRow>\n                    <PhoneField id=\"sp-phone\" label=\"Phone\" defaultValue=\"+252612345678\" />\n                    <FieldRow id=\"sp-locale\" label=\"Language\">\n                        <OptionSelect id=\"sp-locale\" defaultValue=\"en\" options={[{ value: 'en', label: 'English' }, { value: 'so', label: 'Soomaali' }]} />\n                    </FieldRow>\n                </FormSection>\n                <FormSection title=\"Time\">\n                    <FieldRow id=\"sp-tz\" label=\"Timezone\" hint=\"Due dates and reminders follow this.\">\n                        <OptionSelect id=\"sp-tz\" defaultValue=\"Africa/Mogadishu\" options={timezones} />\n                    </FieldRow>\n                    <div className=\"grid grid-cols-2 gap-4\">\n                        <FieldRow id=\"sp-quiet-start\" label=\"Quiet hours start\">\n                            <OptionSelect id=\"sp-quiet-start\" defaultValue=\"22:00\" options={hours} />\n                        </FieldRow>\n                        <FieldRow id=\"sp-quiet-end\" label=\"Quiet hours end\" hint=\"Email waits until then.\">\n                            <OptionSelect id=\"sp-quiet-end\" defaultValue=\"07:00\" options={hours} />\n                        </FieldRow>\n                    </div>\n                </FormSection>\n            </div>\n        </SectionLayout>\n    );\n}\n",
+      "type": "registry:ui",
+      "target": "components/company-os/templates/settings-page.tsx"
+    }
+  ],
+  "categories": [
+    "templates"
+  ],
+  "meta": {
+    "system": "Company OS",
+    "kind": "template",
+    "pieces": [
+      7,
+      18
+    ],
+    "tags": [
+      "settings",
+      "profile",
+      "timezone",
+      "quiet hours"
+    ]
+  }
+}

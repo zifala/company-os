@@ -1,0 +1,53 @@
+{
+  "$schema": "https://ui.shadcn.com/schema/registry-item.json",
+  "name": "data-table",
+  "type": "registry:ui",
+  "title": "DataTable",
+  "description": "The index table frame: sticky header, scrolling rows, pager footer, and an empty state that keeps the table. One job: Frame one paginated table so it fills the page and always shows the shape the data will take.",
+  "registryDependencies": [
+    "http://localhost:5173/r/tokens.json",
+    "table",
+    "button",
+    "skeleton"
+  ],
+  "files": [
+    {
+      "path": "registry/company-os/data-table.tsx",
+      "content": "import type { ReactNode } from 'react';\nimport { Pager } from '@/components/company-os/pager';\nimport type { PagerLabels } from '@/components/company-os/pager';\nimport { Skeleton } from '@/components/ui/skeleton';\nimport { TableCell, TableRow } from '@/components/ui/table';\n\nexport type Paginated<T> = {\n    data: T[];\n    from: number | null;\n    to: number | null;\n    total: number;\n    current_page: number;\n    last_page: number;\n    prev_page_url: string | null;\n    next_page_url: string | null;\n};\n\nexport type PageLabels = PagerLabels & {\n    showing: (from: number, to: number, total: number) => string;\n    none: string;\n};\n\nconst defaultLabels: PageLabels = {\n    previous: 'Previous page',\n    next: 'Next page',\n    showing: (from, to, total) => `Showing ${from}–${to} of ${total}`,\n    none: '0 results',\n};\n\nexport function DataTable({\n    page,\n    labels = defaultLabels,\n    children,\n}: {\n    page?: Paginated<unknown>;\n    labels?: PageLabels;\n    children: ReactNode;\n}) {\n    return (\n        <div className=\"flex min-h-0 flex-1 flex-col rounded-lg glass\">\n            <div className=\"min-h-0 flex-1 overflow-auto [&_thead]:sticky [&_thead]:top-0 [&_thead]:z-10 [&_thead]:bg-card/90 [&_thead]:backdrop-blur-sm\">\n                {children}\n            </div>\n            {page && (\n                <div className=\"flex items-center justify-between gap-4 border-t border-border px-3 py-2 text-sm text-muted-foreground\">\n                    <span className=\"tabular-nums\">\n                        {page.total === 0 || page.from === null || page.to === null\n                            ? labels.none\n                            : labels.showing(page.from, page.to, page.total)}\n                    </span>\n                    <Pager prev={page.prev_page_url} next={page.next_page_url} labels={labels} />\n                </div>\n            )}\n        </div>\n    );\n}\n\nexport function TableEmptyRow({\n    colSpan,\n    title,\n    message,\n    children,\n}: {\n    colSpan: number;\n    title: string;\n    message?: string;\n    children?: ReactNode;\n}) {\n    return (\n        <TableRow className=\"hover:bg-transparent\">\n            <TableCell colSpan={colSpan} className=\"h-40 text-center\">\n                <div className=\"grid justify-items-center gap-2\">\n                    <p className=\"font-medium text-slate-800\">{title}</p>\n                    {message && <p className=\"max-w-md text-sm text-muted-foreground\">{message}</p>}\n                    {children}\n                </div>\n            </TableCell>\n        </TableRow>\n    );\n}\n\nexport function DataTableSkeleton({ rows = 6 }: { rows?: number }) {\n    return (\n        <div className=\"rounded-lg glass\">\n            <div className=\"h-10 border-b border-border\" />\n            {Array.from({ length: rows }, (_, index) => (\n                <div key={index} className=\"flex h-11 items-center border-b border-border px-3 last:border-0\">\n                    <Skeleton className=\"h-4 w-full rounded-md\" />\n                </div>\n            ))}\n        </div>\n    );\n}\n",
+      "type": "registry:ui",
+      "target": "components/company-os/data-table.tsx"
+    },
+    {
+      "path": "registry/company-os/pager.tsx",
+      "content": "import { Button } from '@/components/ui/button';\nimport { Link } from '@/lib/navigation';\n\nexport type PagerLabels = { previous: string; next: string };\n\nconst defaultLabels: PagerLabels = { previous: 'Previous page', next: 'Next page' };\n\nfunction PageButton({ href, label }: { href: string | null; label: string }) {\n    return (\n        <Button variant=\"outline\" size=\"sm\" disabled={!href} asChild={!!href}>\n            {href ? (\n                <Link href={href} preserveScroll>\n                    {label}\n                </Link>\n            ) : (\n                <span>{label}</span>\n            )}\n        </Button>\n    );\n}\n\nexport function Pager({\n    prev,\n    next,\n    labels = defaultLabels,\n}: {\n    prev: string | null;\n    next: string | null;\n    labels?: PagerLabels;\n}) {\n    return (\n        <div className=\"flex items-center gap-2\">\n            <PageButton href={prev} label={labels.previous} />\n            <PageButton href={next} label={labels.next} />\n        </div>\n    );\n}\n",
+      "type": "registry:ui",
+      "target": "components/company-os/pager.tsx"
+    }
+  ],
+  "categories": [
+    "page-kit"
+  ],
+  "docs": "http://localhost:5173/llms/data-table.md",
+  "meta": {
+    "system": "Company OS",
+    "pieces": [
+      20
+    ],
+    "job": "Frame one paginated table so it fills the page and always shows the shape the data will take.",
+    "tags": [
+      "table",
+      "index",
+      "pagination",
+      "empty",
+      "skeleton",
+      "list"
+    ],
+    "exports": [
+      "DataTable",
+      "TableEmptyRow",
+      "DataTableSkeleton",
+      "Paginated",
+      "PageLabels"
+    ]
+  }
+}

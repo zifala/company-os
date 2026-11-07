@@ -1,0 +1,41 @@
+{
+  "$schema": "https://ui.shadcn.com/schema/registry-item.json",
+  "name": "onboarding-card",
+  "type": "registry:ui",
+  "title": "OnboardingCard",
+  "description": "The side card on a record born from an onboarding: reference, who started it, who approved it, when, and the source. One job: Show where a relationship record came from.",
+  "registryDependencies": [
+    "http://localhost:5173/r/tokens.json",
+    "http://localhost:5173/r/detail-card.json"
+  ],
+  "files": [
+    {
+      "path": "registry/company-os/onboarding-card.tsx",
+      "content": "import { DetailCard } from '@/components/company-os/detail-card';\nimport { Link } from '@/lib/navigation';\nimport type { Href } from '@/lib/navigation';\n\nexport type OnboardingSummary = {\n    reference: string;\n    href: Href;\n    started_by: string;\n    approved_by: string | null;\n    approved_at: string | null;\n    source: string;\n    referrer: string | null;\n};\n\nexport type OnboardingLabels = {\n    title: string;\n    reference: string;\n    startedBy: string;\n    approvedBy: string;\n    approved: string;\n    source: string;\n    referredBy: string;\n};\n\nexport const onboardingLabels: OnboardingLabels = {\n    title: 'Onboarding',\n    reference: 'Reference',\n    startedBy: 'Started by',\n    approvedBy: 'Approved by',\n    approved: 'Approved',\n    source: 'Source',\n    referredBy: 'Referred by',\n};\n\nexport function OnboardingCard({\n    onboarding,\n    labels = onboardingLabels,\n}: {\n    onboarding: OnboardingSummary | null;\n    labels?: OnboardingLabels;\n}) {\n    if (onboarding === null) {\n        return null;\n    }\n\n    return (\n        <DetailCard\n            title={labels.title}\n            compact\n            details={[\n                {\n                    label: labels.reference,\n                    value: (\n                        <Link href={onboarding.href} className=\"font-mono text-xs hover:text-primary hover:underline\">\n                            {onboarding.reference}\n                        </Link>\n                    ),\n                },\n                { label: labels.startedBy, value: onboarding.started_by },\n                { label: labels.approvedBy, value: onboarding.approved_by },\n                { label: labels.approved, value: onboarding.approved_at },\n                { label: labels.source, value: onboarding.source },\n                { label: labels.referredBy, value: onboarding.referrer },\n            ]}\n        />\n    );\n}\n",
+      "type": "registry:ui",
+      "target": "components/company-os/onboarding-card.tsx"
+    }
+  ],
+  "categories": [
+    "setup"
+  ],
+  "docs": "http://localhost:5173/llms/onboarding-card.md",
+  "meta": {
+    "system": "Company OS",
+    "pieces": [
+      27
+    ],
+    "job": "Show where a relationship record came from.",
+    "tags": [
+      "onboarding",
+      "record",
+      "provenance",
+      "side card"
+    ],
+    "exports": [
+      "OnboardingCard",
+      "OnboardingSummary",
+      "OnboardingLabels"
+    ]
+  }
+}

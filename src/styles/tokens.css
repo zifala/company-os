@@ -1,0 +1,100 @@
+:root {
+    --radius: 0.5rem;
+
+    --background: #f1f5f9;
+    --foreground: #475569;
+
+    --card: #ffffff;
+    --card-foreground: #475569;
+    --popover: #ffffff;
+    --popover-foreground: #475569;
+
+    --primary: #6366f1;
+    --primary-foreground: #ffffff;
+    --secondary: #e0e7ff;
+    --secondary-foreground: #4338ca;
+    --muted: #f8fafc;
+    --muted-foreground: #64748b;
+    --accent: #eef2ff;
+    --accent-foreground: #4f46e5;
+    --destructive: #f43f5e;
+    --destructive-foreground: #ffffff;
+
+    --success: #10b981;
+    --warning: #f59e0b;
+    --info: #06b6d4;
+
+    --border: rgb(15 23 42 / 0.05);
+    --input: #e2e8f0;
+    --ring: #6366f1;
+
+    --chart-1: #6366f1;
+    --chart-2: #0891b2;
+    --chart-3: #f43f5e;
+    --chart-4: #06b6d4;
+    --chart-5: #c084fc;
+
+    --sidebar: rgb(255 255 255 / 0.6);
+    --sidebar-foreground: #475569;
+    --sidebar-primary: #6366f1;
+    --sidebar-primary-foreground: #ffffff;
+    --sidebar-accent: rgb(99 102 241 / 0.05);
+    --sidebar-accent-foreground: #6366f1;
+    --sidebar-border: rgb(255 255 255 / 0.8);
+    --sidebar-ring: #6366f1;
+
+    --glass: rgb(255 255 255 / 0.6);
+    --glass-border: rgb(255 255 255 / 0.8);
+    --glow-from: #ff80b5;
+    --glow-to: #9089fc;
+}
+
+@theme inline {
+    --font-sans: 'Inter Variable', ui-sans-serif, system-ui, sans-serif;
+    --font-mono: 'Geist Mono Variable', ui-monospace, monospace;
+
+    --radius-sm: calc(var(--radius) - 4px);
+    --radius-md: calc(var(--radius) - 2px);
+    --radius-lg: var(--radius);
+    --radius-xl: calc(var(--radius) + 4px);
+
+    --color-background: var(--background);
+    --color-foreground: var(--foreground);
+    --color-card: var(--card);
+    --color-card-foreground: var(--card-foreground);
+    --color-popover: var(--popover);
+    --color-popover-foreground: var(--popover-foreground);
+    --color-primary: var(--primary);
+    --color-primary-foreground: var(--primary-foreground);
+    --color-secondary: var(--secondary);
+    --color-secondary-foreground: var(--secondary-foreground);
+    --color-muted: var(--muted);
+    --color-muted-foreground: var(--muted-foreground);
+    --color-accent: var(--accent);
+    --color-accent-foreground: var(--accent-foreground);
+    --color-destructive: var(--destructive);
+    --color-destructive-foreground: var(--destructive-foreground);
+    --color-success: var(--success);
+    --color-warning: var(--warning);
+    --color-info: var(--info);
+    --color-border: var(--border);
+    --color-input: var(--input);
+    --color-ring: var(--ring);
+    --color-chart-1: var(--chart-1);
+    --color-chart-2: var(--chart-2);
+    --color-chart-3: var(--chart-3);
+    --color-chart-4: var(--chart-4);
+    --color-chart-5: var(--chart-5);
+    --color-sidebar: var(--sidebar);
+    --color-sidebar-foreground: var(--sidebar-foreground);
+    --color-sidebar-primary: var(--sidebar-primary);
+    --color-sidebar-primary-foreground: var(--sidebar-primary-foreground);
+    --color-sidebar-accent: var(--sidebar-accent);
+    --color-sidebar-accent-foreground: var(--sidebar-accent-foreground);
+    --color-sidebar-border: var(--sidebar-border);
+    --color-sidebar-ring: var(--sidebar-ring);
+    --color-glass: var(--glass);
+    --color-glass-border: var(--glass-border);
+    --color-glow-from: var(--glow-from);
+    --color-glow-to: var(--glow-to);
+}

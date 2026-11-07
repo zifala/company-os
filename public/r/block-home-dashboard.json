@@ -1,0 +1,40 @@
+{
+  "$schema": "https://ui.shadcn.com/schema/registry-item.json",
+  "name": "block-home-dashboard",
+  "type": "registry:block",
+  "title": "Home",
+  "description": "Raised stat tiles, the work waiting on you as a table, latest activity.",
+  "registryDependencies": [
+    "http://localhost:5173/r/tokens.json",
+    "http://localhost:5173/r/page-header.json",
+    "http://localhost:5173/r/stat-tile.json",
+    "http://localhost:5173/r/data-table.json",
+    "http://localhost:5173/r/cells.json",
+    "http://localhost:5173/r/activity-timeline.json"
+  ],
+  "files": [
+    {
+      "path": "registry/company-os/blocks/home-dashboard.tsx",
+      "content": "import { ActivityTimeline, DataTable, DateCell, LinkCell, PageHeader, StatTile, StatusCell } from '@/components/company-os';\nimport type { ActivityEntry } from '@/components/company-os';\nimport { Table, TableBody, TableHead, TableHeader, TableRow } from '@/components/ui/table';\n\nconst waiting = [\n    { id: '1', title: 'Approve PO-2291', detail: 'Purchase order · Kestrel Logistics', status: { label: 'Waiting on you', color: 'amber' }, since: 'Since 5 Nov 2026', due: { label: '8 Nov 2026', relative: 'tomorrow' } },\n    { id: '2', title: 'Review onboarding ONB-0009', detail: 'Provider · Daryeel Clinic', status: { label: 'Submitted', color: 'indigo' }, since: 'Since 6 Nov 2026', due: { label: '10 Nov 2026', relative: 'in 3 days' } },\n    { id: '3', title: 'Send invoice INV-0413', detail: 'Northwind Trading · 12,960.00 USD', status: { label: 'Draft', color: 'slate' }, since: 'Since 3 Nov 2026', due: { label: '7 Nov 2026', relative: 'today' } },\n];\n\nconst activity: ActivityEntry[] = [\n    { id: '1', kind: 'completed', actor: { name: 'Hodan Ali', initials: 'HA' }, action: 'completed the task', via: 'web', subject: { label: 'ZW-142', url: '#' }, at: '2026-11-07T09:12:00Z', at_label: '7 Nov 2026, 09:12', time_label: '09:12', day_label: 'Today', changes: [{ label: 'Stage', from: 'In review', to: 'Done' }], reason: null },\n    { id: '2', kind: 'created', actor: { name: 'Mahad Yusuf', initials: 'MY' }, action: 'created the deal', via: 'web', subject: { label: 'Cold chain audit', url: '#' }, at: '2026-11-07T08:40:00Z', at_label: '7 Nov 2026, 08:40', time_label: '08:40', day_label: 'Today', changes: [], reason: null },\n    { id: '3', kind: 'assigned', actor: null, action: 'assigned the follow-up by automation', via: 'automation', subject: { label: 'ZW-139', url: '#' }, at: '2026-11-07T07:00:00Z', at_label: '7 Nov 2026, 07:00', time_label: '07:00', day_label: 'Today', changes: [{ label: 'Assignee', from: null, to: 'Hodan Ali' }], reason: null },\n];\n\nexport function HomeDashboard() {\n    return (\n        <div className=\"flex flex-col gap-6\">\n            <PageHeader title=\"Home\" />\n            <div className=\"grid gap-4 sm:grid-cols-2 lg:grid-cols-4\">\n                <StatTile raised label=\"Waiting on you\" value=\"3\" href=\"#\" />\n                <StatTile raised label=\"Open deals\" value=\"18\" hint=\"412,800 USD in pipeline\" href=\"#\" />\n                <StatTile raised label=\"Overdue invoices\" value=\"3\" hint=\"21,420 USD\" href=\"#\" />\n                <StatTile raised label=\"Logged this week\" value=\"31.5\" unit=\"h\" />\n            </div>\n            <div className=\"grid items-start gap-6 lg:grid-cols-[minmax(0,1.6fr)_minmax(0,1fr)]\">\n                <section className=\"grid gap-3\">\n                    <h2 className=\"text-sm font-semibold text-slate-800\">Work waiting</h2>\n                    <DataTable>\n                        <Table>\n                            <TableHeader>\n                                <TableRow>\n                                    <TableHead>Item</TableHead>\n                                    <TableHead>Status</TableHead>\n                                    <TableHead>Due</TableHead>\n                                </TableRow>\n                            </TableHeader>\n                            <TableBody>\n                                {waiting.map((row) => (\n                                    <TableRow key={row.id}>\n                                        <LinkCell value={{ label: row.title, href: '#', detail: row.detail }} />\n                                        <StatusCell value={row.status} detail={row.since} />\n                                        <DateCell value={row.due} />\n                                    </TableRow>\n                                ))}\n                            </TableBody>\n                        </Table>\n                    </DataTable>\n                </section>\n                <section className=\"grid gap-3\">\n                    <h2 className=\"text-sm font-semibold text-slate-800\">Latest activity</h2>\n                    <div className=\"rounded-lg glass p-5\">\n                        <ActivityTimeline entries={activity} showSubject />\n                    </div>\n                </section>\n            </div>\n        </div>\n    );\n}\n",
+      "type": "registry:ui",
+      "target": "components/company-os/blocks/home-dashboard.tsx"
+    }
+  ],
+  "categories": [
+    "blocks"
+  ],
+  "meta": {
+    "system": "Company OS",
+    "kind": "block",
+    "pieces": [
+      20,
+      11
+    ],
+    "tags": [
+      "home",
+      "dashboard",
+      "stats",
+      "activity"
+    ]
+  }
+}
