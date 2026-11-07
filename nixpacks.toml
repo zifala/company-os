@@ -1,0 +1,14 @@
+providers = ['node']
+
+[variables]
+REGISTRY_BASE = 'https://os.zifala.com'
+VITE_REGISTRY_BASE = 'https://os.zifala.com'
+
+[phases.install]
+cmds = ['corepack enable', 'pnpm install --frozen-lockfile --prod=false']
+
+[phases.build]
+cmds = ['pnpm build']
+
+[start]
+cmd = 'node server.mjs'

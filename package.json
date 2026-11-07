@@ -65,5 +65,9 @@
     "typescript-eslint": "^8.72.1",
     "vite": "^8.3.6"
   },
-  "description": "Company OS — the standard and the design system for company operating systems. Guide, components, registry, llms.txt."
+  "description": "Company OS — the standard and the design system for company operating systems. Guide, components, registry, llms.txt.",
+  "engines": {
+    "node": ">=22"
+  },
+  "packageManager": "pnpm@12.16.1"
 }
