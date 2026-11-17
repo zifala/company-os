@@ -8,7 +8,21 @@
         "company-os",
         "audit",
         "trash",
-        "search"
+        "search",
+        "setup-checklist",
+        "csv"
+    ],
+    "homepage": "https://github.com/zifala/company-os/tree/main/packages/laravel",
+    "support": {
+        "issues": "https://github.com/zifala/company-os/issues",
+        "source": "https://github.com/zifala/company-os/tree/main/packages/laravel",
+        "docs": "https://github.com/zifala/company-os/blob/main/packages/laravel/README.md"
+    },
+    "authors": [
+        {
+            "name": "Company OS contributors",
+            "homepage": "https://github.com/zifala/company-os/graphs/contributors"
+        }
     ],
     "require": {
         "php": "^8.3",

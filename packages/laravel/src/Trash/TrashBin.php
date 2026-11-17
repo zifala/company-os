@@ -9,6 +9,7 @@ use CompanyOs\Support\Label;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Pagination\LengthAwarePaginator;
 use Illuminate\Pagination\Paginator;
+use Illuminate\Support\Carbon;
 use Illuminate\Support\Collection;
 use Illuminate\Support\Str;
 use Illuminate\Validation\ValidationException;
@@ -64,9 +65,9 @@ final class TrashBin
      */
     public static function ensureRestorable(Model $model, ?Model $parent = null): void
     {
-        $deletedAt = $model->getAttribute('deleted_at');
+        $deletedAt = self::deletedAt($model);
 
-        if (! $deletedAt) {
+        if ($deletedAt === null) {
             throw ValidationException::withMessages(['trash' => self::message('not_in_trash')]);
         }
 
@@ -74,7 +75,7 @@ final class TrashBin
             throw ValidationException::withMessages(['trash' => self::message('too_old', ['days' => self::days()])]);
         }
 
-        if ($parent !== null && $parent->getAttribute('deleted_at')) {
+        if ($parent !== null && self::deletedAt($parent) !== null) {
             throw ValidationException::withMessages(['trash' => self::message('parent_in_trash')]);
         }
     }
@@ -125,7 +126,7 @@ final class TrashBin
             $records = $records->merge(self::trashedFor($trashType, $user)->map(fn (Model $record): array => [$trashType, $record]));
         }
 
-        $sorted = $records->sortByDesc(fn (array $pair): int => $pair[1]->getAttribute('deleted_at')->getTimestamp())->values();
+        $sorted = $records->sortByDesc(fn (array $pair): int => self::deletedAt($pair[1])?->getTimestamp() ?? 0)->values();
         $slice = $sorted->forPage($page, $perPage)->values();
         $deletions = self::deletionsFor($slice);
 
@@ -133,6 +134,7 @@ final class TrashBin
             [$trashType, $record] = $pair;
             $mapped = $trashType->row !== null ? ($trashType->row)($record) : [];
             $deletion = $deletions[$record->getMorphClass()][(string) $record->getKey()] ?? null;
+            $deletedAt = self::deletedAt($record) ?? now();
 
             return [
                 'type' => $trashType->key,
@@ -140,10 +142,10 @@ final class TrashBin
                 'id' => $record->getKey(),
                 'label' => (string) ($mapped['label'] ?? $record->getAttribute('name') ?? $record->getKey()),
                 'context' => $mapped['context'] ?? null,
-                'deleted_at' => $record->getAttribute('deleted_at')->toIso8601String(),
+                'deleted_at' => $deletedAt->toIso8601String(),
                 'deleted_by' => $deletion['by'] ?? null,
                 'reason' => $deletion['reason'] ?? null,
-                'days_left' => self::daysLeft($record->getAttribute('deleted_at')),
+                'days_left' => self::daysLeft($deletedAt),
             ];
         });
 
@@ -156,7 +158,7 @@ final class TrashBin
     /** @return Collection<int, Model> */
     private static function trashedFor(TrashType $type, mixed $user): Collection
     {
-        $query = $type->trashedQuery()->where($type->trashedQuery()->getModel()->qualifyColumn('deleted_at'), '>=', self::cutoff());
+        $query = $type->trashedQuery()->where($type->deletedAtColumn(), '>=', self::cutoff());
 
         if ($type->scope !== null) {
             $query = ($type->scope)($query, $user) ?? $query;
@@ -206,6 +208,19 @@ final class TrashBin
         }
 
         return $found;
+    }
+
+    /** Soft-delete timestamp, read from the model's own column (custom `DELETED_AT` included). */
+    private static function deletedAt(Model $model): ?CarbonInterface
+    {
+        $column = method_exists($model, 'getDeletedAtColumn') ? $model->getDeletedAtColumn() : 'deleted_at';
+        $value = $model->getAttribute($column);
+
+        return match (true) {
+            $value === null || $value === '' => null,
+            $value instanceof CarbonInterface => $value,
+            default => Carbon::parse($value),
+        };
     }
 
     /** @param array<string, mixed> $replace */

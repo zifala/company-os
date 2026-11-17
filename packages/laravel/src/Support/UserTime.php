@@ -46,6 +46,8 @@ final class UserTime
     /**
      * When the user's quiet hours end, if they are in them now; null otherwise.
      * Handles windows across midnight (22:00-07:00 -> next morning 07:00).
+     * The window is [start, end): at the end minute quiet hours are over.
+     * Equal start and end is an empty window, not a 24-hour one.
      * Notifications delay delivery to this moment.
      */
     public static function quietHoursEnd(object $user): ?CarbonImmutable
@@ -61,8 +63,12 @@ final class UserTime
         $from = $now->setTimeFromTimeString($start);
         $until = $now->setTimeFromTimeString($end);
 
+        if ($from->equalTo($until)) {
+            return null;
+        }
+
         if ($from->lessThan($until)) {
-            return $now->between($from, $until) ? $until : null;
+            return $now->greaterThanOrEqualTo($from) && $now->lessThan($until) ? $until : null;
         }
 
         return match (true) {

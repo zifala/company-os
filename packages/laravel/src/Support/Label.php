@@ -21,24 +21,37 @@ final class Label
      */
     public static function first(array $keys, array $replace = [], ?string $default = null): string
     {
+        if ($keys === []) {
+            return $default ?? '';
+        }
+
         foreach ($keys as $key) {
             if (Lang::has($key)) {
                 return (string) __($key, $replace);
             }
         }
 
-        return $default ?? (string) __((string) end($keys), $replace);
+        return $default ?? (string) __($keys[array_key_last($keys)], $replace);
     }
 
-    /** App key under a configured prefix, then the package's own key. */
+    /**
+     * App key under a configured prefix, then the package's own key, then the
+     * raw key (a registered service with no label yet reads `sms`, not a lang path).
+     *
+     * @param  array<string, mixed>  $replace
+     */
     public static function appOrPackage(string $prefixConfig, string $file, string $key, array $replace = []): string
     {
         $prefix = (string) config("company-os.lang.{$prefixConfig}", $file);
 
-        return self::first(["{$prefix}.{$key}", "company-os::{$file}.{$key}"], $replace);
+        return self::first(["{$prefix}.{$key}", "company-os::{$file}.{$key}"], $replace, $key);
     }
 
-    /** App-only key under a configured prefix; falls back to the raw key so nothing renders blank. */
+    /**
+     * App-only key under a configured prefix; falls back to the raw key so nothing renders blank.
+     *
+     * @param  array<string, mixed>  $replace
+     */
     public static function app(string $prefixConfig, string $default, string $key, array $replace = []): string
     {
         $full = config("company-os.lang.{$prefixConfig}", $default).'.'.$key;

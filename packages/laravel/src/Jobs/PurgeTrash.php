@@ -34,7 +34,8 @@ final class PurgeTrash implements ShouldQueue
         $counts = [];
 
         foreach (TrashBin::registered() as $key => $type) {
-            $ids = $type->trashedQuery()->where('deleted_at', '<', TrashBin::cutoff())->pluck($type->trashedQuery()->getModel()->getKeyName());
+            $query = $type->trashedQuery();
+            $ids = $query->where($type->deletedAtColumn(), '<', TrashBin::cutoff())->pluck($query->getModel()->getKeyName());
 
             if ($ids->isNotEmpty()) {
                 $this->purge($type, $ids);

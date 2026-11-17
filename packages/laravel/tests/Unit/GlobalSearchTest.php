@@ -89,3 +89,45 @@ it('escapes per driver', function (): void {
     expect(TextSearch::escape(' 50%_\\ '))->toBe('50\%\_\\\\')
         ->and(TextSearch::escape('[a]', 'sqlsrv'))->toBe('\[a]');
 });
+
+it('searches every listed column and the code column', function (): void {
+    Client::query()->create(['name' => 'Acme', 'email' => 'billing@zeta.test', 'owner_id' => $this->user->id]);
+    Client::query()->create(['name' => 'Bravo', 'number' => 'ZETA-1', 'owner_id' => $this->user->id]);
+    Client::query()->create(['name' => 'Charlie', 'owner_id' => $this->user->id]);
+
+    expect(collect(GlobalSearch::groups($this->user, 'zeta')[0]['items'])->pluck('label')->sort()->values()->all())->toBe(['Acme', 'Bravo']);
+});
+
+it('matches case-insensitively and trims the term', function (): void {
+    Client::query()->create(['name' => 'ACME Holdings', 'owner_id' => $this->user->id]);
+
+    expect(GlobalSearch::groups($this->user, '  acme hol  ')[0]['items'][0]['label'])->toBe('ACME Holdings');
+});
+
+it('matches nothing in a group registered without columns', function (): void {
+    GlobalSearch::flush();
+    GlobalSearch::group('notes', query: fn () => Note::query(), columns: [], map: fn (Note $row): array => ['id' => $row->id, 'label' => $row->name, 'url' => '/']);
+    Note::query()->create(['name' => 'Anything']);
+
+    expect(GlobalSearch::groups($this->user, 'zz'))->toBe([])
+        ->and(TextSearch::contains(Note::query(), [], 'any')->count())->toBe(0);
+});
+
+it('keeps the registration order of groups and replaces a group registered twice', function (): void {
+    Client::query()->create(['name' => 'Acme', 'owner_id' => $this->user->id]);
+    Note::query()->create(['name' => 'Acme note']);
+
+    expect(collect(GlobalSearch::groups($this->user, 'acme'))->pluck('key')->all())->toBe(['clients', 'notes']);
+
+    GlobalSearch::group('clients', query: fn () => null, columns: ['name'], map: fn ($row): array => []);
+    expect(collect(GlobalSearch::groups($this->user, 'acme'))->pluck('key')->all())->toBe(['notes']);
+});
+
+it('falls back to the key as the group name and orders by key without timestamps', function (): void {
+    expect(GlobalSearch::MinLength)->toBe(2)->and(GlobalSearch::PerGroup)->toBe(5);
+
+    Note::query()->create(['name' => 'Acme one']);
+    Note::query()->create(['name' => 'Acme two']);
+
+    expect(GlobalSearch::groups($this->user, 'acme one')[0]['name'])->toBe('notes');
+});

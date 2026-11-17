@@ -1,0 +1,11 @@
+# Keep the dist archive (git archive / Packagist zip) to what an app needs at runtime.
+* text=auto eol=lf
+
+/.gitattributes export-ignore
+/.gitignore export-ignore
+/.github export-ignore
+/tests export-ignore
+/phpunit.xml export-ignore
+/phpunit.xml.dist export-ignore
+/.phpunit.cache export-ignore
+/composer.lock export-ignore

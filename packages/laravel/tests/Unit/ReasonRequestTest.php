@@ -33,3 +33,30 @@ it('returns 422 on reason without one and hands the reason to the action with on
     $this->postJson('records/1/reject', ['reason' => 'no'])->assertStatus(422)->assertJsonValidationErrors('reason');
     $this->postJson('records/1/reject', ['reason' => 'Duplicate of #12'])->assertOk()->assertJson(['reason' => 'Duplicate of #12']);
 });
+
+it('names the field from the package lang in en and so', function (): void {
+    expect((new ReasonRequest)->attributes())->toBe(['reason' => 'reason'])
+        ->and((new ReasonRequest)->authorize())->toBeTrue();
+
+    app()->setLocale('so');
+    expect((new ReasonRequest)->attributes())->toBe(['reason' => 'sababta']);
+});
+
+it('trims the reason it hands back', function (): void {
+    Route::post('records/{id}/lose', fn (ReasonRequest $request) => ['reason' => $request->reason()]);
+
+    $this->postJson('records/1/lose', ['reason' => "  Went with a competitor \n"])->assertOk()->assertJson(['reason' => 'Went with a competitor']);
+});
+
+it('lets a subclass add fields on top of the reason', function (): void {
+    $request = new class extends ReasonRequest
+    {
+        public function rules(): array
+        {
+            return [...parent::rules(), 'note' => ['nullable', 'string']];
+        }
+    };
+
+    expect(array_keys($request->rules()))->toBe(['reason', 'note'])
+        ->and(Validator::make(['note' => 'x'], $request->rules())->passes())->toBeFalse();
+});

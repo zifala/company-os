@@ -49,3 +49,21 @@ it('can drop the built-in rows', function (): void {
 
     expect(ServiceStatus::rows())->toBe([]);
 });
+
+it('lets the app override a built-in row, keeping its position', function (): void {
+    ServiceStatus::register('mail', fn (): bool => true, ['POSTMARK_TOKEN']);
+
+    expect(ServiceStatus::rows()[0])->toMatchArray(['key' => 'mail', 'ok' => true, 'env' => ['POSTMARK_TOKEN']])
+        ->and(collect(ServiceStatus::rows())->pluck('key')->all())->toBe(['mail', 'queue']);
+});
+
+it('falls back to the key as the label of an unknown service and is all ok with no rows', function (): void {
+    ServiceStatus::withoutDefaults();
+    ServiceStatus::register('maps', fn (): int => 1, ['MAPS_KEY']);
+
+    expect(ServiceStatus::rows())->toBe([['key' => 'maps', 'label' => 'maps', 'ok' => true, 'env' => ['MAPS_KEY']]]);
+
+    ServiceStatus::flush();
+    ServiceStatus::withoutDefaults();
+    expect(ServiceStatus::allOk())->toBeTrue();
+});

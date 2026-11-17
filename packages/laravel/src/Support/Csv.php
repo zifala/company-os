@@ -25,6 +25,7 @@ final class Csv
             is_bool($value) => $value ? '1' : '0',
             $value instanceof \DateTimeInterface => $value->format('Y-m-d H:i:s'),
             $value instanceof \BackedEnum => (string) $value->value,
+            $value instanceof \UnitEnum => $value->name,
             is_array($value) => (string) json_encode($value, JSON_UNESCAPED_UNICODE),
             default => (string) $value,
         };

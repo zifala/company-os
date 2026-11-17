@@ -8,17 +8,19 @@ The server half of the Company OS recipes, as a composer package. The recipes in
 
 ## Install
 
-The package lives in this repo under `packages/laravel`. In an app, add a path or VCS repository and require it:
+Not on Packagist yet (see [Releasing](#releasing)). The package lives in this repo under `packages/laravel`, and the repo root has no `composer.json`, so a plain `vcs` repository pointing at `company-os.git` does not find it. Until it is published, check this repo out next to the app and use a `path` repository:
 
 ```json
-"repositories": [{ "type": "vcs", "url": "git@github.com:<org>/company-os.git" }]
+"repositories": [{ "type": "path", "url": "../company-os/packages/laravel", "options": { "symlink": false } }]
 ```
 
 ```bash
-composer require company-os/laravel
+composer require company-os/laravel:@dev
 php artisan vendor:publish --tag=company-os-config   # optional
 php artisan vendor:publish --tag=company-os-lang     # optional, to edit en / so wording
 ```
+
+Once it is published: `composer require company-os/laravel:^0.1` and drop the `repositories` entry.
 
 The service provider `CompanyOs\CompanyOsServiceProvider` is auto-discovered.
 
@@ -28,17 +30,17 @@ The service provider `CompanyOs\CompanyOsServiceProvider` is auto-discovered.
 | --- | --- | --- |
 | `Http\Requests\ReasonRequest` | `audit`, `trash`, `status-dialog` | `reason` required, string, min 3, max 1000 (`MinLength`, `MaxLength`). `reason()` accessor, `reasonRules()` for requests that cannot extend it. `authorize()` is `true`: the guard stays in the Action. |
 | `Audit\AuditChanges` | `audit` | `of($model, $except)` → `{changed, old, new}` of dirty fields. Strings over `LongText = 200` logged as `{length}`. Leaves out `created_at`, `updated_at` and the model's `$hidden`. |
-| `Audit\AuditEvents` | `audit` | `label($event)` from the app's `audit.events.*`, raw name as fallback. `prefix()`, `prefixes()` for the event filter, `likePrefix()` with wildcards escaped. |
-| `Support\Csv` | `audit` (export), `views-import-export` | `cell()` prefixes `'` when a value starts with `= + - @ tab CR`. `write($file, $headers, $rows)` adds the BOM and defuses every cell. |
+| `Audit\AuditEvents` | `audit` | `label($event)` from the app's `audit.events.*`, raw name as fallback. `prefix()`, `prefixes()` for the event filter, `wherePrefix($query, $prefix)` (escaped, every driver), `likePrefix()` for `whereLike` on Postgres / MySQL. |
+| `Support\Csv` | `audit` (export), `views-import-export` | `cell()` prefixes `'` when a value starts with `= + - @ tab CR`; dates as `Y-m-d H:i:s`, enums by value (backed) or name (pure). `write($file, $headers, $rows)` adds the BOM and defuses every cell; `row()` writes one. |
 | `Contracts\AuditLogger`, `Audit\SpatieAuditLogger`, `Audit\NullAuditLogger` | `audit` | The one seam package code uses to write an audit row (only `PurgeTrash` uses it). Spatie when `activity()` exists, else no-op, or your class via `company-os.audit_logger`. The spatie logger only attaches a subject when its key is a string, per the uuid `subject_id` gotcha. |
 | `Trash\TrashBin`, `Trash\TrashType` | `trash` | `Days = 30`, `cutoff()`, `ensureRestorable($model, ?$parent)`, `daysLeft()`, `newBatch()`, `types($user)`, `for($user, ?$type)` (merged, newest first, paginated in memory, who + reason from the latest `*.deleted` activity on the current page). |
 | `Jobs\PurgeTrash` | `trash` | Daily, idempotent. Per chunk: `beforePurge` → null self-referencing parent column → force delete. Types `withFiles()` force delete model by model, outside the transaction. One `trash.purged` row per run with counts per type; none when nothing was purged. |
 | `Setup\SetupSteps` | `setup-checklist` | `register($key, $done, $links)`, `all()` → `list<{key, title, done, links}>`. `done` is `true` / `false` from a closure or `null` for review-only. `route()` builds relative hrefs lazily. `services()` step, `complete()` (ignores `null`), `status()` badge word. |
 | `Search\GlobalSearch` | `command-palette` | `group($key, query, columns, map, code)`, `groups($user, $term)` → `list<{key, name, items: list<{id, label, url}>}>`. `MinLength = 2`, `PerGroup = 5`. Query closure returns `null` when the user may not see the group. Exact `code` match ranks first, then newest `updated_at`. |
-| `Search\TextSearch` | `command-palette` | `contains($query, $columns, $term)`: `ilike` on pgsql, `like` elsewhere, `% _ \` escaped. |
+| `Search\TextSearch` | `command-palette` | `contains($query, $columns, $term)`: `ilike` on pgsql, `like` elsewhere, `% _ \` escaped. An empty column list matches nothing. |
 | `Support\ServiceStatus` | `settings` | `rows()` → `list<{key, label, ok, env}>`, built-in `mail` + `queue`, `register()` for more, `allOk()`. Reads `config()`, never `env()`. Never returns config values. |
-| `Support\UserTime` | `settings` | `today()`, `toUtc()`, `local()`, `quietHoursEnd()` (handles windows across midnight), `profileRules()`. Takes any user object, or a timezone string. |
-| `Support\Label` | `bilingual` | Lang lookup with an app key first and the package key as fallback. Used by everything above. |
+| `Support\UserTime` | `settings` | `today()`, `toUtc()`, `local()`, `quietHoursEnd()` (window is `[start, end)`, handles windows across midnight, equal start and end = none), `profileRules()`. Takes any user object, or a timezone string. |
+| `Support\Label` | `bilingual` | Lang lookup with an app key first, the package key second, the raw key last. Used by everything above. |
 
 ### Where this differs from the recipe code, and why
 
@@ -50,6 +52,8 @@ The service provider `CompanyOs\CompanyOsServiceProvider` is auto-discovered.
 - **`TrashBin::days()` reads `company-os.trash.days`** (default 30, the `Days` constant). Keep it at 30 unless you change the UI copy as well.
 - **`GlobalSearch::groups()` items also carry `key`.** The recipe shape `{name, items}` is unchanged otherwise.
 - **`ServiceStatus` treats a `null` or empty driver as missing**, so "every service reads missing on an empty config" holds.
+- **Trash reads the model's own soft-delete column** (`getDeletedAtColumn()`), so a model with a custom `DELETED_AT` works in the list, the restore guard and the purge.
+- **`AuditEvents::wherePrefix()` adds `escape '\'`.** SQLite and sqlsrv have no default LIKE escape, so `whereLike(..., likePrefix())` only escapes on Postgres and MySQL.
 
 ## Usage
 
@@ -85,7 +89,7 @@ Csv::write($file, [__('audit.headers.when'), __('audit.headers.who'), __('audit.
     ]));
 
 // event filter
-->when($filters['event'] ?? null, fn ($q, $event) => $q->whereLike('event', AuditEvents::likePrefix($event)))
+->when($filters['event'] ?? null, fn ($q, $event) => AuditEvents::wherePrefix($q, $event))
 ```
 
 ### Trash
@@ -205,3 +209,21 @@ vendor/bin/pest
 ```
 
 The suite runs on Orchestra Testbench with in-memory SQLite and fixture models. It covers each recipe's "Test:" section where that works without a full app. Endpoint 403s, Inertia props and the home redirect belong to the app's tests.
+
+CI: `.github/workflows/laravel-package.yml` at the repo root runs the suite on PHP 8.3 and 8.4 against Laravel 12 (Testbench 10) and Laravel 13 (Testbench 11), on every push to `main` and every pull request that touches `packages/laravel/**`. `composer.lock` is not committed, so each run resolves the newest versions in range.
+
+## Releasing
+
+Not released yet. The roadmap gate: tag and publish only once a product has run the package in production. When that holds:
+
+1. **Pick the distribution path (once).** Packagist reads `composer.json` from the root of a git repository, and this one lives in a subdirectory, so either:
+   - **Split repo (recommended).** Create `<org>/company-os-laravel`, mirror `packages/laravel` into it on every push to `main` and every `laravel-v*` tag (a `git subtree split --prefix=packages/laravel` job, or an action such as `symplify/monorepo-split-github-action`), and submit that repo to Packagist. Tags in the split repo are plain `v0.1.0`.
+   - **Private only.** Skip Packagist and let apps use a `path` repository as in [Install](#install), or a private registry (Private Packagist, Satis) fed from the split repo.
+2. **Settle the license.** `composer.json` says `proprietary` and the repo has no `LICENSE` file. Public Packagist will list a proprietary package, but anyone can install it. Decide on a license (and add `LICENSE`) or keep the package private (path / private registry) before step 5.
+3. **Check it is green.** The `laravel package` workflow passes on `main`; locally `composer validate --strict` and `vendor/bin/pest`.
+4. **Cut the changelog.** In `CHANGELOG.md`, change `## [0.1.0] - Unreleased` to today's date, keep an empty `## [Unreleased]` above it, and fix the compare links if the split repo is used.
+5. **Tag.** In this repo: `git tag -a laravel-v0.1.0 -m "company-os/laravel 0.1.0"` on the release commit and push the tag; the split job carries it over as `v0.1.0`. Do not add a `version` field to `composer.json`: Packagist reads versions from tags.
+6. **Publish.** Submit the split repo on packagist.org once and enable its GitHub hook so later tags appear on their own. Then switch the Install section to `composer require company-os/laravel:^0.1`.
+7. **Check the dist.** `composer require company-os/laravel` in a fresh Laravel app, and confirm the archive leaves out `tests/`, `phpunit.xml` and the dotfiles (`.gitattributes` `export-ignore`).
+
+Versioning: `0.x` until the API has held across two products. A minor bump (`0.1` to `0.2`) may break the API and says so in the changelog; a patch never does.

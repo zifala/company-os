@@ -77,6 +77,13 @@ abstract class TestCase extends Orchestra
             $table->softDeletes();
         });
 
+        Schema::create('archives', function (Blueprint $table): void {
+            $table->id();
+            $table->string('name');
+            $table->timestamps();
+            $table->timestamp('archived_at')->nullable();
+        });
+
         Schema::create('activity_log', function (Blueprint $table): void {
             $table->id();
             $table->string('event')->index();

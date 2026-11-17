@@ -127,6 +127,12 @@ final class TrashType
         return $query->onlyTrashed();
     }
 
+    /** The model's qualified soft-delete column; honours a custom `DELETED_AT`. */
+    public function deletedAtColumn(): string
+    {
+        return $this->trashedQuery()->getModel()->getQualifiedDeletedAtColumn();
+    }
+
     /** @param Collection<int, mixed> $ids */
     public function runBeforePurge(Collection $ids): void
     {

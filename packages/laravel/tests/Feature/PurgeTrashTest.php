@@ -86,3 +86,65 @@ it('runs through the container as a queued job', function (): void {
 
     expect(logged())->toHaveCount(1);
 });
+
+it('purges past a configured window', function (): void {
+    config(['company-os.trash.days' => 7]);
+    trash(Client::query()->create(['name' => 'Eight']), 8);
+    trash(Client::query()->create(['name' => 'Six']), 6);
+
+    (new PurgeTrash)->handle(app(AuditLogger::class));
+
+    expect(Client::withTrashed()->pluck('name')->all())->toBe(['Six'])
+        ->and(logged()[0]['properties'])->toBe(['clients' => 1]);
+});
+
+it('purges on a custom soft-delete column and leaves live rows alone', function (): void {
+    TrashBin::register(TrashType::make('archives', CompanyOs\Tests\Fixtures\Archive::class)->visibleWhen(fn (): bool => true));
+    $old = CompanyOs\Tests\Fixtures\Archive::query()->create(['name' => 'Old']);
+    $old->forceFill(['archived_at' => now()->subDays(31)])->save();
+    CompanyOs\Tests\Fixtures\Archive::query()->create(['name' => 'Live']);
+    Client::query()->create(['name' => 'Live client']);
+
+    (new PurgeTrash)->handle(app(AuditLogger::class));
+
+    expect(CompanyOs\Tests\Fixtures\Archive::withTrashed()->pluck('name')->all())->toBe(['Live'])
+        ->and(Client::query()->count())->toBe(1)
+        ->and(logged())->toBe([['event' => 'trash.purged', 'properties' => ['archives' => 1]]]);
+});
+
+it('hands beforePurge each chunk of ids, as a list', function (): void {
+    $seen = [];
+    TrashBin::flush();
+    TrashBin::register(TrashType::make('notes', Note::class)->beforePurge(function (Collection $ids) use (&$seen): void {
+        $seen[] = $ids->all();
+    }));
+    $ids = collect(range(1, PurgeTrash::Chunk + 1))->map(fn (int $i): int => trash(Note::query()->create(['name' => "N{$i}"]), 31)->id);
+
+    (new PurgeTrash)->handle(app(AuditLogger::class));
+
+    expect($seen)->toHaveCount(2)
+        ->and(array_keys($seen[1]))->toBe([0])
+        ->and([...$seen[0], ...$seen[1]])->toBe($ids->all())
+        ->and(Note::withTrashed()->count())->toBe(0)
+        ->and(logged()[0]['properties'])->toBe(['notes' => PurgeTrash::Chunk + 1]);
+});
+
+it('purges types that are hidden from the trash page too', function (): void {
+    TrashBin::flush();
+    TrashBin::register(TrashType::make('notes', Note::class));
+    trash(Note::query()->create(['name' => 'Old']), 31);
+
+    (new PurgeTrash)->handle(app(AuditLogger::class));
+
+    expect(Note::withTrashed()->count())->toBe(0);
+});
+
+it('rolls the chunk back when beforePurge fails', function (): void {
+    TrashBin::flush();
+    TrashBin::register(TrashType::make('notes', Note::class)->beforePurge(fn () => throw new RuntimeException('detach failed')));
+    trash(Note::query()->create(['name' => 'Old']), 31);
+
+    expect(fn () => (new PurgeTrash)->handle(app(AuditLogger::class)))->toThrow(RuntimeException::class, 'detach failed')
+        ->and(Note::withTrashed()->count())->toBe(1)
+        ->and(logged())->toBe([]);
+});
