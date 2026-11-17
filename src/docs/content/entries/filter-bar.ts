@@ -45,7 +45,7 @@ const state: FilterState = {
             rows: [
                 { name: 'state', type: 'FilterState', description: '<code>{ url, filters, fields, searchPlaceholder? }</code>. A search box renders only when <code>searchPlaceholder</code> is set.' },
                 { name: 'end', type: 'ReactNode', description: 'Right slot: saved views menu, export button.' },
-                { name: 'labels', type: 'FilterBarLabels', description: '<code>filters</code>, <code>clearFilters</code>, <code>search</code>. Pass translated copy.' },
+                { name: 'labels', type: 'FilterBarLabels', description: '<code>filters</code>, <code>clearFilters</code>, <code>search</code>, and optional <code>removeFilter(label)</code> for the chip remove buttons. Pass translated copy.' },
             ],
         },
         {
@@ -57,6 +57,15 @@ const state: FilterState = {
                 { name: 'searchable', type: 'boolean', description: 'Combobox instead of the plain dropdown. Use beyond ~7 options.' },
                 { name: 'text', type: 'boolean', description: 'A free text input, applied on Enter.' },
                 { name: 'defaultValue', type: 'string', description: 'The value that counts as "no filter"; never shown as a chip.' },
+            ],
+        },
+        {
+            component: 'FilterChips',
+            rows: [
+                { name: 'state', type: 'FilterState', description: 'Same state as the bar. Renders nothing without an active filter.' },
+                { name: 'clearLabel', type: 'string', defaultValue: "'Clear filters'", description: 'The clear-all button.' },
+                { name: 'removeLabel', type: '(label: string) => string', defaultValue: '(label) => `Remove ${label}`', description: 'Accessible name of each chip\'s remove button.' },
+                { name: 'className', type: 'string', description: 'Centred by default; the bar passes <code>justify-start</code>.' },
             ],
         },
         {
@@ -74,7 +83,8 @@ const state: FilterState = {
         ],
         notes: [
             'Every control carries an <code>aria-label</code> from its field label; inline fields have no visible label by design.',
-            'Each chip\'s remove button is named "Remove <filter>".',
+            'Each chip\'s remove button is named <code>labels.removeFilter(label)</code>, "Remove …" by default.',
+            'Search and text fields remount when their filter changes elsewhere, so clearing a chip also clears the box.',
             'Dropdowns and the popover render in portals, so they escape scrolling containers.',
         ],
     },

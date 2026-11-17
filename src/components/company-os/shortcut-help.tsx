@@ -76,8 +76,8 @@ export function ShortcutHelp({
                                 <div key={item.label} className="flex items-center justify-between gap-4 text-sm">
                                     <span>{item.label}</span>
                                     <span className="flex shrink-0 gap-1">
-                                        {item.keys.map((key) => (
-                                            <Kbd key={key}>{key}</Kbd>
+                                        {item.keys.map((key, index) => (
+                                            <Kbd key={index}>{key}</Kbd>
                                         ))}
                                     </span>
                                 </div>

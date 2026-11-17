@@ -38,7 +38,7 @@ export const loadError: DocEntry = {
         },
     ],
     a11y: {
-        notes: ['Plain text plus one button; the button names the object it reloads.'],
+        notes: ['An <code>role="alert"</code> line plus one button; the button names the object it reloads.'],
     },
     donts: [
         'No "Something went wrong". Name the noun.',

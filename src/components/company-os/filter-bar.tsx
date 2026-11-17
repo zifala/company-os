@@ -8,7 +8,7 @@ import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Popover, PopoverContent, PopoverTrigger } from '@/components/ui/popover';
 
-export type FilterBarLabels = { filters: string; clearFilters: string; search: string };
+export type FilterBarLabels = { filters: string; clearFilters: string; search: string; removeFilter?: (label: string) => string };
 
 const defaultLabels: FilterBarLabels = { filters: 'Filters', clearFilters: 'Clear filters', search: 'Search' };
 
@@ -31,10 +31,11 @@ export function FilterBar({
             <div className="flex flex-wrap items-center gap-2">
                 {state.searchPlaceholder && (
                     <div className="relative w-full sm:w-56">
-                        <SearchIcon className="pointer-events-none absolute top-1/2 left-3 size-4 -translate-y-1/2 text-slate-400" />
+                        <SearchIcon aria-hidden className="pointer-events-none absolute top-1/2 start-3 size-4 -translate-y-1/2 text-muted-foreground" />
                         <Input
+                            key={state.filters.search ?? ''}
                             aria-label={labels.search}
-                            className="pl-9"
+                            className="ps-9"
                             placeholder={state.searchPlaceholder}
                             defaultValue={state.filters.search ?? ''}
                             onKeyDown={(event) =>
@@ -69,9 +70,9 @@ export function FilterBar({
                         </PopoverContent>
                     </Popover>
                 )}
-                {end && <div className="flex flex-wrap items-center gap-2 lg:ml-auto">{end}</div>}
+                {end && <div className="flex flex-wrap items-center gap-2 lg:ms-auto">{end}</div>}
             </div>
-            <FilterChips state={state} className="justify-start" clearLabel={labels.clearFilters} />
+            <FilterChips state={state} className="justify-start" clearLabel={labels.clearFilters} removeLabel={labels.removeFilter} />
         </div>
     );
 }

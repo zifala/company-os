@@ -70,7 +70,7 @@ export function TableEmptyRow({
         <TableRow className="hover:bg-transparent">
             <TableCell colSpan={colSpan} className="h-40 text-center">
                 <div className="grid justify-items-center gap-2">
-                    <p className="font-medium text-slate-800">{title}</p>
+                    <p className="font-medium text-foreground">{title}</p>
                     {message && <p className="max-w-md text-sm text-muted-foreground">{message}</p>}
                     {children}
                 </div>

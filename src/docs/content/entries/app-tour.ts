@@ -62,6 +62,7 @@ const isReplay = new URLSearchParams(url.split('?')[1]).get('tour') === '1';
         ],
         notes: [
             'Animation follows <code>prefers-reduced-motion</code>.',
+            'Unmounting the component (leaving the layout) tears a running tour down without calling <code>onFinish</code>.',
             'The popover is a driver.js dialog with the step title as its heading; the highlighted element is not interactive during the step.',
             'Steps whose element is hidden (collapsed sidebar, missing permission) are dropped, never shown pointing at nothing.',
         ],

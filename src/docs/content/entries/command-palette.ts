@@ -94,7 +94,7 @@ useShortcuts({
     ],
     a11y: {
         keyboard: [
-            { keys: '⌘K / Ctrl+K', action: 'Toggle the palette, also while typing in a field.' },
+            { keys: '⌘K / Ctrl+K', action: 'Calls <code>onPalette</code>, also while typing in a field.' },
             { keys: '/', action: 'Open the palette when not typing.' },
             { keys: '↑ ↓', action: 'Move through results; the list loops.' },
             { keys: 'Enter', action: 'Run the selected item.' },

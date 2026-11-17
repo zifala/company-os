@@ -19,6 +19,7 @@ export function FilterControl({
     if (field.text) {
         return (
             <Input
+                key={value}
                 aria-label={field.label}
                 placeholder={field.placeholder}
                 defaultValue={value}

@@ -17,9 +17,9 @@ export function LoadError({
     const retry = onRetry ?? (() => reload(prop ? { only: [prop] } : {}));
 
     return (
-        <div className="flex items-center justify-between gap-4 rounded-lg bg-rose-500/10 px-4 py-3 text-sm text-rose-600">
+        <div role="alert" className="flex items-center justify-between gap-4 rounded-lg bg-destructive/10 px-4 py-3 text-sm text-destructive">
             {message ?? `The ${noun} did not load.`}
-            <Button size="sm" variant="outline" onClick={retry}>
+            <Button type="button" size="sm" variant="outline" onClick={retry}>
                 {label ?? `Load ${noun} again`}
             </Button>
         </div>

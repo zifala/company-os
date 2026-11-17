@@ -38,7 +38,7 @@ export function WebhooksPage() {
                         <TableHeader>
                             <TableRow>
                                 <TableHead>Endpoint</TableHead>
-                                <TableHead className="text-right">Events</TableHead>
+                                <TableHead className="text-end">Events</TableHead>
                                 <TableHead>Status</TableHead>
                                 <TableHead>Last delivery</TableHead>
                             </TableRow>

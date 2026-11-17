@@ -31,20 +31,25 @@ export function NavMain({
         <SidebarGroup className="px-2 py-0">
             {label && <SidebarGroupLabel>{label}</SidebarGroupLabel>}
             <SidebarMenu>
-                {items.map((item) => (
-                    <SidebarMenuItem key={item.title} data-tour={item.tour}>
-                        <SidebarMenuButton
-                            asChild
-                            isActive={toUrl(item.href) === activeHref}
-                            tooltip={{ children: item.title }}
-                        >
-                            <Link href={item.href} prefetch>
-                                {item.icon && <item.icon />}
-                                <span>{item.title}</span>
-                            </Link>
-                        </SidebarMenuButton>
-                    </SidebarMenuItem>
-                ))}
+                {items.map((item) => {
+                    const url = toUrl(item.href);
+                    const active = url === activeHref;
+
+                    return (
+                        <SidebarMenuItem key={`${url} ${item.title}`} data-tour={item.tour}>
+                            <SidebarMenuButton
+                                asChild
+                                isActive={active}
+                                tooltip={{ children: item.title }}
+                            >
+                                <Link href={item.href} prefetch aria-current={active ? 'page' : undefined}>
+                                    {item.icon && <item.icon />}
+                                    <span>{item.title}</span>
+                                </Link>
+                            </SidebarMenuButton>
+                        </SidebarMenuItem>
+                    );
+                })}
             </SidebarMenu>
         </SidebarGroup>
     );

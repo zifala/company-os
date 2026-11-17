@@ -28,10 +28,10 @@ function Stacked({ main, detail }: { main: ReactNode; detail?: string | null }) 
 
 export function MoneyCell({ value, strong = true }: { value: Money; strong?: boolean }) {
     return (
-        <TableCell className={cn('text-right tabular-nums', strong && 'font-bold text-slate-800')}>
+        <TableCell className={cn('text-end tabular-nums', strong && 'font-bold text-foreground')}>
             {value ? (
                 <>
-                    <span className="mr-1 text-xs font-light text-muted-foreground">{value.currency}</span>
+                    <span className="me-1 text-xs font-light text-muted-foreground">{value.currency}</span>
                     {value.formatted}
                 </>
             ) : (
@@ -43,9 +43,9 @@ export function MoneyCell({ value, strong = true }: { value: Money; strong?: boo
 
 export function NumberCell({ value, unit }: { value: string | null; unit?: string }) {
     return (
-        <TableCell className="text-right tabular-nums">
+        <TableCell className="text-end tabular-nums">
             {value ?? <EmptyValue />}
-            {value !== null && unit && <span className="ml-1 text-xs text-muted-foreground">{unit}</span>}
+            {value !== null && unit && <span className="ms-1 text-xs text-muted-foreground">{unit}</span>}
         </TableCell>
     );
 }
@@ -82,7 +82,7 @@ export function BooleanCell({ value }: { value: Flag }) {
     return (
         <TableCell>
             <span className="inline-flex items-center gap-1.5">
-                <Icon className={cn('size-4', value.value ? 'text-emerald-600' : 'text-slate-400')} />
+                <Icon aria-hidden className={cn('size-4', value.value ? 'text-success' : 'text-muted-foreground')} />
                 {value.label}
             </span>
         </TableCell>
@@ -91,7 +91,7 @@ export function BooleanCell({ value }: { value: Flag }) {
 
 export function LinkCell({ value }: { value: Target }) {
     return (
-        <TableCell className="font-semibold text-slate-800">
+        <TableCell className="font-semibold text-foreground">
             <Stacked
                 main={
                     <Link href={value.href} className="transition-all duration-300 hover:text-primary">
@@ -105,5 +105,7 @@ export function LinkCell({ value }: { value: Target }) {
 }
 
 export function TextCell({ children, detail }: { children: ReactNode; detail?: string | null }) {
-    return <TableCell className="text-sm">{children ? <Stacked main={children} detail={detail} /> : <EmptyValue />}</TableCell>;
+    const empty = children === null || children === undefined || children === '' || children === false;
+
+    return <TableCell className="text-sm">{!empty ? <Stacked main={children} detail={detail} /> : <EmptyValue />}</TableCell>;
 }

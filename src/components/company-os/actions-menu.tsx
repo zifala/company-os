@@ -20,6 +20,10 @@ export function ActionsMenu({
     items: ActionsMenuItem[];
     label?: string;
 }) {
+    if (items.length === 0) {
+        return null;
+    }
+
     return (
         <DropdownMenu modal={false}>
             <DropdownMenuTrigger asChild>

@@ -30,7 +30,7 @@ export const passwordInput: DocEntry = {
             component: 'PasswordInput',
             rows: [
                 { name: '…input props', type: "ComponentProps<'input'>", description: 'Everything but <code>type</code>.' },
-                { name: 'showLabel · hideLabel', type: 'string', description: 'Accessible names of the toggle.' },
+                { name: 'showLabel · hideLabel', type: 'string', defaultValue: "'Show password' · 'Hide password'", description: 'Accessible names of the toggle. The toggle is disabled with the input.' },
             ],
         },
     ],

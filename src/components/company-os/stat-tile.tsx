@@ -20,17 +20,17 @@ export function StatTile({
 }) {
     const className = cn(
         'block rounded-lg px-4 py-3',
-        raised ? 'glass shadow-sm' : 'bg-slate-900/5',
+        raised ? 'glass shadow-sm' : 'bg-foreground/5',
         href && 'transition-all duration-300 hover:bg-primary/5',
     );
     const body = (
         <>
-            <p className="text-xl font-bold text-slate-800 tabular-nums">
+            <p className="text-xl font-bold text-foreground tabular-nums">
                 {value}
-                {unit && <span className="ml-1 text-sm font-light text-muted-foreground">{unit}</span>}
+                {unit && <span className="ms-1 text-sm font-light text-muted-foreground">{unit}</span>}
             </p>
             <p className="text-xs text-muted-foreground">{label}</p>
-            {hint && <p className="text-xs text-slate-400">{hint}</p>}
+            {hint && <p className="text-xs text-muted-foreground">{hint}</p>}
         </>
     );
 

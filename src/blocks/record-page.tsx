@@ -48,7 +48,7 @@ export function RecordPage() {
                         ]}
                     />
                     <section className="rounded-lg glass p-5">
-                        <h2 className="mb-4 text-sm font-semibold text-slate-800">Activity</h2>
+                        <h2 className="mb-4 text-sm font-semibold text-foreground">Activity</h2>
                         <ActivityTimeline entries={activity} />
                     </section>
                 </div>

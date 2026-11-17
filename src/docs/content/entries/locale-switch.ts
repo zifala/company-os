@@ -35,7 +35,7 @@ export const localeSwitch: DocEntry = {
                 { name: 'locales', type: 'LocaleOption[]', description: '<code>{ value, label }</code>. Label in that language.' },
                 { name: 'current', type: 'string', description: 'Active locale code.' },
                 { name: 'onChange', type: '(value: string) => void', description: 'The page persists and reloads.' },
-                { name: 'label', type: 'string', defaultValue: "'Language'", description: '<code>aria-label</code> of the button.' },
+                { name: 'label', type: 'string', defaultValue: "'Language'", description: 'Accessible name of the button, followed by the current code: "Language: en".' },
             ],
         },
     ],
@@ -46,7 +46,7 @@ export const localeSwitch: DocEntry = {
         ],
         notes: [
             'The button names itself "Language" plus the visible code; each option is its language name in that language.',
-            'The active option carries a check icon; the label is the information.',
+            'Options are <code>menuitemradio</code> with <code>aria-checked</code> on the active one; the check icon is the visual twin.',
         ],
     },
     donts: [

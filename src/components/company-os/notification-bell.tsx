@@ -1,5 +1,5 @@
 import { BellIcon } from 'lucide-react';
-import { useState } from 'react';
+import { useRef, useState } from 'react';
 import { NotificationList, notificationLabels } from '@/components/company-os/notification-list';
 import type { NotificationData, NotificationLabels } from '@/components/company-os/notification-list';
 import { Button } from '@/components/ui/button';
@@ -25,21 +25,31 @@ export function NotificationBell({
     const labels = { ...notificationLabels, ...custom };
     const [open, setOpen] = useState(false);
     const [load, setLoad] = useState<Load>({ status: 'loading' });
+    const request = useRef(0);
 
     const show = () => {
+        const id = ++request.current;
+
         setOpen(true);
         setLoad({ status: 'loading' });
         onOpen()
-            .then((data) => setLoad({ status: 'ready', data }))
-            .catch(() => setLoad({ status: 'failed' }));
+            .then((data) => id === request.current && setLoad({ status: 'ready', data }))
+            .catch(() => id === request.current && setLoad({ status: 'failed' }));
     };
 
     return (
         <>
-            <Button variant="ghost" size="icon" className="relative" aria-label={labels.title} data-tour="bell" onClick={show}>
-                <BellIcon className="size-5" />
+            <Button
+                variant="ghost"
+                size="icon"
+                className="relative"
+                aria-label={count > 0 ? `${labels.title}, ${labels.unread(count)}` : labels.title}
+                data-tour="bell"
+                onClick={show}
+            >
+                <BellIcon className="size-5" aria-hidden />
                 {count > 0 && (
-                    <span className="absolute -top-0.5 -right-0.5 flex size-4 items-center justify-center rounded-full bg-primary text-[10px] font-bold text-primary-foreground tabular-nums">
+                    <span aria-hidden className="absolute -top-0.5 -end-0.5 flex size-4 items-center justify-center rounded-full bg-primary text-[10px] font-bold text-primary-foreground tabular-nums">
                         {count > 9 ? '9+' : count}
                     </span>
                 )}
@@ -49,14 +59,14 @@ export function NotificationBell({
                     <SheetHeader className="flex-row items-center justify-between border-b px-5 py-4">
                         <SheetTitle>{labels.title}</SheetTitle>
                         {markAllHref && count > 0 && (
-                            <Link href={markAllHref} className="mr-6 text-xs text-primary hover:underline" onClick={() => setOpen(false)}>
+                            <Link href={markAllHref} className="me-6 text-xs text-primary hover:underline" onClick={() => setOpen(false)}>
                                 {labels.markAll}
                             </Link>
                         )}
                     </SheetHeader>
                     <div className="min-h-0 flex-1 overflow-y-auto pb-4">
-                        {load.status === 'loading' && <p className="px-5 py-6 text-sm text-muted-foreground">{labels.loading}</p>}
-                        {load.status === 'failed' && <p className="px-5 py-6 text-sm text-rose-600">{labels.failed}</p>}
+                        {load.status === 'loading' && <p role="status" className="px-5 py-6 text-sm text-muted-foreground">{labels.loading}</p>}
+                        {load.status === 'failed' && <p role="alert" className="px-5 py-6 text-sm text-destructive">{labels.failed}</p>}
                         {load.status === 'ready' && (
                             <NotificationList data={load.data} labels={labels} onPick={() => setOpen(false)} />
                         )}

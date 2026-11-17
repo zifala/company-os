@@ -50,7 +50,7 @@ useEchoNotification(\`App.Models.User.\${auth.user.id}\`, () =>
                 { name: 'onOpen', type: '() => Promise<NotificationData>', description: 'Called on every open. Resolves <code>{ waiting: { key, label, count, href }[], recent: { id, message, url, read, at_label }[] }</code>.' },
                 { name: 'markAllHref', type: 'Href', description: 'Shown in the header while <code>count &gt; 0</code>.' },
                 { name: 'historyHref', type: 'Href', description: 'Footer link to the full history page.' },
-                { name: 'labels', type: 'Partial<NotificationLabels>', description: 'title, waiting, recent, nothingWaiting, noRecent, loading, failed, markAll, history.' },
+                { name: 'labels', type: 'Partial<NotificationLabels>', description: 'title, waiting, recent, nothingWaiting, noRecent, loading, failed, markAll, history, and <code>unread(count)</code> for the button name.' },
             ],
         },
     ],
@@ -61,7 +61,8 @@ useEchoNotification(\`App.Models.User.\${auth.user.id}\`, () =>
             { keys: 'Esc', action: 'Close.' },
         ],
         notes: [
-            'The icon button carries <code>aria-label</code> from <code>labels.title</code>; the badge is text, so the count is read.',
+            'The icon button is named from <code>labels.title</code> plus <code>labels.unread(count)</code> ("Notifications, 3 unread"); the visual badge is hidden from screen readers so the count is read once.',
+            'Loading is announced as a status, a failed load as an alert. Opening twice quickly keeps only the latest response.',
             'Unread is a colour and the read flag; the server marks items read when opened, so the state does not depend on the colour.',
             'Rows without a URL render as text, not as dead links.',
         ],

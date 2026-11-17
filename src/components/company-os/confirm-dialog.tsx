@@ -48,7 +48,7 @@ export function ConfirmDialog({
                     <DialogTitle>{title}</DialogTitle>
                     <DialogDescription>{consequence}</DialogDescription>
                 </DialogHeader>
-                {error && <p className="text-sm text-rose-600">{error}</p>}
+                {error && <p role="alert" className="text-sm text-destructive">{error}</p>}
                 <DialogFooter>
                     <Button type="button" variant="outline" onClick={() => setOpen(false)}>
                         {cancelLabel}

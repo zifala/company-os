@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import { Combobox } from '@/components/ui/combobox';
 import type { ComboboxProps } from '@/components/ui/combobox';
 
@@ -20,6 +20,12 @@ export function RemoteCombobox({
 } & Omit<ComboboxProps, 'options' | 'onSearchChange' | 'onOpenChange'>) {
     const [found, setFound] = useState<RemoteOption[]>([]);
     const [term, setTerm] = useState<string | null>(null);
+    // The latest search without re-running the effect: an inline function would refetch on every render.
+    const latestSearch = useRef(search);
+
+    useEffect(() => {
+        latestSearch.current = search;
+    }, [search]);
 
     useEffect(() => {
         if (term === null) {
@@ -28,7 +34,7 @@ export function RemoteCombobox({
 
         let cancelled = false;
         const timer = setTimeout(() => {
-            search(term)
+            latestSearch.current(term)
                 .then((options) => {
                     if (!cancelled) setFound(options);
                 })
@@ -41,7 +47,7 @@ export function RemoteCombobox({
             cancelled = true;
             clearTimeout(timer);
         };
-    }, [term, search, debounceMs]);
+    }, [term, debounceMs]);
 
     const options = [
         ...fixed,

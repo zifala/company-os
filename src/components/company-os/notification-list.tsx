@@ -24,6 +24,7 @@ export type NotificationLabels = {
     failed: string;
     markAll: string;
     history: string;
+    unread: (count: number) => string;
 };
 
 export const notificationLabels: NotificationLabels = {
@@ -36,6 +37,7 @@ export const notificationLabels: NotificationLabels = {
     failed: 'The list did not load. Close and open the bell again.',
     markAll: 'Mark all read',
     history: 'View all notifications',
+    unread: (count) => `${count} unread`,
 };
 
 function SectionTitle({ children }: { children: string }) {
@@ -74,7 +76,7 @@ export function NotificationList({
                             >
                                 <span className="flex-1">{item.label}</span>
                                 <span className="font-bold tabular-nums">{item.count}</span>
-                                <ChevronRightIcon className="size-4 text-slate-400" />
+                                <ChevronRightIcon className="size-4 text-muted-foreground rtl:rotate-180" aria-hidden />
                             </Link>
                         </li>
                     ))}
@@ -87,7 +89,7 @@ export function NotificationList({
                     {data.recent.map((item) => {
                         const body = (
                             <>
-                                <span className={item.read ? 'text-muted-foreground' : 'text-slate-800'}>{item.message}</span>
+                                <span className={item.read ? 'text-muted-foreground' : 'text-foreground'}>{item.message}</span>
                                 <span className="text-xs text-muted-foreground">{item.at_label}</span>
                             </>
                         );

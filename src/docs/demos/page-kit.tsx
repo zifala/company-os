@@ -1,6 +1,7 @@
-import { MoreHorizontalIcon, PlusIcon } from 'lucide-react';
+import { PlusIcon } from 'lucide-react';
 import type { ComponentType } from 'react';
 import {
+    ActionsMenu,
     DataTable,
     DataTableSkeleton,
     DateCell,
@@ -55,7 +56,7 @@ export function InvoiceHead() {
                 <TableHead>Invoice</TableHead>
                 <TableHead>Status</TableHead>
                 <TableHead>Owner</TableHead>
-                <TableHead className="text-right">Total</TableHead>
+                <TableHead className="text-end">Total</TableHead>
                 <TableHead>Issued</TableHead>
             </TableRow>
         </TableHeader>
@@ -92,9 +93,12 @@ function PageHeaderRecord() {
     return (
         <PageHeader title="Halcyon Freight" meta={<Pill name="Active" color="emerald" />}>
             <Button variant="outline">Edit</Button>
-            <Button variant="ghost" size="icon" aria-label="More actions">
-                <MoreHorizontalIcon />
-            </Button>
+            <ActionsMenu
+                items={[
+                    { label: 'Export company', onSelect: () => undefined },
+                    { label: 'Deactivate company', destructive: true, onSelect: () => undefined },
+                ]}
+            />
         </PageHeader>
     );
 }

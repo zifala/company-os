@@ -58,6 +58,7 @@ export const appSidebar: DocEntry = {
                 { name: 'groups', type: 'NavGroup[]', description: 'The nav list.' },
                 { name: 'permissions', type: 'string[]', description: 'Granted permissions.' },
                 { name: 'favorites', type: 'Favorite[]', defaultValue: '[]', description: '<code>{ id, title, href, icon? }</code>. Shown above the groups.' },
+                { name: 'favoritesLabel', type: 'string', defaultValue: "'Favorites'", description: 'Heading of the favorites group.' },
                 { name: 'create', type: 'ReactNode', description: 'The New menu, under the logo.' },
                 { name: 'footer', type: 'ReactNode', description: 'The user menu.' },
                 { name: 'collapsible', type: "'icon' | 'offcanvas' | 'none'", defaultValue: "'icon'", description: 'ui Sidebar mode.' },
@@ -76,7 +77,7 @@ export const appSidebar: DocEntry = {
             component: 'AppLogo',
             rows: [
                 { name: 'icon', type: 'ReactNode', description: 'The mark, in <code>text-primary</code>.' },
-                { name: 'name', type: 'string', description: 'The product name, bold slate.' },
+                { name: 'name', type: 'string', description: 'The product name, bold, in <code>text-foreground</code>.' },
             ],
         },
     ],
@@ -87,6 +88,7 @@ export const appSidebar: DocEntry = {
         ],
         notes: [
             'Collapsed to icons, each item shows its title as a tooltip and keeps it as the accessible name.',
+            'The active item carries <code>aria-current="page"</code> as well as the tint.',
             'The user menu is a Radix dropdown: arrow keys move, Esc closes.',
         ],
     },

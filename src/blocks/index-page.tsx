@@ -52,7 +52,7 @@ export function IndexPage() {
                             <TableHead>Deal</TableHead>
                             <TableHead>Stage</TableHead>
                             <TableHead>Owner</TableHead>
-                            <TableHead className="text-right">Value</TableHead>
+                            <TableHead className="text-end">Value</TableHead>
                             <TableHead>Expected close</TableHead>
                         </TableRow>
                     </TableHeader>

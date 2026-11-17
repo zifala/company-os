@@ -63,22 +63,22 @@ export function ActivityEntryItem({
             <div className="grid min-w-0 flex-1 gap-1.5 pt-1">
                 <div className="flex flex-wrap items-center gap-x-1.5 gap-y-1 text-sm">
                     {entry.actor && (
-                        <span className="flex size-5 items-center justify-center rounded-full bg-primary/10 text-[10px] font-semibold text-primary">
+                        <span aria-hidden className="flex size-5 items-center justify-center rounded-full bg-primary/10 text-[10px] font-semibold text-primary">
                             {entry.actor.initials}
                         </span>
                     )}
-                    <span className="font-bold text-slate-800">{entry.actor?.name ?? systemLabel}</span>
+                    <span className="font-bold text-foreground">{entry.actor?.name ?? systemLabel}</span>
                     <span>{entry.action}</span>
                     {entry.via && <span className="text-xs text-muted-foreground">{entry.via}</span>}
                     {showSubject && entry.subject && (
                         <Link
                             href={entry.subject.url}
-                            className="rounded-md bg-slate-900/5 px-1.5 font-mono text-xs text-slate-800 hover:bg-primary/10 hover:text-primary"
+                            className="rounded-md bg-foreground/5 px-1.5 font-mono text-xs text-foreground hover:bg-primary/10 hover:text-primary"
                         >
                             {entry.subject.label}
                         </Link>
                     )}
-                    <time dateTime={entry.at} title={entry.at_label} className="ml-auto text-xs text-muted-foreground tabular-nums">
+                    <time dateTime={entry.at} title={entry.at_label} className="ms-auto text-xs text-muted-foreground tabular-nums">
                         {entry.time_label}
                     </time>
                 </div>
@@ -89,7 +89,7 @@ export function ActivityEntryItem({
                                 <span key={index} className="inline-flex items-center gap-1">
                                     {change.label && <span className="text-xs text-muted-foreground">{change.label}</span>}
                                     {change.from && <Pill name={change.from} />}
-                                    <ArrowRightIcon className="size-3 text-slate-400" />
+                                    <ArrowRightIcon className="size-3 text-muted-foreground rtl:rotate-180" aria-hidden />
                                     <Pill name={change.to} color={color} />
                                 </span>
                             ) : (
@@ -99,7 +99,7 @@ export function ActivityEntryItem({
                     </div>
                 )}
                 {entry.reason && (
-                    <p className="rounded-md bg-slate-900/5 px-3 py-1.5 text-sm text-muted-foreground italic">{entry.reason}</p>
+                    <p className="rounded-md bg-foreground/5 px-3 py-1.5 text-sm text-muted-foreground italic">{entry.reason}</p>
                 )}
             </div>
         </li>

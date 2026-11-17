@@ -7,7 +7,7 @@ import { Link } from '@/lib/navigation';
 import type { Href } from '@/lib/navigation';
 
 export function InputError({ message }: { message?: string }) {
-    return message ? <p className="text-sm text-rose-600">{message}</p> : null;
+    return message ? <p className="text-sm text-destructive">{message}</p> : null;
 }
 
 export function FieldRow({

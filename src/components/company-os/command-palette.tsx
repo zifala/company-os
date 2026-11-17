@@ -37,9 +37,9 @@ function PaletteGroup({
                     <item.icon />
                     {item.label}
                     {item.shortcut && (
-                        <span className="ml-auto flex gap-1">
-                            {item.shortcut.split(' ').map((key) => (
-                                <Kbd key={key}>{key}</Kbd>
+                        <span className="ms-auto flex gap-1">
+                            {item.shortcut.split(' ').map((key, index) => (
+                                <Kbd key={index}>{key}</Kbd>
                             ))}
                         </span>
                     )}
@@ -104,13 +104,13 @@ export function CommandPalette({
                                 <Skeleton className="h-7 rounded-md" />
                             </div>
                         )}
-                        {failed && <p className="px-3 py-2 text-sm text-rose-600">{labels.failed}</p>}
+                        {failed && <p role="alert" className="px-3 py-2 text-sm text-destructive">{labels.failed}</p>}
                         {found.map((group) => (
                             <CommandGroup key={group.name} heading={group.name}>
                                 {group.items.map((item) => (
                                     <CommandItem key={item.id} value={`${group.name} ${item.id}`} onSelect={() => run(item.url)}>
                                         <span className="truncate">{item.label}</span>
-                                        <CornerDownLeftIcon className="ml-auto opacity-0 in-data-[selected=true]:opacity-100" />
+                                        <CornerDownLeftIcon className="ms-auto opacity-0 in-data-[selected=true]:opacity-100" />
                                     </CommandItem>
                                 ))}
                             </CommandGroup>

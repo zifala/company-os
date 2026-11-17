@@ -59,10 +59,12 @@ export function FilterChips({
     state,
     className,
     clearLabel = 'Clear filters',
+    removeLabel = (label) => `Remove ${label}`,
 }: {
     state: FilterState;
     className?: string;
     clearLabel?: string;
+    removeLabel?: (label: string) => string;
 }) {
     const active = activeFilters(state);
 
@@ -79,12 +81,12 @@ export function FilterChips({
             {active.map((filter) => (
                 <span
                     key={filter.key}
-                    className="inline-flex items-center gap-1 rounded-full bg-primary/10 py-0.5 pr-1 pl-2.5 text-xs font-medium text-primary"
+                    className="inline-flex items-center gap-1 rounded-full bg-primary/10 py-0.5 ps-2.5 pe-1 text-xs font-medium text-primary"
                 >
                     {filter.label}
                     <button
                         type="button"
-                        aria-label={`Remove ${filter.label}`}
+                        aria-label={removeLabel(filter.label)}
                         className="rounded-full p-0.5 hover:bg-primary/15"
                         onClick={() => applyFilters(state, { [filter.key]: '' })}
                     >
@@ -92,7 +94,7 @@ export function FilterChips({
                     </button>
                 </span>
             ))}
-            <Button variant="outline" size="sm" className="h-6 px-2 text-xs" onClick={() => applyFilters(state, clearAll)}>
+            <Button type="button" variant="outline" size="sm" className="h-6 px-2 text-xs" onClick={() => applyFilters(state, clearAll)}>
                 {clearLabel}
             </Button>
         </div>

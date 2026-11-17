@@ -41,7 +41,7 @@ export function ActivityTimeline({
             {days.map((day) => (
                 <section key={day.label} className="grid gap-3">
                     <h3 className="text-xs font-bold tracking-wide text-muted-foreground uppercase">{day.label}</h3>
-                    <ol className="relative before:absolute before:top-4 before:bottom-4 before:left-4 before:w-px before:bg-border">
+                    <ol className="relative before:absolute before:top-4 before:bottom-4 before:start-4 before:w-px before:bg-border">
                         {day.entries.map((entry) => (
                             <ActivityEntryItem key={entry.id} entry={entry} showSubject={showSubject} systemLabel={labels.system} />
                         ))}

@@ -22,6 +22,7 @@ export function AppSidebar({
     groups,
     permissions,
     favorites = [],
+    favoritesLabel = 'Favorites',
     create,
     footer,
     collapsible = 'icon',
@@ -32,6 +33,7 @@ export function AppSidebar({
     groups: NavGroup[];
     permissions: string[];
     favorites?: Favorite[];
+    favoritesLabel?: string;
     create?: ReactNode;
     footer?: ReactNode;
     collapsible?: ComponentProps<typeof Sidebar>['collapsible'];
@@ -59,7 +61,7 @@ export function AppSidebar({
             </SidebarHeader>
 
             <SidebarContent>
-                <NavFavorites favorites={favorites} activeHref={activeHref} />
+                <NavFavorites favorites={favorites} activeHref={activeHref} label={favoritesLabel} />
                 {visible.map((group, index) => (
                     <NavMain
                         key={group.label ?? index}
@@ -81,8 +83,8 @@ export function AppLogo({ icon, name }: { icon: ReactNode; name: string }) {
             <div className="flex aspect-square size-8 items-center justify-center text-primary">
                 {icon}
             </div>
-            <div className="ml-1 grid flex-1 text-left text-sm">
-                <span className="mb-0.5 truncate leading-tight font-bold text-slate-800">
+            <div className="ms-1 grid flex-1 text-start text-sm">
+                <span className="mb-0.5 truncate leading-tight font-bold text-foreground">
                     {name}
                 </span>
             </div>

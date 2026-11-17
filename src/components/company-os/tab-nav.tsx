@@ -43,7 +43,7 @@ export function TabNav({ tabs, label }: { tabs: TabLink[]; label: string }) {
                     >
                         {tab.label}
                         {tab.count !== undefined && tab.count > 0 && (
-                            <span className="rounded-full bg-slate-900/5 px-1.5 text-xs tabular-nums">{tab.count}</span>
+                            <span className="rounded-full bg-foreground/5 px-1.5 text-xs tabular-nums">{tab.count}</span>
                         )}
                     </Link>
                 );

@@ -12,7 +12,7 @@ export function PageHeader({
     return (
         <div className="flex min-h-9 flex-wrap items-center justify-between gap-4">
             <div className="flex min-w-0 items-center gap-3">
-                <h1 className="truncate text-xl font-semibold text-slate-800">
+                <h1 className="truncate text-xl font-semibold text-foreground">
                     {title}
                 </h1>
                 {meta}

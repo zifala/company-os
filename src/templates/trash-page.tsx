@@ -35,7 +35,7 @@ export function TrashPage() {
                             <TableHead>Type</TableHead>
                             <TableHead>Deleted</TableHead>
                             <TableHead>By</TableHead>
-                            <TableHead className="text-right">Days left</TableHead>
+                            <TableHead className="text-end">Days left</TableHead>
                             <TableHead className="w-28" />
                         </TableRow>
                     </TableHeader>

@@ -29,7 +29,7 @@ import { Table, TableBody, TableHead, TableHeader, TableRow } from '@/components
       <TableRow>
         <TableHead>Invoice</TableHead>
         <TableHead>Status</TableHead>
-        <TableHead className="text-right">Total</TableHead>
+        <TableHead className="text-end">Total</TableHead>
         <TableHead>Issued</TableHead>
       </TableRow>
     </TableHeader>
@@ -96,7 +96,7 @@ import { Table, TableBody, TableHead, TableHeader, TableRow } from '@/components
         ],
         notes: [
             'The header row is a real <code>&lt;thead&gt;</code> with <code>&lt;th scope="col"&gt;</code> cells from the ui Table.',
-            'Disabled pager buttons stay in the tab order as disabled buttons, so the reader knows there is no next page.',
+            'A pager button with no page renders as a disabled button: skipped by Tab, still read as unavailable when browsing.',
             'The footer count is tabular and announced as text.',
         ],
     },

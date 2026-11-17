@@ -41,11 +41,14 @@ export const verifyPhoneDialog: DocEntry = {
         {
             component: 'VerifyPhoneDialog',
             rows: [
+                { name: 'open · onOpenChange', type: 'boolean · (open) => void', description: 'Controlled by the page. The code field empties on every open.' },
+                { name: 'title · description', type: 'string', description: 'Fixed title ("Confirm phone") and one line on what happens.' },
+                { name: 'confirmLabel', type: 'string', description: 'The confirm button: "Confirm phone".' },
                 { name: 'phone · onPhoneChange', type: 'string · (phone) => void', description: 'Without <code>onPhoneChange</code> the number is read-only.' },
-                { name: 'onSend · sending · sentTo', type: '() => void · boolean · string | null', description: 'The send request and its state; <code>sentTo</code> non-null shows the code field.' },
+                { name: 'onSend · sending · sentTo', type: '() => void · boolean · string | null', description: 'The send request and its state; <code>sentTo</code> non-null shows the code field. Send again empties the typed code.' },
                 { name: 'onConfirm · processing', type: '(code) => void · boolean', description: 'The confirm request.' },
                 { name: 'codeError · phoneError', type: 'string', description: 'Server messages.' },
-                { name: 'labels', type: 'VerifyPhoneLabels', description: 'phone, code, send, sendAgain, cancel.' },
+                { name: 'labels', type: 'VerifyPhoneLabels', defaultValue: "{ phone: 'Phone', code: 'Code', send: 'Send code', sendAgain: 'Send again', cancel: 'Cancel' }", description: 'phone, code, send, sendAgain, cancel.' },
             ],
         },
     ],

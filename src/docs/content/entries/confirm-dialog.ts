@@ -75,7 +75,7 @@ const archive = () =>
         ],
         notes: [
             'Radix Dialog: focus trapped, title and description wired to the dialog, focus returns to the trigger.',
-            'The error line is plain text next to the description, read in order.',
+            'The error line is a <code>role="alert"</code> under the description, so a failed request is announced.',
         ],
     },
     donts: [

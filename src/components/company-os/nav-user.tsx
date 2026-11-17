@@ -33,7 +33,7 @@ function MenuEntry({ item }: { item: UserMenuItem }) {
         return (
             <DropdownMenuItem asChild>
                 <Link className="block w-full cursor-pointer" href={item.href} onClick={item.onSelect}>
-                    {item.icon && <item.icon className="mr-2" />}
+                    {item.icon && <item.icon className="me-2" />}
                     {item.label}
                 </Link>
             </DropdownMenuItem>
@@ -42,7 +42,7 @@ function MenuEntry({ item }: { item: UserMenuItem }) {
 
     return (
         <DropdownMenuItem onSelect={item.onSelect}>
-            {item.icon && <item.icon className="mr-2" />}
+            {item.icon && <item.icon className="me-2" />}
             {item.label}
         </DropdownMenuItem>
     );
@@ -70,7 +70,7 @@ export function NavUser({
                             className="group text-sidebar-accent-foreground data-[state=open]:bg-sidebar-accent"
                         >
                             <UserInfo user={user} />
-                            <ChevronsUpDown className="ml-auto size-4" />
+                            <ChevronsUpDown className="ms-auto size-4" />
                         </SidebarMenuButton>
                     </DropdownMenuTrigger>
                     <DropdownMenuContent
@@ -79,7 +79,7 @@ export function NavUser({
                         side={isMobile ? 'bottom' : state === 'collapsed' ? 'left' : 'bottom'}
                     >
                         <DropdownMenuLabel className="p-0 font-normal">
-                            <div className="flex items-center gap-2 px-1 py-1.5 text-left text-sm">
+                            <div className="flex items-center gap-2 px-1 py-1.5 text-start text-sm">
                                 <UserInfo user={user} showEmail />
                             </div>
                         </DropdownMenuLabel>

@@ -14,10 +14,7 @@ const defaultLabels: PhoneLabels = { country: 'Country code', searchCountry: 'Se
 
 function split(value: string | null | undefined, fallback: CountryCode) {
     const parsed = value ? parsePhoneNumberFromString(value, fallback) : undefined;
-
-    return parsed
-        ? { country: parsed.country ?? fallback, national: parsed.formatNational() }
-        : { country: fallback, national: value ?? '' };
+    return parsed ? { country: parsed.country ?? fallback, national: parsed.formatNational() } : { country: fallback, national: value ?? '' };
 }
 
 export function isValidPhone(value: string | null | undefined, country: CountryCode = DEFAULT_COUNTRY): boolean {
@@ -46,20 +43,32 @@ export function PhoneInput({
     labels?: PhoneLabels;
 }) {
     const [open, setOpen] = useState(false);
-    const [initial] = useState(() => split(value, defaultCountry));
-    const [country, setCountry] = useState<CountryCode>(initial.country);
-    const [national, setNational] = useState(initial.national);
+    const [country, setCountry] = useState<CountryCode>(() => split(value, defaultCountry).country);
+    const [national, setNational] = useState(() => split(value, defaultCountry).national);
+    const [synced, setSynced] = useState(value ?? '');
+
+    // A value the parent set (reset, server data) rather than one this input emitted: show it.
+    if ((value ?? '') !== synced) {
+        const next = split(value, defaultCountry);
+        setSynced(value ?? '');
+        setCountry(next.country);
+        setNational(next.national);
+    }
+
     const countries = useMemo(() => {
         const names = new Intl.DisplayNames([locale, 'en'], { type: 'region' });
-
         return getCountries()
             .map((code) => ({ code, name: names.of(code) ?? code, dial: getCountryCallingCode(code) }))
             .sort((a, b) => a.name.localeCompare(b.name));
     }, [locale]);
 
+    const send = (next: string) => {
+        setSynced(next);
+        onChange(next);
+    };
     const emit = (nextCountry: CountryCode, nextNational: string) => {
         const digits = nextNational.replace(/\D/g, '');
-        onChange(digits ? `+${getCountryCallingCode(nextCountry)}${digits.replace(/^0+/, '')}` : '');
+        send(digits ? `+${getCountryCallingCode(nextCountry)}${digits.replace(/^0+/, '')}` : '');
     };
 
     return (
@@ -76,10 +85,10 @@ export function PhoneInput({
                         type="button"
                         disabled={disabled}
                         aria-label={labels.country}
-                        className="flex shrink-0 cursor-pointer items-center gap-1 border-r border-input px-3 text-sm font-medium tabular-nums disabled:cursor-not-allowed"
+                        className="flex shrink-0 cursor-pointer items-center gap-1 border-e border-input px-3 text-sm font-medium tabular-nums disabled:cursor-not-allowed"
                     >
                         {country} +{getCountryCallingCode(country)}
-                        <ChevronDown className="size-3.5 text-slate-400" />
+                        <ChevronDown className="size-3.5 text-muted-foreground" aria-hidden />
                     </button>
                 </PopoverTrigger>
                 <PopoverContent className="w-72 p-0" align="start">
@@ -125,7 +134,7 @@ export function PhoneInput({
                     if (international?.country) {
                         setCountry(international.country);
                         setNational(international.formatNational());
-                        onChange(international.number);
+                        send(international.number);
 
                         return;
                     }
@@ -134,7 +143,7 @@ export function PhoneInput({
                     setNational(formatted);
                     emit(country, formatted);
                 }}
-                className="min-w-0 flex-1 bg-transparent px-3 text-sm tabular-nums outline-none placeholder:text-slate-400 disabled:cursor-not-allowed"
+                className="min-w-0 flex-1 bg-transparent px-3 text-sm tabular-nums outline-none placeholder:text-muted-foreground disabled:cursor-not-allowed"
             />
         </div>
     );

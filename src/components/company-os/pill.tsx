@@ -2,22 +2,24 @@ import { cn } from '@/lib/utils';
 
 export type PillColor = 'slate' | 'indigo' | 'cyan' | 'emerald' | 'rose' | 'amber';
 
+// Each server colour name maps to a semantic token: slate → muted-foreground, indigo → primary, cyan → info,
+// emerald → success, rose → destructive, amber → warning. The text deepens the token toward the ink so it reads on its tint.
 const tints: Record<PillColor, string> = {
-    slate: 'bg-slate-500/10 text-slate-600',
-    indigo: 'bg-indigo-500/10 text-indigo-600',
-    cyan: 'bg-cyan-500/10 text-cyan-600',
-    emerald: 'bg-emerald-500/10 text-emerald-600',
-    rose: 'bg-rose-500/10 text-rose-600',
-    amber: 'bg-amber-500/10 text-amber-600',
+    slate: 'bg-muted-foreground/10 text-[color-mix(in_oklab,var(--color-muted-foreground)_60%,var(--color-foreground))]',
+    indigo: 'bg-primary/10 text-[color-mix(in_oklab,var(--color-primary)_60%,var(--color-foreground))]',
+    cyan: 'bg-info/10 text-[color-mix(in_oklab,var(--color-info)_60%,var(--color-foreground))]',
+    emerald: 'bg-success/10 text-[color-mix(in_oklab,var(--color-success)_60%,var(--color-foreground))]',
+    rose: 'bg-destructive/10 text-[color-mix(in_oklab,var(--color-destructive)_60%,var(--color-foreground))]',
+    amber: 'bg-warning/10 text-[color-mix(in_oklab,var(--color-warning)_60%,var(--color-foreground))]',
 };
 
 const solids: Record<PillColor, string> = {
-    slate: 'bg-slate-400',
-    indigo: 'bg-indigo-500',
-    cyan: 'bg-cyan-500',
-    emerald: 'bg-emerald-500',
-    rose: 'bg-rose-500',
-    amber: 'bg-amber-500',
+    slate: 'bg-muted-foreground/60',
+    indigo: 'bg-primary',
+    cyan: 'bg-info',
+    emerald: 'bg-success',
+    rose: 'bg-destructive',
+    amber: 'bg-warning',
 };
 
 export function pillTint(color: string): string {

@@ -24,7 +24,7 @@ export function SectionLayout({
 
     return (
         <div className="flex flex-col gap-6">
-            <h1 className="text-xl font-semibold text-slate-800">{title}</h1>
+            <h1 className="text-xl font-semibold text-foreground">{title}</h1>
             <div className="flex flex-col gap-6 lg:flex-row lg:gap-12">
                 {showNav && (
                     <nav

@@ -70,7 +70,7 @@ export function WebhookDeliveryLog({
                     <TableRow>
                         <TableHead>{labels.event}</TableHead>
                         <TableHead>{labels.status}</TableHead>
-                        <TableHead className="text-right">{labels.attempts}</TableHead>
+                        <TableHead className="text-end">{labels.attempts}</TableHead>
                         <TableHead>{labels.response}</TableHead>
                         <TableHead>{labels.sent}</TableHead>
                         <TableHead>{labels.next}</TableHead>

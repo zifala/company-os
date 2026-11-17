@@ -32,8 +32,8 @@ export function RolesIndex() {
                     <TableHeader>
                         <TableRow>
                             <TableHead>Role</TableHead>
-                            <TableHead className="text-right">Users</TableHead>
-                            <TableHead className="text-right">Permissions</TableHead>
+                            <TableHead className="text-end">Users</TableHead>
+                            <TableHead className="text-end">Permissions</TableHead>
                             <TableHead className="w-12" />
                         </TableRow>
                     </TableHeader>

@@ -26,7 +26,7 @@ export function HomeDashboard() {
             </div>
             <div className="grid items-start gap-6 lg:grid-cols-[minmax(0,1.6fr)_minmax(0,1fr)]">
                 <section className="grid gap-3">
-                    <h2 className="text-sm font-semibold text-slate-800">Work waiting</h2>
+                    <h2 className="text-sm font-semibold text-foreground">Work waiting</h2>
                     <DataTable>
                         <Table>
                             <TableHeader>
@@ -49,7 +49,7 @@ export function HomeDashboard() {
                     </DataTable>
                 </section>
                 <section className="grid gap-3">
-                    <h2 className="text-sm font-semibold text-slate-800">Latest activity</h2>
+                    <h2 className="text-sm font-semibold text-foreground">Latest activity</h2>
                     <div className="rounded-lg glass p-5">
                         <ActivityTimeline entries={activity} showSubject />
                     </div>

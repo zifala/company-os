@@ -11,7 +11,7 @@ export const pill: DocEntry = {
     exports: ['Pill', 'pillTint', 'pillSolid', 'PillColor'],
     files: ['components/company-os/pill.tsx'],
     intro: [
-        'Six colours, each a 10% tint with the matching text: <b>slate</b>, <b>indigo</b>, <b>cyan</b>, <b>emerald</b>, <b>rose</b>, <b>amber</b>. The colour comes from the server with the label (<code>{ label, color }</code>), the same name a company picked for its stage or priority in Setup. React never maps a status name to a colour.',
+        'Six colour names, each a 10% tint of a semantic token with the token deepened toward the ink as text: <b>slate</b> → <code>muted-foreground</code>, <b>indigo</b> → <code>primary</code>, <b>cyan</b> → <code>info</code>, <b>emerald</b> → <code>success</code>, <b>rose</b> → <code>destructive</code>, <b>amber</b> → <code>warning</code>. No palette literals, so each product\'s tokens decide the hue. The colour comes from the server with the label (<code>{ label, color }</code>), the same name a company picked for its stage or priority in Setup. React never maps a status name to a colour.',
         'The pill carries status, category and small counts ("3 projects"). It never carries an action and never stands in for a button. <code>pillTint</code> and <code>pillSolid</code> expose the same palette for icon chips and board column dots.',
     ],
     examples: [
@@ -48,7 +48,7 @@ export const pill: DocEntry = {
     a11y: {
         notes: [
             'The label is the information; the tint is supplementary. A screen reader hears the word.',
-            'Every text-on-tint pair stays above 4.5:1 on white and on the slate canvas.',
+            'Text-on-tint contrast follows the product tokens; check each pair reaches 4.5:1 when you set <code>--success</code>, <code>--warning</code> and <code>--info</code>.',
         ],
     },
     donts: [
@@ -59,6 +59,6 @@ export const pill: DocEntry = {
     ],
     faq: [
         { q: 'How do I colour a stage a company named itself?', a: 'Setup stores a colour per stage, priority and label. The server sends it with the row; the pill never sees the stage name.' },
-        { q: 'Where do the colours come from?', a: 'The brand palette: slate neutrals, indigo accent, cyan for information, emerald for success, rose for errors, amber for warnings.' },
+        { q: 'Where do the colours come from?', a: 'The token set: the names are stable server values, the colours are <code>muted-foreground</code>, <code>primary</code>, <code>info</code>, <code>success</code>, <code>destructive</code> and <code>warning</code>.' },
     ],
 };

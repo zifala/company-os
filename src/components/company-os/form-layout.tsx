@@ -37,7 +37,7 @@ export function FormSection({
 }) {
     return (
         <section className="rounded-lg glass">
-            <h2 className="border-b border-border px-5 py-3 text-sm font-semibold text-slate-800">{title}</h2>
+            <h2 className="border-b border-border px-5 py-3 text-sm font-semibold text-foreground">{title}</h2>
             <div className={cn('grid gap-x-4 gap-y-4 p-5', !compact && 'sm:grid-cols-2')}>{children}</div>
         </section>
     );

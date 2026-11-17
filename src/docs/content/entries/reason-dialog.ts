@@ -73,8 +73,9 @@ const deactivate = () =>
             { keys: 'Esc', action: 'Close; the page keeps or resets the reason.' },
         ],
         notes: [
-            'Both fields have visible <code>&lt;label&gt;</code>s; the server error sits directly under the textarea.',
-            'The disabled verb button stays in the tab order so the reader learns it is not ready.',
+            'Both fields have visible <code>&lt;label&gt;</code>s with ids from <code>useId</code>, so several dialogs can share a page; the server error sits under the textarea, tied by <code>aria-describedby</code> and <code>aria-invalid</code>.',
+            'The verb button stays disabled until the reason is long enough and the name matches; the typed name empties every time the dialog closes, however it closes.',
+            'The request error is a <code>role="alert"</code> line.',
             'The typed-name label contains the exact name to type.',
         ],
     },

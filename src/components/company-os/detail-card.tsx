@@ -10,7 +10,7 @@ export function DetailList({ details }: { details: Detail[] }) {
             {details.map((detail) => (
                 <div key={detail.label} className="contents">
                     <dt className="text-muted-foreground">{detail.label}</dt>
-                    <dd className="text-slate-800">{detail.value ?? <EmptyValue />}</dd>
+                    <dd className="text-foreground">{detail.value ?? <EmptyValue />}</dd>
                 </div>
             ))}
         </dl>
@@ -31,14 +31,14 @@ export function DetailCard({
     return (
         <section className="rounded-lg glass">
             <div className="flex items-center justify-between gap-3 border-b border-border px-5 py-3.5">
-                <h2 className="text-sm font-semibold text-slate-800">{title}</h2>
+                <h2 className="text-sm font-semibold text-foreground">{title}</h2>
                 {action}
             </div>
             <dl className={cn('grid gap-x-6 gap-y-4 p-5', !compact && 'sm:grid-cols-2')}>
                 {details.map((detail) => (
                     <div key={detail.label} className="grid gap-1">
                         <dt className="text-xs text-muted-foreground">{detail.label}</dt>
-                        <dd className="text-sm font-medium text-slate-800">{detail.value ?? <EmptyValue />}</dd>
+                        <dd className="text-sm font-medium text-foreground">{detail.value ?? <EmptyValue />}</dd>
                     </div>
                 ))}
             </dl>

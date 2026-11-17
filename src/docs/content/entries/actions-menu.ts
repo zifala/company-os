@@ -35,7 +35,7 @@ const [deactivating, setDeactivating] = useState(false);
         {
             component: 'ActionsMenu',
             rows: [
-                { name: 'items', type: 'ActionsMenuItem[]', description: '<code>{ label, onSelect, destructive? }</code>. Labels name verb + object.' },
+                { name: 'items', type: 'ActionsMenuItem[]', description: '<code>{ label, onSelect, destructive? }</code>. Labels name verb + object. Empty (nothing permitted) renders nothing.' },
                 { name: 'label', type: 'string', defaultValue: "'More actions'", description: 'The trigger\'s accessible name.' },
             ],
         },

@@ -1,5 +1,5 @@
 import { driver } from 'driver.js';
-import type { DriveStep } from 'driver.js';
+import type { DriveStep, Driver } from 'driver.js';
 import { useEffect, useRef } from 'react';
 import { useCurrentUrl } from '@/lib/navigation';
 import 'driver.js/dist/driver.css';
@@ -39,6 +39,7 @@ export function AppTour({
     const url = useCurrentUrl();
     const startedOnUrl = useRef<string | null>(null);
     const latest = useRef({ steps, onFinish, labels: { ...tourLabels, ...custom } });
+    const tour = useRef<Driver | null>(null);
 
     useEffect(() => {
         latest.current = { steps, onFinish, labels: { ...tourLabels, ...custom } };
@@ -58,10 +59,10 @@ export function AppTour({
             }
 
             startedOnUrl.current = url;
-            driver({
+            tour.current = driver({
                 steps: tourSteps,
                 showProgress: true,
-                overlayColor: 'var(--color-slate-900)',
+                overlayColor: 'var(--color-foreground)',
                 overlayOpacity: 0.55,
                 stagePadding: 6,
                 stageRadius: 8,
@@ -71,14 +72,31 @@ export function AppTour({
                 prevBtnText: labels.back,
                 doneBtnText: labels.done,
                 onDestroyed: () => {
+                    const ended = tour.current !== null;
+
+                    tour.current = null;
                     startedOnUrl.current = null;
-                    finish();
+
+                    if (ended) {
+                        finish();
+                    }
                 },
-            }).drive();
+            });
+            tour.current.drive();
         }, delayMs);
 
         return () => window.clearTimeout(start);
     }, [url, run, delayMs]);
+
+    useEffect(
+        () => () => {
+            const open = tour.current;
+
+            tour.current = null;
+            open?.destroy();
+        },
+        [],
+    );
 
     return null;
 }

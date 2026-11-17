@@ -34,7 +34,7 @@ export const remoteCombobox: DocEntry = {
         {
             component: 'RemoteCombobox',
             rows: [
-                { name: 'search', type: '(term) => Promise<RemoteOption[]>', description: 'The page\'s request. Called with "" when the list opens.' },
+                { name: 'search', type: '(term) => Promise<RemoteOption[]>', description: 'The page\'s request. Called with "" when the list opens. An inline function is fine: the latest one is used without refetching on every render.' },
                 { name: 'selected', type: 'RemoteOption | null', description: 'Kept in the list so the current value always shows.' },
                 { name: 'fixed', type: 'RemoteOption[]', description: 'Pinned first: "Unassigned", "Me".' },
                 { name: 'exclude', type: 'string', description: 'A value to hide, such as the record itself.' },

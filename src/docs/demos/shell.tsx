@@ -112,14 +112,14 @@ function NavGating() {
         <div className="grid gap-6 sm:grid-cols-2">
             {roles.map((role) => (
                 <div key={role.name} className="grid gap-3">
-                    <h3 className="text-sm font-semibold text-slate-800">{role.name}</h3>
+                    <h3 className="text-sm font-semibold text-foreground">{role.name}</h3>
                     {visibleGroups(navGroups, role.permissions).map((group) => (
                         <div key={group.label} className="grid gap-1">
                             <span className="text-xs font-bold tracking-wide text-muted-foreground uppercase">{group.label}</span>
                             {group.items.map((item) => (
                                 <div key={item.title} className="flex items-center justify-between text-sm">
                                     <span className="flex items-center gap-2">
-                                        {item.icon && <item.icon className="size-4 text-slate-400" />}
+                                        {item.icon && <item.icon className="size-4 text-muted-foreground" />}
                                         {item.title}
                                     </span>
                                     {item.goKey && (
@@ -205,7 +205,7 @@ function SectionLayoutDemo() {
     return (
         <DemoLinks>
             <SectionLayout title="Organization" groups={organizationGroups} permissions={managerPermissions}>
-                <div className="rounded-lg bg-slate-900/5 p-6 text-sm text-muted-foreground">The page content for the active item renders here.</div>
+                <div className="rounded-lg bg-foreground/5 p-6 text-sm text-muted-foreground">The page content for the active item renders here.</div>
             </SectionLayout>
         </DemoLinks>
     );
