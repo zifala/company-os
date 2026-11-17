@@ -1,0 +1,41 @@
+{
+  "$schema": "https://ui.shadcn.com/schema/registry-item.json",
+  "name": "block-roles-index",
+  "type": "registry:block",
+  "title": "Roles",
+  "description": "Every role with its users and permission counts. Super admin locked, a role in use cannot be deleted.",
+  "registryDependencies": [
+    "http://localhost:5173/r/tokens.json",
+    "http://localhost:5173/r/page-header.json",
+    "http://localhost:5173/r/data-table.json",
+    "http://localhost:5173/r/cells.json",
+    "http://localhost:5173/r/pill.json",
+    "http://localhost:5173/r/actions-menu.json",
+    "http://localhost:5173/r/reason-dialog.json"
+  ],
+  "files": [
+    {
+      "path": "registry/company-os/blocks/roles-index.tsx",
+      "content": "import { LockIcon, PlusIcon } from 'lucide-react';\nimport { useState } from 'react';\nimport { ActionsMenu, DataTable, NumberCell, PageHeader, Pill, ReasonDialog, TextCell } from '@/components/company-os';\nimport type { Paginated } from '@/components/company-os';\nimport { Button } from '@/components/ui/button';\nimport { Table, TableBody, TableHead, TableHeader, TableRow } from '@/components/ui/table';\n\ntype Role = { id: string; name: string; description: string; users: string; permissions: string; locked: boolean };\n\nconst roles: Role[] = [\n    { id: '1', name: 'Super admin', description: 'Passes every check. Created by a command, never in the UI.', users: '1', permissions: 'All', locked: true },\n    { id: '2', name: 'Administrator', description: 'Organization, setup and every module across the firm.', users: '2', permissions: '48', locked: false },\n    { id: '3', name: 'Sales manager', description: 'Contacts across the firm, deals in their department.', users: '3', permissions: '14', locked: false },\n    { id: '4', name: 'Field agent', description: 'Onboardings they start and the contacts assigned to them.', users: '0', permissions: '6', locked: false },\n];\n\nconst page: Paginated<Role> = { data: roles, from: 1, to: 4, total: 4, current_page: 1, last_page: 1, prev_page_url: null, next_page_url: null };\n\nexport function RolesIndex() {\n    const [deleting, setDeleting] = useState<Role | null>(null);\n    const [reason, setReason] = useState('');\n\n    return (\n        <div className=\"flex flex-col gap-6\">\n            <PageHeader title=\"Roles\">\n                <Button>\n                    <PlusIcon /> New role\n                </Button>\n            </PageHeader>\n            <DataTable page={page}>\n                <Table>\n                    <TableHeader>\n                        <TableRow>\n                            <TableHead>Role</TableHead>\n                            <TableHead className=\"text-right\">Users</TableHead>\n                            <TableHead className=\"text-right\">Permissions</TableHead>\n                            <TableHead className=\"w-12\" />\n                        </TableRow>\n                    </TableHeader>\n                    <TableBody>\n                        {roles.map((role) => (\n                            <TableRow key={role.id}>\n                                <TextCell detail={role.description}>\n                                    <span className=\"inline-flex items-center gap-2 font-semibold text-slate-800\">\n                                        {role.name}\n                                        {role.locked && <Pill name=\"Locked\" color=\"slate\" />}\n                                    </span>\n                                </TextCell>\n                                <NumberCell value={role.users} />\n                                <NumberCell value={role.permissions} />\n                                <TextCell>\n                                    {role.locked ? (\n                                        <LockIcon className=\"size-4 text-muted-foreground\" aria-label=\"Locked role\" />\n                                    ) : (\n                                        <ActionsMenu\n                                            items={[\n                                                { label: 'Edit role', onSelect: () => undefined },\n                                                { label: 'Duplicate role', onSelect: () => undefined },\n                                                ...(role.users === '0' ? [{ label: 'Delete role', destructive: true, onSelect: () => setDeleting(role) }] : []),\n                                            ]}\n                                        />\n                                    )}\n                                </TextCell>\n                            </TableRow>\n                        ))}\n                    </TableBody>\n                </Table>\n            </DataTable>\n            <ReasonDialog\n                open={deleting !== null}\n                onOpenChange={(open) => !open && setDeleting(null)}\n                title={`Delete ${deleting?.name ?? ''}`}\n                consequence=\"Nobody holds this role, so no one loses access. The audit log keeps the name and your reason.\"\n                confirmLabel=\"Delete role\"\n                reason={reason}\n                onReasonChange={setReason}\n                processing={false}\n                onConfirm={() => {\n                    setReason('');\n                    setDeleting(null);\n                }}\n            />\n        </div>\n    );\n}\n",
+      "type": "registry:ui",
+      "target": "components/company-os/blocks/roles-index.tsx"
+    }
+  ],
+  "categories": [
+    "blocks"
+  ],
+  "meta": {
+    "system": "Company OS",
+    "kind": "block",
+    "pieces": [
+      4,
+      16
+    ],
+    "tags": [
+      "roles",
+      "permissions",
+      "organization",
+      "delete"
+    ]
+  }
+}

@@ -1,0 +1,48 @@
+{
+  "$schema": "https://ui.shadcn.com/schema/registry-item.json",
+  "name": "template-roles-page",
+  "type": "registry:block",
+  "title": "Organization · Roles",
+  "description": "The role form: name on top, permission picker below, scope per permission and the sensitive switches.",
+  "registryDependencies": [
+    "http://localhost:5173/r/tokens.json",
+    "http://localhost:5173/r/section-layout.json",
+    "http://localhost:5173/r/form-layout.json",
+    "http://localhost:5173/r/field-row.json",
+    "http://localhost:5173/r/permission-picker.json",
+    "http://localhost:5173/r/sensitive-switches.json"
+  ],
+  "files": [
+    {
+      "path": "registry/company-os/templates/roles-page.tsx",
+      "content": "import { useState } from 'react';\nimport { DetailCard, FieldRow, FormLayout, FormSection, PermissionPicker, SectionLayout, SensitiveSwitches } from '@/components/company-os';\nimport type { PermissionGrant, PermissionGroup, SensitiveSwitch } from '@/components/company-os';\nimport { Button } from '@/components/ui/button';\nimport { Input } from '@/components/ui/input';\nimport { Textarea } from '@/components/ui/textarea';\nimport { adminPermissions, organizationGroups } from './organization-nav';\n\nconst groups: PermissionGroup[] = [\n    {\n        key: 'contacts',\n        label: 'Contacts',\n        permissions: [\n            { name: 'contacts.view', label: 'View contacts', scoped: true },\n            { name: 'contacts.create', label: 'Create contacts' },\n            { name: 'contacts.update', label: 'Update contacts', scoped: true },\n            { name: 'contacts.delete', label: 'Delete contacts', scoped: true },\n        ],\n    },\n    {\n        key: 'deals',\n        label: 'Deals',\n        permissions: [\n            { name: 'deals.view', label: 'View deals', scoped: true },\n            { name: 'deals.update', label: 'Update deals', scoped: true },\n            { name: 'deals.close', label: 'Close won or lost', scoped: true },\n        ],\n    },\n    {\n        key: 'finance',\n        label: 'Finance',\n        permissions: [\n            { name: 'invoices.view', label: 'View invoices', scoped: true },\n            { name: 'invoices.issue', label: 'Issue invoices' },\n            { name: 'invoices.void', label: 'Void invoices' },\n        ],\n    },\n];\n\nconst scopes = [\n    { value: 'firm', label: 'Whole firm' },\n    { value: 'department', label: 'Own department' },\n    { value: 'assigned', label: 'Assigned to them' },\n    { value: 'own', label: 'Created by them' },\n];\n\nconst switches: SensitiveSwitch[] = [\n    { key: 'money', label: 'Money', hint: 'Amounts on deals, invoices and payments.' },\n    { key: 'cost_and_margin', label: 'Cost and margin', hint: 'Unit cost, margin and supplier prices.' },\n    { key: 'salaries', label: 'Salaries', hint: 'Pay, allowances and payroll runs.' },\n    { key: 'client_contacts', label: 'Client contacts', hint: 'Phone numbers and email addresses of client people.' },\n];\n\nconst held = new Set(['contacts.view', 'contacts.create', 'contacts.update', 'contacts.delete', 'deals.view', 'deals.update', 'deals.close', 'invoices.view', 'money', 'client_contacts']);\n\nexport function RolesPage() {\n    const [name, setName] = useState('Sales manager');\n    const [grants, setGrants] = useState<PermissionGrant[]>([\n        { name: 'contacts.view', scope: 'firm' },\n        { name: 'contacts.create', scope: null },\n        { name: 'contacts.update', scope: 'department' },\n        { name: 'deals.view', scope: 'department' },\n        { name: 'deals.update', scope: 'assigned' },\n        { name: 'invoices.view', scope: 'department' },\n    ]);\n    const [sensitive, setSensitive] = useState<string[]>(['money', 'client_contacts']);\n\n    return (\n        <SectionLayout title=\"Organization\" groups={organizationGroups} permissions={adminPermissions}>\n            <FormLayout\n                title=\"Edit role\"\n                actions={\n                    <>\n                        <Button variant=\"outline\">Cancel</Button>\n                        <Button>Save role</Button>\n                    </>\n                }\n                side={\n                    <DetailCard\n                        compact\n                        title=\"In use\"\n                        details={[\n                            { label: 'Users', value: '3' },\n                            { label: 'Last changed', value: '2 Nov 2026 by Ayaan Warsame' },\n                            { label: 'Saving asks for', value: 'Your password' },\n                        ]}\n                    />\n                }\n            >\n                <FormSection title=\"Role\" compact>\n                    <FieldRow id=\"role-name\" label=\"Name\">\n                        <Input id=\"role-name\" value={name} onChange={(event) => setName(event.target.value)} />\n                    </FieldRow>\n                    <FieldRow id=\"role-description\" label=\"Description\" hint=\"Shown in the role picker when someone invites a user.\">\n                        <Textarea id=\"role-description\" defaultValue=\"Runs the sales team: contacts across the firm, deals in their department.\" />\n                    </FieldRow>\n                </FormSection>\n                <PermissionPicker groups={groups} value={grants} onChange={setGrants} scopes={scopes} holds={(permission) => held.has(permission)} />\n                <SensitiveSwitches switches={switches} value={sensitive} onChange={setSensitive} holds={(key) => held.has(key)} />\n            </FormLayout>\n        </SectionLayout>\n    );\n}\n",
+      "type": "registry:ui",
+      "target": "components/company-os/templates/roles-page.tsx"
+    },
+    {
+      "path": "registry/company-os/templates/organization-nav.ts",
+      "content": "import { BotIcon, PlugIcon, Settings2Icon, ShieldCheckIcon, UsersIcon } from 'lucide-react';\nimport type { NavGroup } from '@/components/company-os';\n\nexport const organizationGroups: NavGroup[] = [\n    {\n        label: 'People',\n        items: [\n            { title: 'Users', href: '/templates/users-page', icon: UsersIcon, permission: 'users.view-any' },\n            { title: 'Roles', href: '/templates/roles-page', icon: ShieldCheckIcon, permission: 'roles.manage' },\n        ],\n    },\n    {\n        label: 'System',\n        items: [\n            { title: 'Workspace', href: '/templates/workspace', icon: Settings2Icon, permission: 'settings.manage' },\n            { title: 'Setup', href: '/templates/setup-page', icon: Settings2Icon, permission: 'settings.manage' },\n            { title: 'AI agents', href: '/templates/agents', icon: BotIcon, permission: 'agents.manage' },\n            { title: 'Integrations', href: '/templates/integrations', icon: PlugIcon, permission: 'integrations.manage' },\n        ],\n    },\n];\n\nexport const adminPermissions = ['users.view-any', 'roles.manage', 'settings.manage', 'agents.manage', 'integrations.manage'];\n",
+      "type": "registry:ui",
+      "target": "components/company-os/templates/organization-nav.ts"
+    }
+  ],
+  "categories": [
+    "templates"
+  ],
+  "meta": {
+    "system": "Company OS",
+    "kind": "template",
+    "pieces": [
+      4,
+      5,
+      26
+    ],
+    "tags": [
+      "roles",
+      "permissions",
+      "scope",
+      "sensitive",
+      "organization"
+    ]
+  }
+}

@@ -4,7 +4,7 @@ import { AppHeader, AppLogo, AppShell, AppSidebar, LocaleSwitch, SearchButton } 
 import type { NavGroup } from '@/components/company-os';
 
 const groups: NavGroup[] = [
-    { label: 'Daily', items: [{ title: 'Home', href: '/templates/home', icon: HouseIcon }, { title: 'Inbox', href: '/templates/inbox', icon: InboxIcon }, { title: 'Calendar', href: '/templates/calendar', icon: CalendarDaysIcon }] },
+    { label: 'Daily', items: [{ title: 'Home', href: '/templates/home', icon: HouseIcon }, { title: 'Inbox', href: '/templates/notifications-page', icon: InboxIcon }, { title: 'Calendar', href: '/templates/calendar', icon: CalendarDaysIcon }] },
     { label: 'Clients', items: [{ title: 'Contacts', href: '/templates/contacts', icon: ContactIcon }, { title: 'Deals', href: '/templates/deals', icon: HandshakeIcon }] },
     { label: 'Work', items: [{ title: 'Projects', href: '/templates/projects', icon: FolderKanbanIcon }] },
     { label: 'Finance', items: [{ title: 'Invoices', href: '/templates/invoices', icon: ReceiptIcon }, { title: 'Expenses', href: '/templates/expenses', icon: WalletIcon }] },

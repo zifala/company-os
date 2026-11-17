@@ -1,19 +1,8 @@
 import { FieldRow, FormSection, PageHeader, PhoneField, SectionLayout } from '@/components/company-os';
-import type { NavGroup } from '@/components/company-os';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { OptionSelect } from '@/components/ui/option-select';
-
-const settingsGroups: NavGroup[] = [
-    {
-        items: [
-            { title: 'Profile', href: '/templates/settings-page' },
-            { title: 'Password', href: '/templates/settings/password' },
-            { title: 'Security', href: '/templates/settings/security' },
-            { title: 'Notifications', href: '/templates/settings/notifications' },
-        ],
-    },
-];
+import { settingsGroups } from './settings-nav';
 
 const timezones = [{ value: 'Africa/Mogadishu', label: 'Africa/Mogadishu' }, { value: 'Africa/Nairobi', label: 'Africa/Nairobi' }, { value: 'Europe/London', label: 'Europe/London' }];
 const hours = Array.from({ length: 24 }, (_, hour) => ({ value: `${String(hour).padStart(2, '0')}:00`, label: `${String(hour).padStart(2, '0')}:00` }));

@@ -1,0 +1,40 @@
+{
+  "$schema": "https://ui.shadcn.com/schema/registry-item.json",
+  "name": "template-onboarding-stepper",
+  "type": "registry:block",
+  "title": "Onboarding stepper",
+  "description": "Full screen with Exit, the left rail of steps, the send-back banner, the review step and Submit.",
+  "registryDependencies": [
+    "http://localhost:5173/r/tokens.json",
+    "http://localhost:5173/r/onboarding-stepper.json",
+    "http://localhost:5173/r/review-problems.json",
+    "http://localhost:5173/r/form-layout.json",
+    "http://localhost:5173/r/field-row.json",
+    "http://localhost:5173/r/phone-field.json"
+  ],
+  "files": [
+    {
+      "path": "registry/company-os/templates/onboarding-stepper.tsx",
+      "content": "import { useState } from 'react';\nimport { FieldRow, FormSection, OnboardingStepper, PhoneField, ReviewProblems } from '@/components/company-os';\nimport type { OnboardingStepItem, ReviewSection } from '@/components/company-os';\nimport { Input } from '@/components/ui/input';\nimport { OptionSelect } from '@/components/ui/option-select';\n\nconst initialSteps: OnboardingStepItem[] = [\n    { key: 'company', label: 'Company', done: true },\n    { key: 'contacts', label: 'Contacts', done: true },\n    { key: 'finance', label: 'Finance', done: false },\n    { key: 'documents', label: 'Documents', done: false },\n    { key: 'review', label: 'Review', done: false },\n];\n\nconst problems: ReviewSection[] = [\n    { key: 'company', label: 'Company', problems: [] },\n    { key: 'contacts', label: 'Contacts', problems: [] },\n    { key: 'finance', label: 'Finance', problems: ['Payment terms are required.'] },\n    { key: 'documents', label: 'Documents', problems: ['Upload the registration certificate.', 'Upload a tax clearance letter.'] },\n];\n\nfunction StepBody({ step, onFix }: { step: string; onFix: (key: string) => void }) {\n    if (step === 'review') return <ReviewProblems sections={problems} onFix={onFix} />;\n    if (step === 'contacts') {\n        return (\n            <FormSection title=\"Main contact\">\n                <FieldRow id=\"ob-contact\" label=\"Name\">\n                    <Input id=\"ob-contact\" defaultValue=\"Idil Hassan\" />\n                </FieldRow>\n                <PhoneField id=\"ob-contact-phone\" label=\"Phone\" defaultValue=\"+252615550192\" />\n            </FormSection>\n        );\n    }\n    if (step === 'finance') {\n        return (\n            <FormSection title=\"Finance\">\n                <FieldRow id=\"ob-terms\" label=\"Payment terms\" error=\"Payment terms are required.\">\n                    <OptionSelect id=\"ob-terms\" placeholder=\"Pick terms\" aria-invalid options={[{ value: 'net15', label: 'Net 15' }, { value: 'net30', label: 'Net 30' }, { value: 'prepaid', label: 'Prepaid' }]} />\n                </FieldRow>\n                <FieldRow id=\"ob-currency\" label=\"Currency\">\n                    <OptionSelect id=\"ob-currency\" defaultValue=\"usd\" options={[{ value: 'usd', label: 'USD' }, { value: 'sos', label: 'SOS' }]} />\n                </FieldRow>\n            </FormSection>\n        );\n    }\n    if (step === 'documents') {\n        return (\n            <FormSection title=\"Documents\" compact>\n                <FieldRow id=\"ob-registration\" label=\"Registration certificate\" hint=\"PDF or image, up to 10 MB.\">\n                    <Input id=\"ob-registration\" type=\"file\" />\n                </FieldRow>\n                <FieldRow id=\"ob-tax\" label=\"Tax clearance letter\">\n                    <Input id=\"ob-tax\" type=\"file\" />\n                </FieldRow>\n            </FormSection>\n        );\n    }\n\n    return (\n        <FormSection title=\"Company\">\n            <FieldRow id=\"ob-name\" label=\"Legal name\">\n                <Input id=\"ob-name\" defaultValue=\"Daryeel Clinic Ltd\" />\n            </FieldRow>\n            <FieldRow id=\"ob-reg\" label=\"Registration\">\n                <Input id=\"ob-reg\" defaultValue=\"REG-2021-0832\" />\n            </FieldRow>\n        </FormSection>\n    );\n}\n\nexport function OnboardingStepperPage() {\n    const [steps, setSteps] = useState(initialSteps);\n    const [current, setCurrent] = useState('finance');\n    const index = steps.findIndex((step) => step.key === current);\n    const [furthest, setFurthest] = useState(index);\n\n    const go = (next: number) => {\n        const target = steps[Math.min(Math.max(next, 0), steps.length - 1)];\n        setCurrent(target.key);\n        setFurthest((value) => Math.max(value, next));\n    };\n\n    return (\n        <OnboardingStepper\n            title=\"New provider onboarding\"\n            reference=\"ONB-0012\"\n            name=\"Daryeel Clinic\"\n            status={{ label: 'Sent back', color: 'amber' }}\n            sentBack={{ reason: 'The registration certificate is from 2019. Upload the renewed one and add the payment terms we agreed.', by: 'Ayaan Warsame', at: '6 Nov 2026' }}\n            steps={steps}\n            current={current}\n            furthest={furthest}\n            onSelect={setCurrent}\n            exitHref=\"/templates\"\n            processing={false}\n            onBack={() => go(index - 1)}\n            onContinue={() => {\n                setSteps((list) => list.map((step) => (step.key === current && step.key !== 'review' ? { ...step, done: true } : step)));\n                go(index + 1);\n            }}\n        >\n            <StepBody step={current} onFix={setCurrent} />\n        </OnboardingStepper>\n    );\n}\n",
+      "type": "registry:ui",
+      "target": "components/company-os/templates/onboarding-stepper.tsx"
+    }
+  ],
+  "categories": [
+    "templates"
+  ],
+  "meta": {
+    "system": "Company OS",
+    "kind": "template",
+    "pieces": [
+      27
+    ],
+    "tags": [
+      "onboarding",
+      "stepper",
+      "wizard",
+      "review",
+      "send back"
+    ]
+  }
+}

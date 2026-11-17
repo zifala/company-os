@@ -1,0 +1,45 @@
+{
+  "$schema": "https://ui.shadcn.com/schema/registry-item.json",
+  "name": "template-notification-settings",
+  "type": "registry:block",
+  "title": "Settings · Notifications",
+  "description": "The event × channel matrix in personal settings. Opt-in events start off; a channel without a number is greyed.",
+  "registryDependencies": [
+    "http://localhost:5173/r/tokens.json",
+    "http://localhost:5173/r/section-layout.json",
+    "http://localhost:5173/r/page-header.json",
+    "http://localhost:5173/r/preference-matrix.json"
+  ],
+  "files": [
+    {
+      "path": "registry/company-os/templates/notification-settings.tsx",
+      "content": "import { useState } from 'react';\nimport { PageHeader, PreferenceMatrix, SectionLayout } from '@/components/company-os';\nimport type { PreferenceChannel, PreferenceEvent, PreferenceValue } from '@/components/company-os';\nimport { Button } from '@/components/ui/button';\nimport { settingsGroups } from './settings-nav';\n\nconst events: PreferenceEvent[] = [\n    { key: 'task_assigned', label: 'A task is assigned to you', group: 'Tasks' },\n    { key: 'task_commented', label: 'Someone comments on your task', group: 'Tasks' },\n    { key: 'mentioned', label: 'Someone mentions you', hint: 'Replaces the comment notification for that comment.', group: 'Tasks' },\n    { key: 'tasks_changed_in_bulk', label: 'Your tasks change in bulk', hint: 'One digest per change, not one per task.', group: 'Tasks' },\n    { key: 'deal_assigned', label: 'A deal is assigned to you', group: 'Deals' },\n    { key: 'managed_deals_activity', label: 'Activity on deals in your department', hint: 'Off until you turn it on.', group: 'Deals' },\n    { key: 'invoice_due_reminder', label: 'An invoice you own falls due', group: 'Reminders' },\n    { key: 'morning_brief', label: 'Morning brief', hint: 'At 07:00 in your timezone.', group: 'Reminders' },\n];\n\nconst channels: PreferenceChannel[] = [\n    { key: 'in_app', label: 'In-app' },\n    { key: 'email', label: 'Email' },\n    { key: 'whatsapp', label: 'WhatsApp', available: false, unavailableHint: 'Add a phone number on your profile first.' },\n];\n\nconst initial: PreferenceValue = {\n    task_assigned: { in_app: true, email: true },\n    task_commented: { in_app: true },\n    mentioned: { in_app: true, email: true },\n    tasks_changed_in_bulk: { in_app: true },\n    deal_assigned: { in_app: true, email: true },\n    managed_deals_activity: {},\n    invoice_due_reminder: { in_app: true, email: true },\n    morning_brief: { email: true },\n};\n\nexport function NotificationSettings() {\n    const [value, setValue] = useState(initial);\n\n    return (\n        <SectionLayout title=\"Settings\" groups={settingsGroups} permissions={[]}>\n            <div className=\"flex max-w-3xl flex-col gap-6\">\n                <PageHeader title=\"Notifications\">\n                    <Button>Save preferences</Button>\n                </PageHeader>\n                <PreferenceMatrix events={events} channels={channels} value={value} onChange={setValue} />\n            </div>\n        </SectionLayout>\n    );\n}\n",
+      "type": "registry:ui",
+      "target": "components/company-os/templates/notification-settings.tsx"
+    },
+    {
+      "path": "registry/company-os/templates/settings-nav.ts",
+      "content": "import type { NavGroup } from '@/components/company-os';\n\nexport const settingsGroups: NavGroup[] = [\n    {\n        items: [\n            { title: 'Profile', href: '/templates/settings-page' },\n            { title: 'Password', href: '/templates/settings/password' },\n            { title: 'Security', href: '/templates/settings/security' },\n            { title: 'Notifications', href: '/templates/notification-settings' },\n        ],\n    },\n];\n",
+      "type": "registry:ui",
+      "target": "components/company-os/templates/settings-nav.ts"
+    }
+  ],
+  "categories": [
+    "templates"
+  ],
+  "meta": {
+    "system": "Company OS",
+    "kind": "template",
+    "pieces": [
+      10,
+      7
+    ],
+    "tags": [
+      "notifications",
+      "preferences",
+      "matrix",
+      "settings",
+      "channels"
+    ]
+  }
+}

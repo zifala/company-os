@@ -1,0 +1,42 @@
+{
+  "$schema": "https://ui.shadcn.com/schema/registry-item.json",
+  "name": "sensitive-switches",
+  "type": "registry:ui",
+  "title": "SensitiveSwitches",
+  "description": "One switch per sensitive field family, each with the line that says what it reveals. One job: Hide money, margins, salaries and client contacts per role without a permission per field.",
+  "registryDependencies": [
+    "http://localhost:5173/r/tokens.json",
+    "switch"
+  ],
+  "files": [
+    {
+      "path": "registry/company-os/sensitive-switches.tsx",
+      "content": "import { Switch } from '@/components/ui/switch';\n\nexport type SensitiveSwitch = {\n    key: string;\n    label: string;\n    hint: string;\n};\n\nexport function SensitiveSwitches({\n    title = 'Sensitive fields',\n    switches,\n    value,\n    onChange,\n    holds,\n    disabled = false,\n}: {\n    title?: string;\n    switches: SensitiveSwitch[];\n    value: string[];\n    onChange: (value: string[]) => void;\n    holds: (key: string) => boolean;\n    disabled?: boolean;\n}) {\n    const on = new Set(value);\n\n    return (\n        <section className=\"rounded-lg glass\">\n            <h2 className=\"border-b border-border px-5 py-3 text-sm font-semibold text-slate-800\">{title}</h2>\n            <ul>\n                {switches.map((item) => {\n                    const id = `sensitive-${item.key}`;\n                    const checked = on.has(item.key);\n\n                    return (\n                        <li key={item.key} className=\"flex items-start gap-4 border-b border-border px-5 py-3 last:border-0\">\n                            <div className=\"min-w-0 flex-1\">\n                                <label htmlFor={id} className=\"text-sm font-medium text-slate-800\">\n                                    {item.label}\n                                </label>\n                                <p id={`${id}-hint`} className=\"text-xs text-muted-foreground\">\n                                    {item.hint}\n                                </p>\n                            </div>\n                            <Switch\n                                id={id}\n                                aria-describedby={`${id}-hint`}\n                                checked={checked}\n                                disabled={disabled || (!checked && !holds(item.key))}\n                                onCheckedChange={(next) => onChange(next ? [...value, item.key] : value.filter((key) => key !== item.key))}\n                            />\n                        </li>\n                    );\n                })}\n            </ul>\n        </section>\n    );\n}\n",
+      "type": "registry:ui",
+      "target": "components/company-os/sensitive-switches.tsx"
+    }
+  ],
+  "categories": [
+    "access"
+  ],
+  "docs": "http://localhost:5173/llms/sensitive-switches.md",
+  "meta": {
+    "system": "Company OS",
+    "pieces": [
+      5
+    ],
+    "job": "Hide money, margins, salaries and client contacts per role without a permission per field.",
+    "tags": [
+      "sensitive",
+      "switches",
+      "roles",
+      "money",
+      "salaries",
+      "access"
+    ],
+    "exports": [
+      "SensitiveSwitches",
+      "SensitiveSwitch"
+    ]
+  }
+}

@@ -1,7 +1,7 @@
 import type { ComponentType } from 'react';
 import { useState } from 'react';
 import { toast } from 'sonner';
-import { CsvImport, ExportButton, FavoriteButton, FilterBar, SavedViewsMenu } from '@/components/company-os';
+import { CsvImport, ExportButton, FavoriteButton, FilterBar, PrintLines, PrintSheet, PrintTotals, SavedViewsMenu } from '@/components/company-os';
 import type { FilterState, ImportPreview, SavedViewItem } from '@/components/company-os';
 
 const state: FilterState = {
@@ -94,9 +94,32 @@ function CsvImportDemo() {
     );
 }
 
+function PrintSheetDemo() {
+    return (
+        <div className="overflow-hidden rounded-lg">
+            <PrintSheet
+                letterhead={{ legalName: 'Halcyon Freight Ltd', lines: ['KM4 Street, Hodan District, Mogadishu', 'Registration REG-2019-4471'] }}
+                title="Invoice"
+                number="INV-0413"
+                stamp="Draft"
+                meta={[{ label: 'Issued', value: '7 Nov 2026' }, { label: 'Due', value: '7 Dec 2026' }]}
+                footer={['Halcyon Freight Ltd · REG-2019-4471', 'Printed 7 Nov 2026, 10:24', 'INV-0413']}
+                onPrint={() => toast('Opens the print dialog')}
+            >
+                <PrintLines
+                    columns={[{ key: 'description', label: 'Description' }, { key: 'amount', label: 'Amount', numeric: true, width: '32mm' }]}
+                    rows={[{ id: '1', cells: { description: 'Cold chain audit, Mogadishu port warehouse', amount: '4,800.00' } }, { id: '2', cells: { description: 'Reefer container monitoring, October', amount: '3,840.00' } }]}
+                />
+                <PrintTotals totals={[{ label: 'Subtotal', value: '8,640.00' }, { label: 'Total USD', value: '8,640.00', strong: true }]} />
+            </PrintSheet>
+        </div>
+    );
+}
+
 export const viewDemos: Record<string, ComponentType> = {
     'saved-views-menu-basic': SavedViewsDemo,
     'favorite-button-basic': FavoriteDemo,
     'export-button-basic': () => <ExportButton href="#" />,
     'csv-import-basic': CsvImportDemo,
+    'print-sheet-basic': PrintSheetDemo,
 };

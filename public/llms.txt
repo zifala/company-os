@@ -73,12 +73,18 @@
 - [PasswordInput](http://localhost:5173/llms/password-input.md): A password input with a show / hide toggle that stays out of the tab order. One job: Collect a password the user can check before submitting.
 - [RemoteCombobox](http://localhost:5173/llms/remote-combobox.md): A searchable picker whose options come from the server as you type. One job: Pick one record from a list too long to send with the page.
 - [VerifyPhoneDialog](http://localhost:5173/llms/verify-phone-dialog.md): Fixed title, the phone, "Send code", then six digits and one confirm. One job: Prove a phone number belongs to the person in front of the screen.
+- [PermissionPicker](http://localhost:5173/llms/permission-picker.md): Permissions grouped by module, a scope beside each scoped one, and a lock on what the editor does not hold. One job: Build a role in the UI without letting anyone grant beyond their own reach.
+- [SensitiveSwitches](http://localhost:5173/llms/sensitive-switches.md): One switch per sensitive field family, each with the line that says what it reveals. One job: Hide money, margins, salaries and client contacts per role without a permission per field.
+- [PreferenceMatrix](http://localhost:5173/llms/preference-matrix.md): Events down, channels across, one switch per cell. Quiet hours said once, under the grid. One job: Let each person pick which events reach them on which channel.
 - [SavedViewsMenu](http://localhost:5173/llms/saved-views-menu.md): Saved filter sets for a list. The menu knows which one is active by comparing the URL. One job: Save the current query of a list under a name and return to it in one click.
 - [FavoriteButton](http://localhost:5173/llms/favorite-button.md): A star that pins any viewable record or saved view to the sidebar. One job: Toggle one record in the user's favorites.
 - [ExportButton](http://localhost:5173/llms/export-button.md): A plain download link styled as an outline button. Exports what the list shows. One job: Download the current list as CSV.
 - [CsvImport](http://localhost:5173/llms/csv-import.md): Pick a file, preview what would change, then import. Nothing writes before the preview. One job: Import records from CSV with a dry run first.
+- [PrintSheet](http://localhost:5173/llms/print-sheet.md): The A4 sheet: letterhead, repeating header and footer, title and number, lines, totals, the stamp. One job: Give every official document one print layout that the browser turns into a PDF.
 - [SetupChecklist](http://localhost:5173/llms/setup-checklist.md): Steps that tick from real data, each with a link to where it gets done, and one "Finish setup". One job: Walk the super admin through the first configuration without storing a single tick.
 - [OnboardingCard](http://localhost:5173/llms/onboarding-card.md): The side card on a record born from an onboarding: reference, who started it, who approved it, when, and the source. One job: Show where a relationship record came from.
+- [OnboardingStepper](http://localhost:5173/llms/onboarding-stepper.md): Full screen, a thin header with Exit, the left rail of steps, Back and "Confirm and continue". One job: Walk staff or a guest through an onboarding one saved slice at a time.
+- [ReviewProblems](http://localhost:5173/llms/review-problems.md): One row per section: ready, or the problems the server found, with a Fix that jumps to the step. One job: Show what still blocks a submit or an approve, from the same checks the server runs.
 - [InsightItem](http://localhost:5173/llms/insight-item.md): One insight: severity, title, body, folded evidence, suggestions you can apply, mark seen, dismiss. One job: Present one rule signal and let the reader act on it or close it.
 
 ## Blocks
@@ -87,6 +93,8 @@
 - Record page (`block-record-page`): Header actions, tabs that are routes, detail cards main-left and fixed-right, activity.
 - Full-page form (`block-form-page`): Sticky header with Cancel and Create, section cards left, fixed-field cards right.
 - Home (`block-home-dashboard`): Raised stat tiles, the work waiting on you as a table, latest activity.
+- Roles (`block-roles-index`): Every role with its users and permission counts. Super admin locked, a role in use cannot be deleted.
+- Onboarding review (`block-onboarding-review`): What was submitted, read-only. Reject · Send back · Approve in the header, progress and source on the right.
 
 ## Templates
 
@@ -94,6 +102,12 @@
 - Trash (`template-trash-page`): What was deleted, by whom, why, and how many days remain. Restore through a confirm.
 - Organization · Setup (`template-setup-page`): The checklist that ticks from real data, the services panel, and Finish setup.
 - Settings · Profile (`template-settings-page`): The personal settings layout: profile, timezone and quiet hours, nothing platform-wide.
+- Organization · Roles (`template-roles-page`): The role form: name on top, permission picker below, scope per permission and the sensitive switches.
+- Notifications (`template-notifications-page`): The inbox behind the bell: every in-app row, filter by event and read state, mark all read.
+- Settings · Notifications (`template-notification-settings`): The event × channel matrix in personal settings. Opt-in events start off; a channel without a number is greyed.
+- Onboarding stepper (`template-onboarding-stepper`): Full screen with Exit, the left rail of steps, the send-back banner, the review step and Submit.
+- Guest onboarding link (`template-guest-onboarding`): The same stepper behind a link: no Exit, only the guest steps, and the fields the link fixed shown read-only.
+- Print · Invoice (`template-print-invoice`): The A4 sheet: letterhead, repeating header and footer, lines, totals that never split, the draft stamp.
 
 ## Rules that bind every component
 

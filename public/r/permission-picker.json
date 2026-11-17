@@ -1,0 +1,49 @@
+{
+  "$schema": "https://ui.shadcn.com/schema/registry-item.json",
+  "name": "permission-picker",
+  "type": "registry:ui",
+  "title": "PermissionPicker",
+  "description": "Permissions grouped by module, a scope beside each scoped one, and a lock on what the editor does not hold. One job: Build a role in the UI without letting anyone grant beyond their own reach.",
+  "registryDependencies": [
+    "http://localhost:5173/r/tokens.json",
+    "checkbox",
+    "select"
+  ],
+  "files": [
+    {
+      "path": "registry/company-os/permission-picker.tsx",
+      "content": "import { LockIcon } from 'lucide-react';\nimport { Checkbox } from '@/components/ui/checkbox';\nimport { OptionSelect } from '@/components/ui/option-select';\nimport { cn } from '@/lib/utils';\n\nexport type PermissionOption = {\n    name: string;\n    label: string;\n    scoped?: boolean;\n};\n\nexport type PermissionGroup = {\n    key: string;\n    label: string;\n    permissions: PermissionOption[];\n};\n\nexport type ScopeOption = { value: string; label: string };\n\nexport type PermissionGrant = { name: string; scope: string | null };\n\nexport type PermissionPickerLabels = { selectAll: string; scope: string; notHeld: string; selected: (count: number, total: number) => string };\n\nexport const permissionPickerLabels: PermissionPickerLabels = {\n    selectAll: 'Select all',\n    scope: 'Scope',\n    notHeld: 'You do not hold this permission',\n    selected: (count, total) => `${count} of ${total}`,\n};\n\nfunction Row({\n    permission,\n    grant,\n    scopes,\n    locked,\n    labels,\n    onToggle,\n    onScope,\n}: {\n    permission: PermissionOption;\n    grant: PermissionGrant | undefined;\n    scopes: ScopeOption[];\n    locked: boolean;\n    labels: PermissionPickerLabels;\n    onToggle: (checked: boolean) => void;\n    onScope: (scope: string) => void;\n}) {\n    const id = `perm-${permission.name}`;\n\n    return (\n        <li className=\"flex min-h-12 flex-wrap items-center gap-3 border-b border-border px-5 py-2 last:border-0\">\n            <Checkbox id={id} checked={grant !== undefined} disabled={locked} onCheckedChange={(checked) => onToggle(checked === true)} />\n            <label htmlFor={id} className={cn('min-w-0 flex-1 text-sm text-slate-800', locked && 'text-muted-foreground')}>\n                {permission.label}\n                <span className=\"ml-2 font-mono text-xs text-muted-foreground\">{permission.name}</span>\n            </label>\n            {locked && <LockIcon className=\"size-3.5 text-muted-foreground\" aria-label={labels.notHeld} />}\n            {permission.scoped && grant && (\n                <OptionSelect aria-label={`${labels.scope}: ${permission.label}`} className=\"w-40\" value={grant.scope ?? scopes[0]?.value} options={scopes} disabled={locked} onValueChange={onScope} />\n            )}\n        </li>\n    );\n}\n\nexport function PermissionPicker({\n    groups,\n    value,\n    onChange,\n    scopes,\n    holds,\n    disabled = false,\n    labels = permissionPickerLabels,\n}: {\n    groups: PermissionGroup[];\n    value: PermissionGrant[];\n    onChange: (value: PermissionGrant[]) => void;\n    scopes: ScopeOption[];\n    holds: (name: string) => boolean;\n    disabled?: boolean;\n    labels?: PermissionPickerLabels;\n}) {\n    const byName = new Map(value.map((grant) => [grant.name, grant]));\n    const defaultScope = scopes[0]?.value ?? null;\n    const locked = (name: string) => disabled || (!holds(name) && !byName.has(name));\n\n    const set = (permission: PermissionOption, checked: boolean) =>\n        onChange(checked ? [...value, { name: permission.name, scope: permission.scoped ? defaultScope : null }] : value.filter((grant) => grant.name !== permission.name));\n\n    const setScope = (name: string, scope: string) => onChange(value.map((grant) => (grant.name === name ? { ...grant, scope } : grant)));\n\n    const setGroup = (group: PermissionGroup, checked: boolean) => {\n        const open = group.permissions.filter((permission) => !locked(permission.name));\n        const names = new Set(open.map((permission) => permission.name));\n        const kept = value.filter((grant) => !names.has(grant.name));\n        onChange(checked ? [...kept, ...open.map((permission) => byName.get(permission.name) ?? { name: permission.name, scope: permission.scoped ? defaultScope : null })] : kept);\n    };\n\n    return (\n        <div className=\"grid gap-6\">\n            {groups.map((group) => {\n                const count = group.permissions.filter((permission) => byName.has(permission.name)).length;\n                const all = count === group.permissions.length;\n\n                return (\n                    <section key={group.key} className=\"rounded-lg glass\">\n                        <div className=\"flex items-center gap-3 border-b border-border px-5 py-3\">\n                            <Checkbox\n                                id={`perm-group-${group.key}`}\n                                aria-label={`${labels.selectAll}: ${group.label}`}\n                                checked={all ? true : count > 0 ? 'indeterminate' : false}\n                                disabled={disabled}\n                                onCheckedChange={(checked) => setGroup(group, checked === true)}\n                            />\n                            <h3 className=\"flex-1 text-sm font-semibold text-slate-800\">{group.label}</h3>\n                            <span className=\"text-xs tabular-nums text-muted-foreground\">{labels.selected(count, group.permissions.length)}</span>\n                        </div>\n                        <ul>\n                            {group.permissions.map((permission) => (\n                                <Row\n                                    key={permission.name}\n                                    permission={permission}\n                                    grant={byName.get(permission.name)}\n                                    scopes={scopes}\n                                    locked={locked(permission.name)}\n                                    labels={labels}\n                                    onToggle={(checked) => set(permission, checked)}\n                                    onScope={(scope) => setScope(permission.name, scope)}\n                                />\n                            ))}\n                        </ul>\n                    </section>\n                );\n            })}\n        </div>\n    );\n}\n",
+      "type": "registry:ui",
+      "target": "components/company-os/permission-picker.tsx"
+    }
+  ],
+  "categories": [
+    "access"
+  ],
+  "docs": "http://localhost:5173/llms/permission-picker.md",
+  "meta": {
+    "system": "Company OS",
+    "pieces": [
+      4,
+      5
+    ],
+    "job": "Build a role in the UI without letting anyone grant beyond their own reach.",
+    "tags": [
+      "permissions",
+      "roles",
+      "scope",
+      "access",
+      "grant",
+      "checkbox"
+    ],
+    "exports": [
+      "PermissionPicker",
+      "permissionPickerLabels",
+      "PermissionGrant",
+      "PermissionGroup",
+      "PermissionOption",
+      "PermissionPickerLabels",
+      "ScopeOption"
+    ]
+  }
+}

@@ -1,0 +1,46 @@
+{
+  "$schema": "https://ui.shadcn.com/schema/registry-item.json",
+  "name": "preference-matrix",
+  "type": "registry:ui",
+  "title": "PreferenceMatrix",
+  "description": "Events down, channels across, one switch per cell. Quiet hours said once, under the grid. One job: Let each person pick which events reach them on which channel.",
+  "registryDependencies": [
+    "http://localhost:5173/r/tokens.json",
+    "switch"
+  ],
+  "files": [
+    {
+      "path": "registry/company-os/preference-matrix.tsx",
+      "content": "import { Switch } from '@/components/ui/switch';\nimport { cn } from '@/lib/utils';\n\nexport type PreferenceEvent = {\n    key: string;\n    label: string;\n    hint?: string;\n    group?: string;\n};\n\nexport type PreferenceChannel = {\n    key: string;\n    label: string;\n    available?: boolean;\n    unavailableHint?: string;\n};\n\nexport type PreferenceValue = Record<string, Record<string, boolean>>;\n\nexport type PreferenceMatrixLabels = { event: string; quietHours: string | null };\n\nexport const preferenceMatrixLabels: PreferenceMatrixLabels = {\n    event: 'Event',\n    quietHours: 'Email waits until your quiet hours end. In-app always arrives.',\n};\n\nfunction groupsOf(events: PreferenceEvent[]): { label: string | undefined; events: PreferenceEvent[] }[] {\n    const out: { label: string | undefined; events: PreferenceEvent[] }[] = [];\n    for (const event of events) {\n        const last = out.at(-1);\n        if (last && last.label === event.group) last.events.push(event);\n        else out.push({ label: event.group, events: [event] });\n    }\n\n    return out;\n}\n\nexport function PreferenceMatrix({\n    events,\n    channels,\n    value,\n    onChange,\n    disabled = false,\n    labels = preferenceMatrixLabels,\n}: {\n    events: PreferenceEvent[];\n    channels: PreferenceChannel[];\n    value: PreferenceValue;\n    onChange: (value: PreferenceValue) => void;\n    disabled?: boolean;\n    labels?: PreferenceMatrixLabels;\n}) {\n    const set = (event: string, channel: string, enabled: boolean) => onChange({ ...value, [event]: { ...value[event], [channel]: enabled } });\n\n    return (\n        <section className=\"rounded-lg glass\">\n            <table className=\"w-full text-sm\">\n                <thead>\n                    <tr className=\"border-b border-border\">\n                        <th scope=\"col\" className=\"px-5 py-3 text-left text-xs font-medium text-muted-foreground\">\n                            {labels.event}\n                        </th>\n                        {channels.map((channel) => (\n                            <th key={channel.key} scope=\"col\" className=\"w-28 px-3 py-3 text-center text-xs font-medium text-muted-foreground\" title={channel.available === false ? channel.unavailableHint : undefined}>\n                                {channel.label}\n                            </th>\n                        ))}\n                    </tr>\n                </thead>\n                {groupsOf(events).map((group) => (\n                    <tbody key={group.label ?? group.events[0].key}>\n                        {group.label && (\n                            <tr className=\"border-b border-border bg-muted/40\">\n                                <th colSpan={channels.length + 1} scope=\"colgroup\" className=\"px-5 py-2 text-left text-xs font-semibold text-slate-700\">\n                                    {group.label}\n                                </th>\n                            </tr>\n                        )}\n                        {group.events.map((event) => (\n                            <tr key={event.key} className=\"border-b border-border last:border-0\">\n                                <th scope=\"row\" className=\"px-5 py-3 text-left font-normal\">\n                                    <span className=\"block font-medium text-slate-800\">{event.label}</span>\n                                    {event.hint && <span className=\"block text-xs text-muted-foreground\">{event.hint}</span>}\n                                </th>\n                                {channels.map((channel) => (\n                                    <td key={channel.key} className={cn('px-3 py-3 text-center', channel.available === false && 'opacity-50')}>\n                                        <Switch\n                                            aria-label={`${event.label}: ${channel.label}`}\n                                            checked={value[event.key]?.[channel.key] ?? false}\n                                            disabled={disabled || channel.available === false}\n                                            onCheckedChange={(enabled) => set(event.key, channel.key, enabled)}\n                                        />\n                                    </td>\n                                ))}\n                            </tr>\n                        ))}\n                    </tbody>\n                ))}\n            </table>\n            {labels.quietHours && <p className=\"border-t border-border px-5 py-3 text-xs text-muted-foreground\">{labels.quietHours}</p>}\n        </section>\n    );\n}\n",
+      "type": "registry:ui",
+      "target": "components/company-os/preference-matrix.tsx"
+    }
+  ],
+  "categories": [
+    "access"
+  ],
+  "docs": "http://localhost:5173/llms/preference-matrix.md",
+  "meta": {
+    "system": "Company OS",
+    "pieces": [
+      10
+    ],
+    "job": "Let each person pick which events reach them on which channel.",
+    "tags": [
+      "notifications",
+      "preferences",
+      "matrix",
+      "channels",
+      "email",
+      "settings"
+    ],
+    "exports": [
+      "PreferenceMatrix",
+      "preferenceMatrixLabels",
+      "PreferenceChannel",
+      "PreferenceEvent",
+      "PreferenceMatrixLabels",
+      "PreferenceValue"
+    ]
+  }
+}

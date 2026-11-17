@@ -10,6 +10,7 @@ export interface Composition {
     pieces: number[];
     files: string[];
     deps: string[];
+    fullScreen?: boolean;
 }
 
 export const blocks: Composition[] = [
@@ -57,6 +58,28 @@ export const blocks: Composition[] = [
         files: ['blocks/home-dashboard.tsx'],
         deps: ['page-header', 'stat-tile', 'data-table', 'cells', 'activity-timeline'],
     },
+    {
+        slug: 'roles-index',
+        kind: 'block',
+        name: 'Roles',
+        tagline: 'Every role with its users and permission counts. Super admin locked, a role in use cannot be deleted.',
+        description: ['Name over description in one cell, counts as numbers. The super admin row has no menu. Delete appears only when nobody holds the role, and it asks for a reason.'],
+        tags: ['roles', 'permissions', 'organization', 'delete'],
+        pieces: [4, 16],
+        files: ['blocks/roles-index.tsx'],
+        deps: ['page-header', 'data-table', 'cells', 'pill', 'actions-menu', 'reason-dialog'],
+    },
+    {
+        slug: 'onboarding-review',
+        kind: 'block',
+        name: 'Onboarding review',
+        tagline: 'What was submitted, read-only. Reject · Send back · Approve in the header, progress and source on the right.',
+        description: ['The reviewer\'s page. Reject and send back ask for a reason; approve is a confirm that says what gets created. The progress card reads the server problems, so approve stays honest.'],
+        tags: ['onboarding', 'review', 'approve', 'send back', 'reject'],
+        pieces: [27, 16],
+        files: ['blocks/onboarding-review.tsx'],
+        deps: ['form-layout', 'detail-card', 'pill', 'review-problems', 'confirm-dialog', 'reason-dialog'],
+    },
 ];
 
 export const templates: Composition[] = [
@@ -101,8 +124,77 @@ export const templates: Composition[] = [
         description: ['Reached from the user menu, never the sidebar. Flat side nav of the user\'s own pages. Timezone and quiet hours live here because notifications read them per user.'],
         tags: ['settings', 'profile', 'timezone', 'quiet hours'],
         pieces: [7, 18],
-        files: ['templates/settings-page.tsx'],
+        files: ['templates/settings-page.tsx', 'templates/settings-nav.ts'],
         deps: ['section-layout', 'page-header', 'form-layout', 'field-row', 'phone-field'],
+    },
+    {
+        slug: 'roles-page',
+        kind: 'template',
+        name: 'Organization · Roles',
+        tagline: 'The role form: name on top, permission picker below, scope per permission and the sensitive switches.',
+        description: ['Groups come from the permission registry. What the editor does not hold is locked, so nobody grants beyond their own reach. A scoped permission gets its scope next to it; sensitive fields are switches under the picker.'],
+        tags: ['roles', 'permissions', 'scope', 'sensitive', 'organization'],
+        pieces: [4, 5, 26],
+        files: ['templates/roles-page.tsx', 'templates/organization-nav.ts'],
+        deps: ['section-layout', 'form-layout', 'field-row', 'permission-picker', 'sensitive-switches'],
+    },
+    {
+        slug: 'notifications-page',
+        kind: 'template',
+        name: 'Notifications',
+        tagline: 'The inbox behind the bell: every in-app row, filter by event and read state, mark all read.',
+        description: ['One table of the user\'s own notifications. Unread rows carry a dot and weight; the message links to the stored url and marks it read. The channels column reads what was actually sent.'],
+        tags: ['notifications', 'inbox', 'history', 'bell'],
+        pieces: [10],
+        files: ['templates/notifications-page.tsx'],
+        deps: ['page-header', 'filter-bar', 'data-table', 'cells'],
+    },
+    {
+        slug: 'notification-settings',
+        kind: 'template',
+        name: 'Settings · Notifications',
+        tagline: 'The event × channel matrix in personal settings. Opt-in events start off; a channel without a number is greyed.',
+        description: ['Rows are events grouped by module, columns are channels. No saved row means the default; saving writes one row per cell. Quiet hours hold back email only, and the page says so.'],
+        tags: ['notifications', 'preferences', 'matrix', 'settings', 'channels'],
+        pieces: [10, 7],
+        files: ['templates/notification-settings.tsx', 'templates/settings-nav.ts'],
+        deps: ['section-layout', 'page-header', 'preference-matrix'],
+    },
+    {
+        slug: 'onboarding-stepper',
+        kind: 'template',
+        name: 'Onboarding stepper',
+        tagline: 'Full screen with Exit, the left rail of steps, the send-back banner, the review step and Submit.',
+        description: ['Steps beyond the furthest reached stay locked unless done. Each step saves its own slice. The review step lists the server problems with a Fix per section; the banner shows why it came back.'],
+        tags: ['onboarding', 'stepper', 'wizard', 'review', 'send back'],
+        pieces: [27],
+        files: ['templates/onboarding-stepper.tsx'],
+        deps: ['onboarding-stepper', 'review-problems', 'form-layout', 'field-row', 'phone-field'],
+        fullScreen: true,
+    },
+    {
+        slug: 'guest-onboarding',
+        kind: 'template',
+        name: 'Guest onboarding link',
+        tagline: 'The same stepper behind a link: no Exit, only the guest steps, and the fields the link fixed shown read-only.',
+        description: ['What a person outside the app sees from an onboarding link. Same component, fewer steps, a submit label that names who reviews it. The link fields arrive as a card; guests never write them.'],
+        tags: ['onboarding', 'guest', 'link', 'public'],
+        pieces: [27],
+        files: ['templates/guest-onboarding.tsx'],
+        deps: ['onboarding-stepper', 'form-layout', 'field-row', 'phone-field', 'detail-card'],
+        fullScreen: true,
+    },
+    {
+        slug: 'print-invoice',
+        kind: 'template',
+        name: 'Print · Invoice',
+        tagline: 'The A4 sheet: letterhead, repeating header and footer, lines, totals that never split, the draft stamp.',
+        description: ['The reference for <code>resources/views/print/layout.blade.php</code>. Ink on paper, outside the theme. The toolbar hides when printing; header and footer repeat on every page.'],
+        tags: ['print', 'pdf', 'invoice', 'a4', 'statement'],
+        pieces: [17],
+        files: ['templates/print-invoice.tsx'],
+        deps: ['print-sheet'],
+        fullScreen: true,
     },
 ];
 

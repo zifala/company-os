@@ -6,7 +6,7 @@ export const organizationGroups: NavGroup[] = [
         label: 'People',
         items: [
             { title: 'Users', href: '/templates/users-page', icon: UsersIcon, permission: 'users.view-any' },
-            { title: 'Roles', href: '/templates/roles', icon: ShieldCheckIcon, permission: 'roles.manage' },
+            { title: 'Roles', href: '/templates/roles-page', icon: ShieldCheckIcon, permission: 'roles.manage' },
         ],
     },
     {

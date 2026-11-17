@@ -1,0 +1,57 @@
+{
+  "$schema": "https://ui.shadcn.com/schema/registry-item.json",
+  "name": "print-sheet",
+  "type": "registry:ui",
+  "title": "PrintSheet",
+  "description": "The A4 sheet: letterhead, repeating header and footer, title and number, lines, totals, the stamp. One job: Give every official document one print layout that the browser turns into a PDF.",
+  "registryDependencies": [
+    "http://localhost:5173/r/tokens.json",
+    "button"
+  ],
+  "files": [
+    {
+      "path": "registry/company-os/print-sheet.tsx",
+      "content": "import { PrinterIcon } from 'lucide-react';\nimport type { ReactNode } from 'react';\nimport { Button } from '@/components/ui/button';\n\nexport type Letterhead = {\n    legalName: string;\n    lines: string[];\n    logo?: ReactNode;\n};\n\nexport type PrintMeta = { label: string; value: string };\n\nexport type PrintSheetLabels = { print: string; hint: string };\n\nexport const printSheetLabels: PrintSheetLabels = {\n    print: 'Print',\n    hint: 'Print from Chrome or Edge to get page numbers. Keep the default margins.',\n};\n\nexport function PrintSheet({\n    letterhead,\n    title,\n    number,\n    meta = [],\n    stamp = null,\n    footer,\n    onPrint = () => window.print(),\n    labels = printSheetLabels,\n    children,\n}: {\n    letterhead: Letterhead;\n    title: string;\n    number: string;\n    meta?: PrintMeta[];\n    stamp?: string | null;\n    footer: string[];\n    onPrint?: () => void;\n    labels?: PrintSheetLabels;\n    children: ReactNode;\n}) {\n    return (\n        <div className=\"min-h-svh bg-slate-200/70 py-8 print:bg-white print:py-0\">\n            <div className=\"mx-auto mb-4 flex max-w-[210mm] items-center justify-between gap-4 px-4 print:hidden\">\n                <p className=\"text-xs text-muted-foreground\">{labels.hint}</p>\n                <Button onClick={onPrint}>\n                    <PrinterIcon /> {labels.print}\n                </Button>\n            </div>\n            <article className=\"relative mx-auto min-h-[297mm] max-w-[210mm] overflow-hidden bg-white px-[16mm] py-[18mm] text-[10.5pt] leading-[1.45] text-black shadow-lg print:min-h-0 print:max-w-none print:p-0 print:shadow-none\">\n                {stamp && (\n                    <div aria-hidden className=\"pointer-events-none absolute inset-x-0 top-[40%] -rotate-[20deg] text-center text-[64pt] font-bold tracking-widest text-black/[0.08] uppercase\">\n                        {stamp}\n                    </div>\n                )}\n                <table className=\"w-full border-collapse\">\n                    <thead className=\"table-header-group\">\n                        <tr>\n                            <td className=\"pb-[8mm]\">\n                                <div className=\"flex items-start justify-between gap-6 border-b border-neutral-300 pb-[4mm]\">\n                                    <div className=\"grid gap-0.5\">\n                                        <span className=\"text-[13pt] font-semibold\">{letterhead.legalName}</span>\n                                        {letterhead.lines.map((line) => (\n                                            <span key={line} className=\"text-[9pt] text-neutral-600\">\n                                                {line}\n                                            </span>\n                                        ))}\n                                    </div>\n                                    {letterhead.logo}\n                                </div>\n                            </td>\n                        </tr>\n                    </thead>\n                    <tfoot className=\"table-footer-group\">\n                        <tr>\n                            <td className=\"pt-[8mm]\">\n                                <div className=\"flex flex-wrap justify-between gap-x-6 gap-y-1 border-t border-neutral-300 pt-[3mm] text-[8.5pt] text-neutral-600\">\n                                    {footer.map((line) => (\n                                        <span key={line}>{line}</span>\n                                    ))}\n                                </div>\n                            </td>\n                        </tr>\n                    </tfoot>\n                    <tbody>\n                        <tr>\n                            <td className=\"align-top\">\n                                <div className=\"mb-[6mm] flex flex-wrap items-end justify-between gap-6\">\n                                    <h1 className=\"text-[18pt] font-semibold\">\n                                        {title} <span className=\"font-mono text-[14pt]\">{number}</span>\n                                    </h1>\n                                    {meta.length > 0 && (\n                                        <dl className=\"grid grid-cols-[auto_auto] gap-x-4 gap-y-0.5 text-[9.5pt]\">\n                                            {meta.map((item) => (\n                                                <div key={item.label} className=\"contents\">\n                                                    <dt className=\"text-neutral-600\">{item.label}</dt>\n                                                    <dd className=\"text-right tabular-nums\">{item.value}</dd>\n                                                </div>\n                                            ))}\n                                        </dl>\n                                    )}\n                                </div>\n                                <div className=\"grid gap-[6mm]\">{children}</div>\n                            </td>\n                        </tr>\n                    </tbody>\n                </table>\n            </article>\n        </div>\n    );\n}\n",
+      "type": "registry:ui",
+      "target": "components/company-os/print-sheet.tsx"
+    },
+    {
+      "path": "registry/company-os/print-lines.tsx",
+      "content": "import type { ReactNode } from 'react';\nimport { cn } from '@/lib/utils';\n\nexport type PrintColumn = { key: string; label: string; numeric?: boolean; width?: string };\n\nexport type PrintRow = { id: string; cells: Record<string, string> };\n\nexport type PrintTotal = { label: string; value: string; strong?: boolean };\n\nexport function PrintLines({ columns, rows }: { columns: PrintColumn[]; rows: PrintRow[] }) {\n    return (\n        <table className=\"w-full border-collapse text-[9.5pt]\">\n            <thead>\n                <tr>\n                    {columns.map((column) => (\n                        <th key={column.key} scope=\"col\" style={{ width: column.width }} className={cn('border-b border-black px-[1mm] py-[2mm] text-left font-semibold', column.numeric && 'text-right')}>\n                            {column.label}\n                        </th>\n                    ))}\n                </tr>\n            </thead>\n            <tbody>\n                {rows.map((row) => (\n                    <tr key={row.id} className=\"break-inside-avoid\">\n                        {columns.map((column) => (\n                            <td key={column.key} className={cn('border-b border-neutral-300 px-[1mm] py-[2mm] align-top', column.numeric && 'text-right tabular-nums')}>\n                                {row.cells[column.key]}\n                            </td>\n                        ))}\n                    </tr>\n                ))}\n            </tbody>\n        </table>\n    );\n}\n\nexport function PrintTotals({ totals }: { totals: PrintTotal[] }) {\n    return (\n        <dl className=\"ml-auto grid w-[70mm] break-inside-avoid grid-cols-[1fr_auto] gap-x-4 gap-y-1 text-[9.5pt]\">\n            {totals.map((total) => (\n                <div key={total.label} className={cn('col-span-2 grid grid-cols-subgrid', total.strong && 'border-t border-black pt-[1.5mm] font-semibold')}>\n                    <dt>{total.label}</dt>\n                    <dd className=\"text-right tabular-nums\">{total.value}</dd>\n                </div>\n            ))}\n        </dl>\n    );\n}\n\nexport function PrintBlock({ title, children }: { title: string; children: ReactNode }) {\n    return (\n        <section className=\"break-inside-avoid\">\n            <h2 className=\"mb-[1.5mm] text-[8.5pt] font-semibold tracking-wide text-neutral-600 uppercase\">{title}</h2>\n            <div className=\"text-[9.5pt]\">{children}</div>\n        </section>\n    );\n}\n",
+      "type": "registry:ui",
+      "target": "components/company-os/print-lines.tsx"
+    }
+  ],
+  "categories": [
+    "views"
+  ],
+  "docs": "http://localhost:5173/llms/print-sheet.md",
+  "meta": {
+    "system": "Company OS",
+    "pieces": [
+      17
+    ],
+    "job": "Give every official document one print layout that the browser turns into a PDF.",
+    "tags": [
+      "print",
+      "pdf",
+      "a4",
+      "invoice",
+      "statement",
+      "letterhead"
+    ],
+    "exports": [
+      "PrintSheet",
+      "printSheetLabels",
+      "Letterhead",
+      "PrintMeta",
+      "PrintSheetLabels",
+      "PrintLines",
+      "PrintTotals",
+      "PrintBlock",
+      "PrintColumn",
+      "PrintRow",
+      "PrintTotal"
+    ]
+  }
+}

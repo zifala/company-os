@@ -1,4 +1,5 @@
 import type { ComponentType } from 'react';
+import { accessDemos } from './demos/access';
 import { dialogDemos } from './demos/dialogs';
 import { formDemos } from './demos/forms';
 import { pageKitDemos } from './demos/page-kit';
@@ -11,6 +12,7 @@ export const demos: Record<string, ComponentType> = {
     ...pageKitDemos,
     ...dialogDemos,
     ...formDemos,
+    ...accessDemos,
     ...viewDemos,
     ...setupDemos,
 };

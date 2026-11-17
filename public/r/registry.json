@@ -581,6 +581,51 @@
       ]
     },
     {
+      "name": "permission-picker",
+      "type": "registry:ui",
+      "title": "PermissionPicker",
+      "description": "Permissions grouped by module, a scope beside each scoped one, and a lock on what the editor does not hold. One job: Build a role in the UI without letting anyone grant beyond their own reach.",
+      "categories": [
+        "access"
+      ],
+      "files": [
+        {
+          "path": "components/company-os/permission-picker.tsx",
+          "type": "registry:ui"
+        }
+      ]
+    },
+    {
+      "name": "sensitive-switches",
+      "type": "registry:ui",
+      "title": "SensitiveSwitches",
+      "description": "One switch per sensitive field family, each with the line that says what it reveals. One job: Hide money, margins, salaries and client contacts per role without a permission per field.",
+      "categories": [
+        "access"
+      ],
+      "files": [
+        {
+          "path": "components/company-os/sensitive-switches.tsx",
+          "type": "registry:ui"
+        }
+      ]
+    },
+    {
+      "name": "preference-matrix",
+      "type": "registry:ui",
+      "title": "PreferenceMatrix",
+      "description": "Events down, channels across, one switch per cell. Quiet hours said once, under the grid. One job: Let each person pick which events reach them on which channel.",
+      "categories": [
+        "access"
+      ],
+      "files": [
+        {
+          "path": "components/company-os/preference-matrix.tsx",
+          "type": "registry:ui"
+        }
+      ]
+    },
+    {
       "name": "saved-views-menu",
       "type": "registry:ui",
       "title": "SavedViewsMenu",
@@ -653,6 +698,25 @@
       ]
     },
     {
+      "name": "print-sheet",
+      "type": "registry:ui",
+      "title": "PrintSheet",
+      "description": "The A4 sheet: letterhead, repeating header and footer, title and number, lines, totals, the stamp. One job: Give every official document one print layout that the browser turns into a PDF.",
+      "categories": [
+        "views"
+      ],
+      "files": [
+        {
+          "path": "components/company-os/print-sheet.tsx",
+          "type": "registry:ui"
+        },
+        {
+          "path": "components/company-os/print-lines.tsx",
+          "type": "registry:ui"
+        }
+      ]
+    },
+    {
       "name": "setup-checklist",
       "type": "registry:ui",
       "title": "SetupChecklist",
@@ -678,6 +742,40 @@
       "files": [
         {
           "path": "components/company-os/onboarding-card.tsx",
+          "type": "registry:ui"
+        }
+      ]
+    },
+    {
+      "name": "onboarding-stepper",
+      "type": "registry:ui",
+      "title": "OnboardingStepper",
+      "description": "Full screen, a thin header with Exit, the left rail of steps, Back and \"Confirm and continue\". One job: Walk staff or a guest through an onboarding one saved slice at a time.",
+      "categories": [
+        "setup"
+      ],
+      "files": [
+        {
+          "path": "components/company-os/onboarding-stepper.tsx",
+          "type": "registry:ui"
+        },
+        {
+          "path": "components/company-os/onboarding-rail.tsx",
+          "type": "registry:ui"
+        }
+      ]
+    },
+    {
+      "name": "review-problems",
+      "type": "registry:ui",
+      "title": "ReviewProblems",
+      "description": "One row per section: ready, or the problems the server found, with a Fix that jumps to the step. One job: Show what still blocks a submit or an approve, from the same checks the server runs.",
+      "categories": [
+        "setup"
+      ],
+      "files": [
+        {
+          "path": "components/company-os/review-problems.tsx",
           "type": "registry:ui"
         }
       ]
@@ -758,6 +856,36 @@
       ]
     },
     {
+      "name": "block-roles-index",
+      "type": "registry:block",
+      "title": "Roles",
+      "description": "Every role with its users and permission counts. Super admin locked, a role in use cannot be deleted.",
+      "categories": [
+        "blocks"
+      ],
+      "files": [
+        {
+          "path": "blocks/roles-index.tsx",
+          "type": "registry:block"
+        }
+      ]
+    },
+    {
+      "name": "block-onboarding-review",
+      "type": "registry:block",
+      "title": "Onboarding review",
+      "description": "What was submitted, read-only. Reject · Send back · Approve in the header, progress and source on the right.",
+      "categories": [
+        "blocks"
+      ],
+      "files": [
+        {
+          "path": "blocks/onboarding-review.tsx",
+          "type": "registry:block"
+        }
+      ]
+    },
+    {
       "name": "template-users-page",
       "type": "registry:block",
       "title": "Organization · Users",
@@ -821,6 +949,108 @@
       "files": [
         {
           "path": "templates/settings-page.tsx",
+          "type": "registry:block"
+        },
+        {
+          "path": "templates/settings-nav.ts",
+          "type": "registry:block"
+        }
+      ]
+    },
+    {
+      "name": "template-roles-page",
+      "type": "registry:block",
+      "title": "Organization · Roles",
+      "description": "The role form: name on top, permission picker below, scope per permission and the sensitive switches.",
+      "categories": [
+        "templates"
+      ],
+      "files": [
+        {
+          "path": "templates/roles-page.tsx",
+          "type": "registry:block"
+        },
+        {
+          "path": "templates/organization-nav.ts",
+          "type": "registry:block"
+        }
+      ]
+    },
+    {
+      "name": "template-notifications-page",
+      "type": "registry:block",
+      "title": "Notifications",
+      "description": "The inbox behind the bell: every in-app row, filter by event and read state, mark all read.",
+      "categories": [
+        "templates"
+      ],
+      "files": [
+        {
+          "path": "templates/notifications-page.tsx",
+          "type": "registry:block"
+        }
+      ]
+    },
+    {
+      "name": "template-notification-settings",
+      "type": "registry:block",
+      "title": "Settings · Notifications",
+      "description": "The event × channel matrix in personal settings. Opt-in events start off; a channel without a number is greyed.",
+      "categories": [
+        "templates"
+      ],
+      "files": [
+        {
+          "path": "templates/notification-settings.tsx",
+          "type": "registry:block"
+        },
+        {
+          "path": "templates/settings-nav.ts",
+          "type": "registry:block"
+        }
+      ]
+    },
+    {
+      "name": "template-onboarding-stepper",
+      "type": "registry:block",
+      "title": "Onboarding stepper",
+      "description": "Full screen with Exit, the left rail of steps, the send-back banner, the review step and Submit.",
+      "categories": [
+        "templates"
+      ],
+      "files": [
+        {
+          "path": "templates/onboarding-stepper.tsx",
+          "type": "registry:block"
+        }
+      ]
+    },
+    {
+      "name": "template-guest-onboarding",
+      "type": "registry:block",
+      "title": "Guest onboarding link",
+      "description": "The same stepper behind a link: no Exit, only the guest steps, and the fields the link fixed shown read-only.",
+      "categories": [
+        "templates"
+      ],
+      "files": [
+        {
+          "path": "templates/guest-onboarding.tsx",
+          "type": "registry:block"
+        }
+      ]
+    },
+    {
+      "name": "template-print-invoice",
+      "type": "registry:block",
+      "title": "Print · Invoice",
+      "description": "The A4 sheet: letterhead, repeating header and footer, lines, totals that never split, the draft stamp.",
+      "categories": [
+        "templates"
+      ],
+      "files": [
+        {
+          "path": "templates/print-invoice.tsx",
           "type": "registry:block"
         }
       ]

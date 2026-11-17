@@ -2,6 +2,7 @@ import type { DocEntry } from '../types';
 import { csvImport } from './csv-import';
 import { exportButton } from './export-button';
 import { favoriteButton } from './favorite-button';
+import { printSheet } from './print-sheet';
 import { savedViewsMenu } from './saved-views-menu';
 
-export const views: DocEntry[] = [savedViewsMenu, favoriteButton, exportButton, csvImport];
+export const views: DocEntry[] = [savedViewsMenu, favoriteButton, exportButton, csvImport, printSheet];

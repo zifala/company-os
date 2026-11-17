@@ -1,0 +1,55 @@
+{
+  "$schema": "https://ui.shadcn.com/schema/registry-item.json",
+  "name": "onboarding-stepper",
+  "type": "registry:ui",
+  "title": "OnboardingStepper",
+  "description": "Full screen, a thin header with Exit, the left rail of steps, Back and \"Confirm and continue\". One job: Walk staff or a guest through an onboarding one saved slice at a time.",
+  "registryDependencies": [
+    "http://localhost:5173/r/tokens.json",
+    "http://localhost:5173/r/pill.json",
+    "alert",
+    "button"
+  ],
+  "files": [
+    {
+      "path": "registry/company-os/onboarding-stepper.tsx",
+      "content": "import { CornerUpLeftIcon, XIcon } from 'lucide-react';\nimport type { ReactNode } from 'react';\nimport { OnboardingRail } from '@/components/company-os/onboarding-rail';\nimport type { OnboardingStepItem } from '@/components/company-os/onboarding-rail';\nimport { Alert, AlertDescription, AlertTitle } from '@/components/ui/alert';\nimport { Button } from '@/components/ui/button';\nimport { Link } from '@/lib/navigation';\nimport type { Href } from '@/lib/navigation';\n\nexport type SentBack = { reason: string; by: string; at: string };\n\nexport type OnboardingStepperLabels = {\n    exit: string;\n    back: string;\n    next: string;\n    submit: string;\n    sentBack: (by: string, at: string) => string;\n    stepOf: (index: number, total: number) => string;\n};\n\nexport const onboardingStepperLabels: OnboardingStepperLabels = {\n    exit: 'Exit',\n    back: 'Back',\n    next: 'Confirm and continue',\n    submit: 'Submit for review',\n    sentBack: (by, at) => `Sent back by ${by} on ${at}`,\n    stepOf: (index, total) => `Step ${index} of ${total}`,\n};\n\nexport function OnboardingStepper({\n    title,\n    reference,\n    name,\n    status,\n    steps,\n    current,\n    furthest,\n    onSelect,\n    sentBack = null,\n    exitHref = null,\n    onBack,\n    onContinue,\n    processing,\n    editable = true,\n    labels = onboardingStepperLabels,\n    children,\n}: {\n    title: string;\n    reference: string;\n    name: string;\n    status: { label: string; color: string };\n    steps: OnboardingStepItem[];\n    current: string;\n    furthest: number;\n    onSelect: (key: string) => void;\n    sentBack?: SentBack | null;\n    exitHref?: Href | null;\n    onBack: () => void;\n    onContinue: () => void;\n    processing: boolean;\n    editable?: boolean;\n    labels?: OnboardingStepperLabels;\n    children: ReactNode;\n}) {\n    const index = Math.max(0, steps.findIndex((step) => step.key === current));\n    const step = steps[index];\n    const last = index === steps.length - 1;\n\n    return (\n        <div className=\"flex min-h-svh flex-col bg-background\">\n            <header className=\"flex h-14 shrink-0 items-center gap-3 border-b border-border px-4 md:px-6\">\n                <span className=\"min-w-0 flex-1 truncate text-sm font-semibold text-slate-800\">{title}</span>\n                {exitHref !== null && (\n                    <Button variant=\"ghost\" size=\"sm\" asChild>\n                        <Link href={exitHref}>\n                            <XIcon /> {labels.exit}\n                        </Link>\n                    </Button>\n                )}\n            </header>\n            <div className=\"flex flex-1 flex-col md:flex-row\">\n                <OnboardingRail reference={reference} name={name} status={status} steps={steps} current={current} furthest={furthest} onSelect={onSelect} />\n                <main className=\"flex min-w-0 flex-1 flex-col\">\n                    <div className=\"mx-auto flex w-full max-w-3xl flex-1 flex-col gap-6 p-4 md:p-8\">\n                        {sentBack && (\n                            <Alert>\n                                <CornerUpLeftIcon />\n                                <AlertTitle>{labels.sentBack(sentBack.by, sentBack.at)}</AlertTitle>\n                                <AlertDescription>{sentBack.reason}</AlertDescription>\n                            </Alert>\n                        )}\n                        <div className=\"grid gap-1\">\n                            <span className=\"text-xs text-muted-foreground\">{labels.stepOf(index + 1, steps.length)}</span>\n                            <h1 className=\"text-xl font-semibold tracking-tight text-slate-800\">{step?.label}</h1>\n                        </div>\n                        <div className=\"grid gap-6\">{children}</div>\n                    </div>\n                    <footer className=\"sticky bottom-0 border-t border-border bg-background/80 backdrop-blur-sm\">\n                        <div className=\"mx-auto flex w-full max-w-3xl items-center justify-between gap-3 px-4 py-3 md:px-8\">\n                            <Button variant=\"outline\" onClick={onBack} disabled={index === 0 || processing}>\n                                {labels.back}\n                            </Button>\n                            {editable && (\n                                <Button onClick={onContinue} disabled={processing}>\n                                    {last ? labels.submit : labels.next}\n                                </Button>\n                            )}\n                        </div>\n                    </footer>\n                </main>\n            </div>\n        </div>\n    );\n}\n",
+      "type": "registry:ui",
+      "target": "components/company-os/onboarding-stepper.tsx"
+    },
+    {
+      "path": "registry/company-os/onboarding-rail.tsx",
+      "content": "import { CheckIcon, LockIcon } from 'lucide-react';\nimport { Pill } from '@/components/company-os/pill';\nimport { cn } from '@/lib/utils';\n\nexport type OnboardingStepItem = {\n    key: string;\n    label: string;\n    done: boolean;\n};\n\nexport function stepLocked(steps: OnboardingStepItem[], index: number, furthest: number): boolean {\n    return index > furthest && !steps[index]?.done;\n}\n\nexport function OnboardingRail({\n    reference,\n    name,\n    status,\n    steps,\n    current,\n    furthest,\n    onSelect,\n    lockedLabel = 'Finish the steps before this one first',\n}: {\n    reference: string;\n    name: string;\n    status: { label: string; color: string };\n    steps: OnboardingStepItem[];\n    current: string;\n    furthest: number;\n    onSelect: (key: string) => void;\n    lockedLabel?: string;\n}) {\n    return (\n        <aside className=\"flex flex-col gap-5 border-b border-border p-5 md:w-72 md:shrink-0 md:border-r md:border-b-0\">\n            <div className=\"grid gap-1.5\">\n                <span className=\"font-mono text-xs text-muted-foreground\">{reference}</span>\n                <span className=\"text-base font-semibold text-slate-800\">{name}</span>\n                <span>\n                    <Pill name={status.label} color={status.color} />\n                </span>\n            </div>\n            <ol className=\"grid gap-1\">\n                {steps.map((step, index) => {\n                    const locked = stepLocked(steps, index, furthest);\n                    const active = step.key === current;\n\n                    return (\n                        <li key={step.key}>\n                            <button\n                                type=\"button\"\n                                disabled={locked}\n                                aria-current={active ? 'step' : undefined}\n                                title={locked ? lockedLabel : undefined}\n                                onClick={() => onSelect(step.key)}\n                                className={cn(\n                                    'flex w-full items-center gap-3 rounded-md px-2 py-2 text-left text-sm transition-colors',\n                                    active ? 'bg-primary/10 font-medium text-primary' : 'text-slate-700 hover:bg-muted',\n                                    locked && 'cursor-not-allowed text-muted-foreground hover:bg-transparent',\n                                )}\n                            >\n                                <span\n                                    className={cn(\n                                        'flex size-6 shrink-0 items-center justify-center rounded-full border text-xs tabular-nums',\n                                        step.done ? 'border-transparent bg-emerald-500/10 text-emerald-600' : active ? 'border-primary text-primary' : 'border-border',\n                                    )}\n                                >\n                                    {step.done ? <CheckIcon className=\"size-3.5\" /> : locked ? <LockIcon className=\"size-3\" /> : index + 1}\n                                </span>\n                                <span className=\"min-w-0 flex-1 truncate\">{step.label}</span>\n                            </button>\n                        </li>\n                    );\n                })}\n            </ol>\n        </aside>\n    );\n}\n",
+      "type": "registry:ui",
+      "target": "components/company-os/onboarding-rail.tsx"
+    }
+  ],
+  "categories": [
+    "setup"
+  ],
+  "docs": "http://localhost:5173/llms/onboarding-stepper.md",
+  "meta": {
+    "system": "Company OS",
+    "pieces": [
+      27
+    ],
+    "job": "Walk staff or a guest through an onboarding one saved slice at a time.",
+    "tags": [
+      "onboarding",
+      "stepper",
+      "wizard",
+      "steps",
+      "guest",
+      "send back"
+    ],
+    "exports": [
+      "OnboardingStepper",
+      "onboardingStepperLabels",
+      "OnboardingStepperLabels",
+      "SentBack",
+      "OnboardingRail",
+      "OnboardingStepItem",
+      "stepLocked"
+    ]
+  }
+}
