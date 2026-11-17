@@ -1,4 +1,4 @@
-export type Category = 'shell' | 'page-kit' | 'dialogs' | 'forms' | 'access' | 'views' | 'setup';
+export type Category = 'shell' | 'page-kit' | 'dialogs' | 'forms' | 'access' | 'views' | 'setup' | 'organization';
 
 export interface DocExample {
     title: string;

@@ -1,0 +1,43 @@
+{
+  "$schema": "https://ui.shadcn.com/schema/registry-item.json",
+  "name": "letterhead-preview",
+  "type": "registry:ui",
+  "title": "LetterheadPreview",
+  "description": "The printed header, live beside the workspace form: legal name, lines, logo. One job: Let the person editing the letterhead see what every invoice and statement will print.",
+  "registryDependencies": [
+    "http://localhost:5173/r/tokens.json",
+    "http://localhost:5173/r/print-sheet.json"
+  ],
+  "files": [
+    {
+      "path": "registry/company-os/letterhead-preview.tsx",
+      "content": "import type { Letterhead } from '@/components/company-os/print-sheet';\n\nexport type LetterheadPreviewLabels = {\n    title: string;\n    hint: string;\n};\n\nexport const letterheadPreviewLabels: LetterheadPreviewLabels = {\n    title: 'On printed documents',\n    hint: 'Invoices, statements and letters print this header on every page.',\n};\n\nexport function LetterheadPreview({ letterhead, labels: custom }: { letterhead: Letterhead; labels?: Partial<LetterheadPreviewLabels> }) {\n    const labels = { ...letterheadPreviewLabels, ...custom };\n    const lines = letterhead.lines.filter((line) => line.trim() !== '');\n\n    return (\n        <section className=\"rounded-lg glass\">\n            <h2 className=\"border-b border-border px-5 py-3 text-sm font-semibold text-slate-800\">{labels.title}</h2>\n            <div className=\"grid gap-3 p-5\">\n                <div className=\"rounded-sm bg-white p-4 text-black shadow-sm ring-1 ring-black/5\" aria-label={labels.title}>\n                    <div className=\"flex items-start justify-between gap-4 border-b border-neutral-300 pb-2\">\n                        <div className=\"grid min-w-0 gap-0.5\">\n                            <span className=\"truncate text-sm font-semibold\">{letterhead.legalName || '—'}</span>\n                            {lines.map((line) => (\n                                <span key={line} className=\"truncate text-[11px] text-neutral-600\">\n                                    {line}\n                                </span>\n                            ))}\n                        </div>\n                        {letterhead.logo}\n                    </div>\n                    <div className=\"mt-3 grid gap-1.5\" aria-hidden>\n                        <span className=\"h-2 w-2/5 rounded-sm bg-neutral-200\" />\n                        <span className=\"h-2 w-4/5 rounded-sm bg-neutral-100\" />\n                        <span className=\"h-2 w-3/5 rounded-sm bg-neutral-100\" />\n                    </div>\n                </div>\n                <p className=\"text-xs text-muted-foreground\">{labels.hint}</p>\n            </div>\n        </section>\n    );\n}\n",
+      "type": "registry:ui",
+      "target": "components/company-os/letterhead-preview.tsx"
+    }
+  ],
+  "categories": [
+    "organization"
+  ],
+  "docs": "http://localhost:5173/llms/letterhead-preview.md",
+  "meta": {
+    "system": "Company OS",
+    "pieces": [
+      7,
+      17
+    ],
+    "job": "Let the person editing the letterhead see what every invoice and statement will print.",
+    "tags": [
+      "letterhead",
+      "workspace",
+      "print",
+      "legal name",
+      "logo"
+    ],
+    "exports": [
+      "LetterheadPreview",
+      "letterheadPreviewLabels",
+      "LetterheadPreviewLabels"
+    ]
+  }
+}

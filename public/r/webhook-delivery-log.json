@@ -1,0 +1,46 @@
+{
+  "$schema": "https://ui.shadcn.com/schema/registry-item.json",
+  "name": "webhook-delivery-log",
+  "type": "registry:ui",
+  "title": "WebhookDeliveryLog",
+  "description": "Every delivery as a row: event, status, attempts, response code over its excerpt, next attempt, resend. One job: Answer \"did they get it, and if not why\" from the endpoint page.",
+  "registryDependencies": [
+    "http://localhost:5173/r/tokens.json",
+    "http://localhost:5173/r/cells.json",
+    "http://localhost:5173/r/data-table.json",
+    "table",
+    "button"
+  ],
+  "files": [
+    {
+      "path": "registry/company-os/webhook-delivery-log.tsx",
+      "content": "import { RotateCwIcon } from 'lucide-react';\nimport { CodeCell, DateCell, NumberCell, StatusCell, TextCell } from '@/components/company-os/cells';\nimport type { Day, Status } from '@/components/company-os/cells';\nimport { DataTable, TableEmptyRow } from '@/components/company-os/data-table';\nimport type { PageLabels, Paginated } from '@/components/company-os/data-table';\nimport { Button } from '@/components/ui/button';\nimport { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table';\n\nexport type WebhookDelivery = {\n    id: string;\n    event: { name: string; label: string };\n    status: Status;\n    attempts: number;\n    responseCode: number | null;\n    excerpt: string | null;\n    createdAt: Day;\n    nextAttemptAt: Day;\n};\n\nexport type WebhookDeliveryLogLabels = {\n    event: string;\n    status: string;\n    attempts: string;\n    response: string;\n    sent: string;\n    next: string;\n    resend: string;\n    resendFor: (event: string) => string;\n    emptyTitle: string;\n    emptyMessage: string;\n};\n\nexport const webhookDeliveryLogLabels: WebhookDeliveryLogLabels = {\n    event: 'Event',\n    status: 'Status',\n    attempts: 'Attempts',\n    response: 'Response',\n    sent: 'Created',\n    next: 'Next attempt',\n    resend: 'Resend',\n    resendFor: (event) => `Resend ${event}`,\n    emptyTitle: 'Nothing delivered yet',\n    emptyMessage: 'Send a test event to check the endpoint answers with a 2xx.',\n};\n\nexport function WebhookDeliveryLog({\n    page,\n    deliveries,\n    canResend,\n    resending = null,\n    onResend,\n    pageLabels,\n    labels: custom,\n}: {\n    page: Paginated<unknown>;\n    deliveries: WebhookDelivery[];\n    canResend: boolean;\n    resending?: string | null;\n    onResend: (delivery: WebhookDelivery) => void;\n    pageLabels?: PageLabels;\n    labels?: Partial<WebhookDeliveryLogLabels>;\n}) {\n    const labels = { ...webhookDeliveryLogLabels, ...custom };\n    const columns = canResend ? 7 : 6;\n\n    return (\n        <DataTable page={page} labels={pageLabels}>\n            <Table>\n                <TableHeader>\n                    <TableRow>\n                        <TableHead>{labels.event}</TableHead>\n                        <TableHead>{labels.status}</TableHead>\n                        <TableHead className=\"text-right\">{labels.attempts}</TableHead>\n                        <TableHead>{labels.response}</TableHead>\n                        <TableHead>{labels.sent}</TableHead>\n                        <TableHead>{labels.next}</TableHead>\n                        {canResend && <TableHead className=\"w-24\" />}\n                    </TableRow>\n                </TableHeader>\n                <TableBody>\n                    {deliveries.length === 0 && <TableEmptyRow colSpan={columns} title={labels.emptyTitle} message={labels.emptyMessage} />}\n                    {deliveries.map((delivery) => (\n                        <TableRow key={delivery.id}>\n                            <TextCell detail={delivery.event.name}>\n                                <span className=\"font-medium text-slate-800\">{delivery.event.label}</span>\n                            </TextCell>\n                            <StatusCell value={delivery.status} />\n                            <NumberCell value={String(delivery.attempts)} />\n                            {delivery.responseCode === null && delivery.excerpt === null ? (\n                                <CodeCell value={null} />\n                            ) : (\n                                <TableCell className=\"max-w-64\">\n                                    <span className=\"grid min-w-0 gap-0.5\">\n                                        <span className=\"font-mono text-xs text-slate-800\">{delivery.responseCode ?? '—'}</span>\n                                        {delivery.excerpt && <span className=\"truncate font-mono text-xs text-muted-foreground\" title={delivery.excerpt}>{delivery.excerpt}</span>}\n                                    </span>\n                                </TableCell>\n                            )}\n                            <DateCell value={delivery.createdAt} />\n                            <DateCell value={delivery.nextAttemptAt} />\n                            {canResend && (\n                                <TableCell className=\"text-right\">\n                                    <Button\n                                        size=\"sm\"\n                                        variant=\"ghost\"\n                                        disabled={resending === delivery.id}\n                                        aria-label={labels.resendFor(delivery.event.label)}\n                                        onClick={() => onResend(delivery)}\n                                    >\n                                        <RotateCwIcon /> {labels.resend}\n                                    </Button>\n                                </TableCell>\n                            )}\n                        </TableRow>\n                    ))}\n                </TableBody>\n            </Table>\n        </DataTable>\n    );\n}\n",
+      "type": "registry:ui",
+      "target": "components/company-os/webhook-delivery-log.tsx"
+    }
+  ],
+  "categories": [
+    "organization"
+  ],
+  "docs": "http://localhost:5173/llms/webhook-delivery-log.md",
+  "meta": {
+    "system": "Company OS",
+    "pieces": [
+      22
+    ],
+    "job": "Answer \"did they get it, and if not why\" from the endpoint page.",
+    "tags": [
+      "webhooks",
+      "deliveries",
+      "retry",
+      "resend",
+      "log"
+    ],
+    "exports": [
+      "WebhookDeliveryLog",
+      "webhookDeliveryLogLabels",
+      "WebhookDelivery",
+      "WebhookDeliveryLogLabels"
+    ]
+  }
+}

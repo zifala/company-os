@@ -1,0 +1,44 @@
+{
+  "$schema": "https://ui.shadcn.com/schema/registry-item.json",
+  "name": "service-status-list",
+  "type": "registry:ui",
+  "title": "ServiceStatusList",
+  "description": "Each service the app needs, configured or missing, with the env names to set. Never a value. One job: Tell an admin what the server still needs without putting a secret anywhere near the browser.",
+  "registryDependencies": [
+    "http://localhost:5173/r/tokens.json"
+  ],
+  "files": [
+    {
+      "path": "registry/company-os/service-status-list.tsx",
+      "content": "import { CircleAlertIcon, CircleCheckIcon } from 'lucide-react';\nimport type { ReactNode } from 'react';\n\nexport type ServiceStatus = {\n    key: string;\n    label: string;\n    ok: boolean;\n    env: string[];\n};\n\nexport type ServiceStatusLabels = {\n    title: string;\n    ok: string;\n    missing: string;\n    set: string;\n};\n\nexport const serviceStatusLabels: ServiceStatusLabels = {\n    title: 'Services',\n    ok: 'Configured',\n    missing: 'Missing',\n    set: 'Set in the server environment',\n};\n\nexport function ServiceStatusList({\n    services,\n    action,\n    labels: custom,\n}: {\n    services: ServiceStatus[];\n    action?: ReactNode;\n    labels?: Partial<ServiceStatusLabels>;\n}) {\n    const labels = { ...serviceStatusLabels, ...custom };\n\n    return (\n        <section className=\"rounded-lg glass\">\n            <div className=\"flex items-center justify-between gap-3 border-b border-border px-5 py-3\">\n                <h2 className=\"text-sm font-semibold text-slate-800\">{labels.title}</h2>\n                {action}\n            </div>\n            <ul>\n                {services.map((service) => {\n                    const Icon = service.ok ? CircleCheckIcon : CircleAlertIcon;\n\n                    return (\n                        <li key={service.key} className=\"grid gap-1 border-b border-border px-5 py-3 text-sm last:border-0\">\n                            <div className=\"flex items-center gap-3\">\n                                <span className=\"font-medium text-slate-800\">{service.label}</span>\n                                <span className={service.ok ? 'ml-auto inline-flex items-center gap-1.5 text-success' : 'ml-auto inline-flex items-center gap-1.5 text-warning'}>\n                                    <Icon className=\"size-4\" aria-hidden />\n                                    {service.ok ? labels.ok : labels.missing}\n                                </span>\n                            </div>\n                            {service.env.length > 0 && (\n                                <p className=\"font-mono text-xs text-muted-foreground\" title={labels.set}>\n                                    {service.env.join(' · ')}\n                                </p>\n                            )}\n                        </li>\n                    );\n                })}\n            </ul>\n        </section>\n    );\n}\n",
+      "type": "registry:ui",
+      "target": "components/company-os/service-status-list.tsx"
+    }
+  ],
+  "categories": [
+    "organization"
+  ],
+  "docs": "http://localhost:5173/llms/service-status-list.md",
+  "meta": {
+    "system": "Company OS",
+    "pieces": [
+      7,
+      8
+    ],
+    "job": "Tell an admin what the server still needs without putting a secret anywhere near the browser.",
+    "tags": [
+      "services",
+      "env",
+      "configuration",
+      "workspace",
+      "setup",
+      "secrets"
+    ],
+    "exports": [
+      "ServiceStatusList",
+      "serviceStatusLabels",
+      "ServiceStatus",
+      "ServiceStatusLabels"
+    ]
+  }
+}

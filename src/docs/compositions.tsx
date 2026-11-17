@@ -5,6 +5,11 @@ import { IndexPage } from '@/blocks/index-page';
 import { OnboardingReview } from '@/blocks/onboarding-review';
 import { RecordPage } from '@/blocks/record-page';
 import { RolesIndex } from '@/blocks/roles-index';
+import { AuditLogPage } from '@/templates/audit-log-page';
+import { WorkspacePage } from '@/templates/workspace-page';
+import { WebhooksPage } from '@/templates/webhooks-page';
+import { WebhookEndpointPage } from '@/templates/webhook-endpoint-page';
+import { GrantsPage } from '@/templates/grants-page';
 import { GuestOnboarding } from '@/templates/guest-onboarding';
 import { NotificationSettings } from '@/templates/notification-settings';
 import { NotificationsPage } from '@/templates/notifications-page';
@@ -21,6 +26,11 @@ import indexPageSrc from '@/blocks/index-page.tsx?raw';
 import onboardingReviewSrc from '@/blocks/onboarding-review.tsx?raw';
 import recordPageSrc from '@/blocks/record-page.tsx?raw';
 import rolesIndexSrc from '@/blocks/roles-index.tsx?raw';
+import auditLogPageSrc from '@/templates/audit-log-page.tsx?raw';
+import workspacePageSrc from '@/templates/workspace-page.tsx?raw';
+import webhooksPageSrc from '@/templates/webhooks-page.tsx?raw';
+import webhookEndpointPageSrc from '@/templates/webhook-endpoint-page.tsx?raw';
+import grantsPageSrc from '@/templates/grants-page.tsx?raw';
 import guestOnboardingSrc from '@/templates/guest-onboarding.tsx?raw';
 import notificationSettingsSrc from '@/templates/notification-settings.tsx?raw';
 import notificationsPageSrc from '@/templates/notifications-page.tsx?raw';
@@ -46,6 +56,11 @@ export const compositionRender: Record<string, CompositionRender> = {
     'setup-page': { Component: SetupPage, source: setupPageSrc },
     'settings-page': { Component: SettingsPage, source: settingsPageSrc },
     'roles-page': { Component: RolesPage, source: rolesPageSrc },
+    'audit-log-page': { Component: AuditLogPage, source: auditLogPageSrc },
+    'workspace-page': { Component: WorkspacePage, source: workspacePageSrc },
+    'webhooks-page': { Component: WebhooksPage, source: webhooksPageSrc },
+    'webhook-endpoint-page': { Component: WebhookEndpointPage, source: webhookEndpointPageSrc },
+    'grants-page': { Component: GrantsPage, source: grantsPageSrc },
     'notifications-page': { Component: NotificationsPage, source: notificationsPageSrc },
     'notification-settings': { Component: NotificationSettings, source: notificationSettingsSrc },
     'onboarding-stepper': { Component: OnboardingStepperPage, source: onboardingStepperSrc },

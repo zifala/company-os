@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import { PageHeader, PreferenceMatrix, SectionLayout } from '@/components/company-os';
+import { CalendarFeedCard, PageHeader, PreferenceMatrix, SectionLayout } from '@/components/company-os';
 import type { PreferenceChannel, PreferenceEvent, PreferenceValue } from '@/components/company-os';
 import { Button } from '@/components/ui/button';
 import { settingsGroups } from './settings-nav';
@@ -34,6 +34,7 @@ const initial: PreferenceValue = {
 
 export function NotificationSettings() {
     const [value, setValue] = useState(initial);
+    const [feed, setFeed] = useState<{ active: boolean; url: string | null }>({ active: false, url: null });
 
     return (
         <SectionLayout title="Settings" groups={settingsGroups} permissions={[]}>
@@ -42,6 +43,12 @@ export function NotificationSettings() {
                     <Button>Save preferences</Button>
                 </PageHeader>
                 <PreferenceMatrix events={events} channels={channels} value={value} onChange={setValue} />
+                <CalendarFeedCard
+                    active={feed.active}
+                    url={feed.url}
+                    onCreate={() => setFeed({ active: true, url: 'https://app.halcyon.example/calendar/feed/r8Kd2QpX7vLm4Tn9Wc1Zb6Hs3Gy5Ja0Fe8Ui2Ow7.ics' })}
+                    onRevoke={() => setFeed({ active: false, url: null })}
+                />
             </div>
         </SectionLayout>
     );

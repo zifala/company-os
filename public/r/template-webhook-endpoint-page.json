@@ -1,0 +1,52 @@
+{
+  "$schema": "https://ui.shadcn.com/schema/registry-item.json",
+  "name": "template-webhook-endpoint-page",
+  "type": "registry:block",
+  "title": "Organization · Webhook endpoint",
+  "description": "One endpoint: the auto-disabled banner with Enable, send test, rotate secret, turn off with a reason, the delivery log.",
+  "registryDependencies": [
+    "http://localhost:5173/r/tokens.json",
+    "http://localhost:5173/r/section-layout.json",
+    "http://localhost:5173/r/page-header.json",
+    "http://localhost:5173/r/pill.json",
+    "http://localhost:5173/r/actions-menu.json",
+    "http://localhost:5173/r/detail-card.json",
+    "http://localhost:5173/r/reason-dialog.json",
+    "http://localhost:5173/r/secret-reveal.json",
+    "http://localhost:5173/r/webhook-endpoint-status.json",
+    "http://localhost:5173/r/webhook-delivery-log.json"
+  ],
+  "files": [
+    {
+      "path": "registry/company-os/templates/webhook-endpoint-page.tsx",
+      "content": "import { SendIcon } from 'lucide-react';\nimport { useState } from 'react';\nimport { ActionsMenu, DetailCard, PageHeader, Pill, ReasonDialog, SecretReveal, SectionLayout, WebhookDeliveryLog, WebhookEndpointStatus } from '@/components/company-os';\nimport type { Paginated, WebhookDelivery, WebhookEndpointState } from '@/components/company-os';\nimport { Button } from '@/components/ui/button';\nimport { adminPermissions, organizationGroups } from './organization-nav';\n\nconst delivered = { label: 'Delivered', color: 'emerald' };\nconst failed = { label: 'Failed', color: 'rose' };\nconst retrying = { label: 'Retrying', color: 'amber' };\n\nconst deliveries: WebhookDelivery[] = [\n    { id: 'd7', event: { name: 'invoice.paid', label: 'Invoice paid' }, status: failed, attempts: 5, responseCode: 503, excerpt: '<html><body>Service Unavailable</body></html>', createdAt: { label: '14 Nov 2026, 02:10', relative: '3 days ago' }, nextAttemptAt: null },\n    { id: 'd6', event: { name: 'invoice.issued', label: 'Invoice issued' }, status: failed, attempts: 6, responseCode: null, excerpt: 'Connection timed out after 10 seconds', createdAt: { label: '13 Nov 2026, 16:44', relative: '4 days ago' }, nextAttemptAt: null },\n    { id: 'd5', event: { name: 'invoice.voided', label: 'Invoice voided' }, status: retrying, attempts: 2, responseCode: 500, excerpt: '{\"error\":\"internal\"}', createdAt: { label: '13 Nov 2026, 11:02', relative: '4 days ago' }, nextAttemptAt: { label: '13 Nov 2026, 11:08', relative: '4 days ago' } },\n    { id: 'd4', event: { name: 'webhook.test', label: 'Test event' }, status: delivered, attempts: 1, responseCode: 200, excerpt: 'ok', createdAt: { label: '2 Nov 2026, 10:15', relative: '2 weeks ago' }, nextAttemptAt: null },\n];\n\nconst page: Paginated<WebhookDelivery> = { data: deliveries, from: 1, to: 4, total: 41, current_page: 1, last_page: 2, prev_page_url: null, next_page_url: '?page=2' };\n\nexport function WebhookEndpointPage() {\n    const [endpoint, setEndpoint] = useState<WebhookEndpointState>({\n        active: false,\n        failingSince: '11 Nov 2026',\n        disabledAt: '14 Nov 2026, 03:00',\n        disabledBy: null,\n        disabledReason: 'Every delivery failed for 3 days.',\n    });\n    const [disabling, setDisabling] = useState(false);\n    const [reason, setReason] = useState('');\n    const [secret, setSecret] = useState<string | null>(null);\n\n    return (\n        <SectionLayout title=\"Organization\" groups={organizationGroups} permissions={adminPermissions}>\n            <div className=\"flex flex-col gap-6\">\n                <PageHeader title=\"hooks.ledgerline.example/in\" meta={<Pill name={endpoint.active ? 'Active' : 'Off'} color={endpoint.active ? 'emerald' : 'rose'} />}>\n                    <Button variant=\"outline\" disabled={!endpoint.active}>\n                        <SendIcon /> Send test\n                    </Button>\n                    <ActionsMenu\n                        items={[\n                            { label: 'Rotate secret', onSelect: () => setSecret('whsec_b3Hq9Lw2Tz7Xc1Vn5Mk8Rp4Ys6Da0Fg2Je9Ui3Ok') },\n                            ...(endpoint.active ? [{ label: 'Turn off', destructive: true, onSelect: () => setDisabling(true) }] : []),\n                        ]}\n                    />\n                </PageHeader>\n                <WebhookEndpointStatus endpoint={endpoint} canManage onEnable={() => setEndpoint({ active: true, failingSince: null, disabledAt: null, disabledBy: null, disabledReason: null })} />\n                {secret && <SecretReveal id=\"rotated-secret\" label=\"New signing secret\" value={secret} hint=\"The old secret stopped working. Update your verifier, then copy it now: it is shown once.\" />}\n                <DetailCard\n                    title=\"Endpoint\"\n                    details={[\n                        { label: 'URL', value: <span className=\"font-mono text-xs\">https://hooks.ledgerline.example/in</span> },\n                        { label: 'Events', value: 'invoice.issued · invoice.paid · invoice.voided' },\n                        { label: 'Added', value: '2 Nov 2026 by Ayaan Warsame' },\n                        { label: 'Retries', value: '8 attempts over about 3 days, then failed' },\n                    ]}\n                />\n                <WebhookDeliveryLog page={page} deliveries={deliveries} canResend={endpoint.active} onResend={() => undefined} />\n            </div>\n            <ReasonDialog\n                open={disabling}\n                onOpenChange={setDisabling}\n                title=\"Turn off this endpoint\"\n                consequence=\"Nothing is sent while it is off; events that happen meanwhile are not queued for later. The reason goes to the audit log.\"\n                confirmLabel=\"Turn off\"\n                reason={reason}\n                onReasonChange={setReason}\n                onConfirm={() => {\n                    setEndpoint({ ...endpoint, active: false, disabledAt: '17 Nov 2026, 09:50', disabledBy: 'Ayaan Warsame', disabledReason: reason });\n                    setReason('');\n                    setDisabling(false);\n                }}\n            />\n        </SectionLayout>\n    );\n}\n",
+      "type": "registry:ui",
+      "target": "components/company-os/templates/webhook-endpoint-page.tsx"
+    },
+    {
+      "path": "registry/company-os/templates/organization-nav.ts",
+      "content": "import { BotIcon, HistoryIcon, PlugIcon, Settings2Icon, ShieldCheckIcon, UsersIcon, WebhookIcon } from 'lucide-react';\nimport type { NavGroup } from '@/components/company-os';\n\nexport const organizationGroups: NavGroup[] = [\n    {\n        label: 'People',\n        items: [\n            { title: 'Users', href: '/templates/users-page', icon: UsersIcon, permission: 'users.view-any' },\n            { title: 'Roles', href: '/templates/roles-page', icon: ShieldCheckIcon, permission: 'roles.manage' },\n        ],\n    },\n    {\n        label: 'System',\n        items: [\n            { title: 'Workspace', href: '/templates/workspace-page', icon: Settings2Icon, permission: 'settings.manage' },\n            { title: 'Setup', href: '/templates/setup-page', icon: Settings2Icon, permission: 'settings.manage' },\n            { title: 'AI agents', href: '/templates/agents', icon: BotIcon, permission: 'agents.manage' },\n            { title: 'Integrations', href: '/templates/integrations', icon: PlugIcon, permission: 'integrations.manage' },\n            { title: 'Webhooks', href: '/templates/webhooks-page', icon: WebhookIcon, permission: 'integrations.manage' },\n            { title: 'Audit log', href: '/templates/audit-log-page', icon: HistoryIcon, permission: 'audit.view' },\n        ],\n    },\n];\n\nexport const adminPermissions = ['users.view-any', 'roles.manage', 'settings.manage', 'agents.manage', 'integrations.manage', 'audit.view'];\n",
+      "type": "registry:ui",
+      "target": "components/company-os/templates/organization-nav.ts"
+    }
+  ],
+  "categories": [
+    "templates"
+  ],
+  "meta": {
+    "system": "Company OS",
+    "kind": "template",
+    "pieces": [
+      22,
+      16
+    ],
+    "tags": [
+      "webhooks",
+      "deliveries",
+      "retry",
+      "disabled",
+      "rotate",
+      "organization"
+    ]
+  }
+}

@@ -1,0 +1,56 @@
+{
+  "$schema": "https://ui.shadcn.com/schema/registry-item.json",
+  "name": "template-webhooks-page",
+  "type": "registry:block",
+  "title": "Organization · Webhooks",
+  "description": "Endpoints with their state and last delivery. Add one in a dialog; the signing secret is shown once.",
+  "registryDependencies": [
+    "http://localhost:5173/r/tokens.json",
+    "http://localhost:5173/r/section-layout.json",
+    "http://localhost:5173/r/page-header.json",
+    "http://localhost:5173/r/data-table.json",
+    "http://localhost:5173/r/cells.json",
+    "http://localhost:5173/r/form-dialog.json",
+    "http://localhost:5173/r/field-row.json",
+    "http://localhost:5173/r/webhook-event-picker.json",
+    "http://localhost:5173/r/secret-reveal.json"
+  ],
+  "files": [
+    {
+      "path": "registry/company-os/templates/webhooks-page.tsx",
+      "content": "import { PlusIcon } from 'lucide-react';\nimport { useState } from 'react';\nimport { DataTable, DateCell, FieldRow, FormDialog, LinkCell, NumberCell, PageHeader, SecretReveal, SectionLayout, StatusCell, WebhookEventPicker } from '@/components/company-os';\nimport type { Day, Paginated, Status } from '@/components/company-os';\nimport { Button } from '@/components/ui/button';\nimport { Dialog, DialogContent, DialogDescription, DialogFooter, DialogHeader, DialogTitle } from '@/components/ui/dialog';\nimport { Input } from '@/components/ui/input';\nimport { Table, TableBody, TableHead, TableHeader, TableRow } from '@/components/ui/table';\nimport { adminPermissions, organizationGroups } from './organization-nav';\nimport { webhookGroups } from './webhook-catalogue';\n\ntype Endpoint = { id: string; url: string; events: string; status: Status; detail: string | null; lastDelivery: Day };\n\nconst endpoints: Endpoint[] = [\n    { id: '1', url: 'https://erp.halcyon.example/hooks/company-os', events: '7', status: { label: 'Active', color: 'emerald' }, detail: null, lastDelivery: { label: '17 Nov 2026, 09:41', relative: '6 minutes ago' } },\n    { id: '2', url: 'https://hooks.ledgerline.example/in', events: '3', status: { label: 'Off', color: 'rose' }, detail: 'Turned off after 3 days of failure', lastDelivery: { label: '14 Nov 2026, 02:10', relative: '3 days ago' } },\n    { id: '3', url: 'https://automate.example/catch/88213', events: '2', status: { label: 'Failing', color: 'amber' }, detail: 'Failing since 16 Nov 2026', lastDelivery: { label: '17 Nov 2026, 08:00', relative: '2 hours ago' } },\n];\n\nconst page: Paginated<Endpoint> = { data: endpoints, from: 1, to: 3, total: 3, current_page: 1, last_page: 1, prev_page_url: null, next_page_url: null };\n\nexport function WebhooksPage() {\n    const [creating, setCreating] = useState(false);\n    const [url, setUrl] = useState('');\n    const [events, setEvents] = useState<string[]>(['deal.won', 'deal.lost']);\n    const [secret, setSecret] = useState<string | null>(null);\n\n    return (\n        <SectionLayout title=\"Organization\" groups={organizationGroups} permissions={adminPermissions}>\n            <div className=\"flex flex-col gap-6\">\n                <PageHeader title=\"Webhooks\">\n                    <Button onClick={() => setCreating(true)}>\n                        <PlusIcon /> Add endpoint\n                    </Button>\n                </PageHeader>\n                <DataTable page={page}>\n                    <Table>\n                        <TableHeader>\n                            <TableRow>\n                                <TableHead>Endpoint</TableHead>\n                                <TableHead className=\"text-right\">Events</TableHead>\n                                <TableHead>Status</TableHead>\n                                <TableHead>Last delivery</TableHead>\n                            </TableRow>\n                        </TableHeader>\n                        <TableBody>\n                            {endpoints.map((endpoint) => (\n                                <TableRow key={endpoint.id}>\n                                    <LinkCell value={{ label: endpoint.url, href: '/templates/webhook-endpoint-page' }} />\n                                    <NumberCell value={endpoint.events} />\n                                    <StatusCell value={endpoint.status} detail={endpoint.detail} />\n                                    <DateCell value={endpoint.lastDelivery} />\n                                </TableRow>\n                            ))}\n                        </TableBody>\n                    </Table>\n                </DataTable>\n            </div>\n            <FormDialog\n                open={creating}\n                onOpenChange={setCreating}\n                title=\"Add endpoint\"\n                description=\"We sign every delivery and send it only to a public address. Adding an endpoint asks for your password.\"\n                submitLabel=\"Add endpoint\"\n                onSubmit={() => {\n                    setCreating(false);\n                    setSecret('whsec_Q8n2vT7mKc4LxR1pZ9aW3eY6uB0sJ5hD2fG8kN4q');\n                }}\n            >\n                <FieldRow id=\"endpoint-url\" label=\"URL\" hint=\"https only. Redirects are not followed.\">\n                    <Input id=\"endpoint-url\" type=\"url\" placeholder=\"https://example.com/hooks\" value={url} onChange={(event) => setUrl(event.target.value)} />\n                </FieldRow>\n                <WebhookEventPicker groups={webhookGroups} value={events} onChange={setEvents} />\n            </FormDialog>\n            <Dialog open={secret !== null} onOpenChange={(open) => !open && setSecret(null)}>\n                <DialogContent>\n                    <DialogHeader>\n                        <DialogTitle>Endpoint added</DialogTitle>\n                        <DialogDescription>Verify the X-Webhook-Signature header with this secret: HMAC-SHA256 of the timestamp, a dot, and the raw body.</DialogDescription>\n                    </DialogHeader>\n                    {secret && <SecretReveal id=\"webhook-secret\" label=\"Signing secret\" value={secret} />}\n                    <DialogFooter>\n                        <Button onClick={() => setSecret(null)}>I have copied it</Button>\n                    </DialogFooter>\n                </DialogContent>\n            </Dialog>\n        </SectionLayout>\n    );\n}\n",
+      "type": "registry:ui",
+      "target": "components/company-os/templates/webhooks-page.tsx"
+    },
+    {
+      "path": "registry/company-os/templates/webhook-catalogue.ts",
+      "content": "import type { WebhookEventGroup } from '@/components/company-os';\n\nexport const webhookGroups: WebhookEventGroup[] = [\n    {\n        key: 'contact',\n        label: 'Contacts',\n        events: [\n            { name: 'contact.created', label: 'Contact created' },\n            { name: 'contact.updated', label: 'Contact updated' },\n            { name: 'contact.deleted', label: 'Contact deleted' },\n        ],\n    },\n    {\n        key: 'deal',\n        label: 'Deals',\n        events: [\n            { name: 'deal.created', label: 'Deal created' },\n            { name: 'deal.stage_changed', label: 'Deal moved stage' },\n            { name: 'deal.won', label: 'Deal won' },\n            { name: 'deal.lost', label: 'Deal lost' },\n        ],\n    },\n    {\n        key: 'invoice',\n        label: 'Invoices',\n        events: [\n            { name: 'invoice.issued', label: 'Invoice issued' },\n            { name: 'invoice.paid', label: 'Invoice paid' },\n            { name: 'invoice.voided', label: 'Invoice voided' },\n        ],\n    },\n];\n",
+      "type": "registry:ui",
+      "target": "components/company-os/templates/webhook-catalogue.ts"
+    },
+    {
+      "path": "registry/company-os/templates/organization-nav.ts",
+      "content": "import { BotIcon, HistoryIcon, PlugIcon, Settings2Icon, ShieldCheckIcon, UsersIcon, WebhookIcon } from 'lucide-react';\nimport type { NavGroup } from '@/components/company-os';\n\nexport const organizationGroups: NavGroup[] = [\n    {\n        label: 'People',\n        items: [\n            { title: 'Users', href: '/templates/users-page', icon: UsersIcon, permission: 'users.view-any' },\n            { title: 'Roles', href: '/templates/roles-page', icon: ShieldCheckIcon, permission: 'roles.manage' },\n        ],\n    },\n    {\n        label: 'System',\n        items: [\n            { title: 'Workspace', href: '/templates/workspace-page', icon: Settings2Icon, permission: 'settings.manage' },\n            { title: 'Setup', href: '/templates/setup-page', icon: Settings2Icon, permission: 'settings.manage' },\n            { title: 'AI agents', href: '/templates/agents', icon: BotIcon, permission: 'agents.manage' },\n            { title: 'Integrations', href: '/templates/integrations', icon: PlugIcon, permission: 'integrations.manage' },\n            { title: 'Webhooks', href: '/templates/webhooks-page', icon: WebhookIcon, permission: 'integrations.manage' },\n            { title: 'Audit log', href: '/templates/audit-log-page', icon: HistoryIcon, permission: 'audit.view' },\n        ],\n    },\n];\n\nexport const adminPermissions = ['users.view-any', 'roles.manage', 'settings.manage', 'agents.manage', 'integrations.manage', 'audit.view'];\n",
+      "type": "registry:ui",
+      "target": "components/company-os/templates/organization-nav.ts"
+    }
+  ],
+  "categories": [
+    "templates"
+  ],
+  "meta": {
+    "system": "Company OS",
+    "kind": "template",
+    "pieces": [
+      22,
+      3
+    ],
+    "tags": [
+      "webhooks",
+      "integrations",
+      "endpoints",
+      "secret",
+      "organization"
+    ]
+  }
+}
