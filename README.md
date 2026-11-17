@@ -21,11 +21,15 @@ src/
   docs/site/                   the site: shell, search, pages
 registry/adapters/
   navigation.inertia.tsx       the Inertia version of lib/navigation.tsx; what the registry ships
+mcp/
+  server.mjs                   the registry MCP: search components, blocks, templates, pieces (stdio, no deps)
+packages/
+  laravel/                     company-os/laravel — the server half of the recipes (composer package)
 scripts/
   sync-recipes.mjs             copy standard + recipes from ~/.claude/skills/company-os
   check-sync.mjs               fail on drift between skill and mirror
   build-registry.mjs           public/r/*.json
-  build-llms.mjs               public/llms.txt + public/llms/*.md
+  build-llms.mjs               public/llms.txt + public/llms/*.md + llms/pieces/*.md + llms/index.json
 ```
 
 ## Commands
@@ -39,6 +43,7 @@ pnpm llms            # public/llms only
 pnpm lint            # the firewall: seam, no breadcrumbs, no native select, no avatars in tables, empty keeps the table
 pnpm sync:recipes    # refresh the recipe mirror from the skill
 pnpm check:sync      # drift check
+pnpm mcp             # the registry MCP over stdio (reads public/, or COMPANY_OS_REGISTRY=https://your.domain)
 REGISTRY_BASE=https://your.domain pnpm build
 ```
 
@@ -53,6 +58,14 @@ npx shadcn@latest add https://your.domain/r/data-table.json
 Installs the component source, the token set (`tokens.css` as a sample to merge into `app.css`), `lib/utils.ts`, and `lib/navigation.tsx` (the Inertia adapter). You own the code from there.
 
 Required tokens beyond shadcn's: `--success`, `--warning`, `--info`, `--field`. Map them in `@theme inline` like the others.
+
+## Registry MCP
+
+```bash
+claude mcp add company-os -e COMPANY_OS_REGISTRY=https://your.domain -- node /path/to/company-os/mcp/server.mjs
+```
+
+Tools: `search_registry`, `list_registry`, `get_component`, `get_composition`, `get_piece`. Unset `COMPANY_OS_REGISTRY` to read the local `public/` build.
 
 ## Rules the components follow
 

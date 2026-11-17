@@ -1,0 +1,45 @@
+{
+  "$schema": "https://ui.shadcn.com/schema/registry-item.json",
+  "name": "webhook-endpoint-status",
+  "type": "registry:ui",
+  "title": "WebhookEndpointStatus",
+  "description": "The banner on an endpoint that is failing or off: since when, who turned it off and why, and Enable. One job: Make the auto-disabled state impossible to miss and one click to undo.",
+  "registryDependencies": [
+    "http://localhost:5173/r/tokens.json",
+    "alert",
+    "button"
+  ],
+  "files": [
+    {
+      "path": "registry/company-os/webhook-endpoint-status.tsx",
+      "content": "import { CircleAlertIcon, PowerOffIcon } from 'lucide-react';\nimport { Alert, AlertDescription, AlertTitle } from '@/components/ui/alert';\nimport { Button } from '@/components/ui/button';\n\nexport type WebhookEndpointState = {\n    active: boolean;\n    failingSince: string | null;\n    disabledAt: string | null;\n    disabledBy: string | null;\n    disabledReason: string | null;\n};\n\nexport type WebhookEndpointStatusLabels = {\n    failingTitle: string;\n    failing: (since: string, days: number) => string;\n    disabledTitle: string;\n    disabledBySystem: (at: string) => string;\n    disabledByPerson: (at: string, by: string) => string;\n    enable: string;\n};\n\nexport const webhookEndpointStatusLabels: WebhookEndpointStatusLabels = {\n    failingTitle: 'Deliveries are failing',\n    failing: (since, days) => `Every attempt since ${since} failed. Retries continue; after ${days} days of failure the endpoint turns itself off.`,\n    disabledTitle: 'This endpoint is off',\n    disabledBySystem: (at) => `Turned off automatically on ${at}. Nothing is sent until it is enabled again.`,\n    disabledByPerson: (at, by) => `Turned off by ${by} on ${at}. Nothing is sent until it is enabled again.`,\n    enable: 'Enable endpoint',\n};\n\nexport function WebhookEndpointStatus({\n    endpoint,\n    disableAfterDays = 3,\n    canManage,\n    processing = false,\n    onEnable,\n    labels: custom,\n}: {\n    endpoint: WebhookEndpointState;\n    disableAfterDays?: number;\n    canManage: boolean;\n    processing?: boolean;\n    onEnable: () => void;\n    labels?: Partial<WebhookEndpointStatusLabels>;\n}) {\n    const labels = { ...webhookEndpointStatusLabels, ...custom };\n\n    if (!endpoint.active) {\n        const at = endpoint.disabledAt ?? '';\n\n        return (\n            <Alert variant=\"destructive\">\n                <PowerOffIcon />\n                <AlertTitle>{labels.disabledTitle}</AlertTitle>\n                <AlertDescription className=\"grid gap-3\">\n                    <p>{endpoint.disabledBy ? labels.disabledByPerson(at, endpoint.disabledBy) : labels.disabledBySystem(at)}</p>\n                    {endpoint.disabledReason && <p className=\"border-l-2 border-current/30 pl-3 italic\">{endpoint.disabledReason}</p>}\n                    {canManage && (\n                        <div>\n                            <Button size=\"sm\" variant=\"outline\" disabled={processing} onClick={onEnable}>\n                                {labels.enable}\n                            </Button>\n                        </div>\n                    )}\n                </AlertDescription>\n            </Alert>\n        );\n    }\n\n    if (endpoint.failingSince) {\n        return (\n            <Alert className=\"border-warning/40 bg-warning/5\">\n                <CircleAlertIcon className=\"text-warning\" />\n                <AlertTitle>{labels.failingTitle}</AlertTitle>\n                <AlertDescription>{labels.failing(endpoint.failingSince, disableAfterDays)}</AlertDescription>\n            </Alert>\n        );\n    }\n\n    return null;\n}\n",
+      "type": "registry:ui",
+      "target": "components/company-os/webhook-endpoint-status.tsx"
+    }
+  ],
+  "categories": [
+    "organization"
+  ],
+  "docs": "http://localhost:5173/llms/webhook-endpoint-status.md",
+  "meta": {
+    "system": "Company OS",
+    "pieces": [
+      22,
+      16
+    ],
+    "job": "Make the auto-disabled state impossible to miss and one click to undo.",
+    "tags": [
+      "webhooks",
+      "disabled",
+      "failing",
+      "banner",
+      "enable"
+    ],
+    "exports": [
+      "WebhookEndpointStatus",
+      "webhookEndpointStatusLabels",
+      "WebhookEndpointState",
+      "WebhookEndpointStatusLabels"
+    ]
+  }
+}

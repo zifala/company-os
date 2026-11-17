@@ -2,6 +2,7 @@ import type { ComponentType } from 'react';
 import { accessDemos } from './demos/access';
 import { dialogDemos } from './demos/dialogs';
 import { formDemos } from './demos/forms';
+import { organizationDemos } from './demos/organization';
 import { pageKitDemos } from './demos/page-kit';
 import { setupDemos } from './demos/setup';
 import { shellDemos } from './demos/shell';
@@ -13,6 +14,7 @@ export const demos: Record<string, ComponentType> = {
     ...dialogDemos,
     ...formDemos,
     ...accessDemos,
+    ...organizationDemos,
     ...viewDemos,
     ...setupDemos,
 };

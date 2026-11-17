@@ -1,0 +1,49 @@
+{
+  "$schema": "https://ui.shadcn.com/schema/registry-item.json",
+  "name": "template-audit-log-page",
+  "type": "registry:block",
+  "title": "Organization · Audit log",
+  "description": "Every event in one table: who, through which channel, what, on which record, and why. Filters and the CSV export.",
+  "registryDependencies": [
+    "http://localhost:5173/r/tokens.json",
+    "http://localhost:5173/r/section-layout.json",
+    "http://localhost:5173/r/page-header.json",
+    "http://localhost:5173/r/filter-bar.json",
+    "http://localhost:5173/r/export-button.json",
+    "http://localhost:5173/r/audit-log-table.json"
+  ],
+  "files": [
+    {
+      "path": "registry/company-os/templates/audit-log-page.tsx",
+      "content": "import { AuditLogTable, ExportButton, FilterBar, PageHeader, SectionLayout } from '@/components/company-os';\nimport type { AuditEvent, FilterState, Paginated } from '@/components/company-os';\nimport { adminPermissions, organizationGroups } from './organization-nav';\n\nconst events: AuditEvent[] = [\n    {\n        id: '1',\n        at: { label: '17 Nov 2026, 09:41', relative: '6 minutes ago' },\n        actor: { name: 'Hodan Ali', detail: null },\n        event: { name: 'deal.lost', label: 'Deal lost' },\n        subject: { label: 'Cold chain audit', href: '#', detail: 'Deal · Kestrel Logistics' },\n        via: null,\n        reason: 'Client chose an in-house team after the pilot.',\n    },\n    {\n        id: '2',\n        at: { label: '17 Nov 2026, 09:12', relative: '35 minutes ago' },\n        actor: { name: 'Mahad Yusuf', detail: null },\n        event: { name: 'task.updated', label: 'Task updated' },\n        subject: { label: 'ZW-142 Harbour terminal rollout', href: '#', detail: 'Task' },\n        via: 'via automation “Overdue chaser”',\n        reason: null,\n    },\n    {\n        id: '3',\n        at: { label: '17 Nov 2026, 08:58', relative: '49 minutes ago' },\n        actor: { name: 'Ayaan Warsame', detail: null },\n        event: { name: 'grant.given', label: 'Page granted' },\n        subject: { label: 'Hodan Ali', href: '/templates/grants-page', detail: 'User · Reports · Margins' },\n        via: null,\n        reason: null,\n    },\n    {\n        id: '4',\n        at: { label: '17 Nov 2026, 03:00', relative: '7 hours ago' },\n        actor: null,\n        event: { name: 'webhook_endpoint.disabled', label: 'Webhook endpoint turned off' },\n        subject: { label: 'hooks.ledgerline.example/in', href: '/templates/webhook-endpoint-page', detail: 'Webhook endpoint' },\n        via: 'via automation “Webhook delivery”',\n        reason: 'Every delivery failed for 3 days.',\n    },\n    {\n        id: '5',\n        at: { label: '16 Nov 2026, 17:20', relative: 'yesterday' },\n        actor: { name: 'Farah Nur', detail: null },\n        event: { name: 'invoice.voided', label: 'Invoice voided' },\n        subject: { label: 'INV-0409', href: '#', detail: 'Invoice · Kestrel Logistics' },\n        via: 'via agent “Finance assistant”',\n        reason: 'Issued twice; INV-0410 replaces it.',\n    },\n    {\n        id: '6',\n        at: { label: '16 Nov 2026, 11:03', relative: 'yesterday' },\n        actor: { name: 'Ayaan Warsame', detail: null },\n        event: { name: 'workspace.two_factor_requirement_changed', label: 'Two-factor requirement changed' },\n        subject: null,\n        via: null,\n        reason: null,\n    },\n];\n\nconst page: Paginated<AuditEvent> = { data: events, from: 1, to: 6, total: 1284, current_page: 1, last_page: 26, prev_page_url: null, next_page_url: '?page=2' };\n\nconst state: FilterState = {\n    url: '/templates/audit-log-page',\n    filters: { via: 'automation' },\n    fields: [\n        { key: 'causer', label: 'Person', inline: true, placeholder: 'Anyone', options: [{ value: 'ayaan', label: 'Ayaan Warsame' }, { value: 'hodan', label: 'Hodan Ali' }, { value: 'mahad', label: 'Mahad Yusuf' }, { value: 'farah', label: 'Farah Nur' }] },\n        { key: 'event', label: 'Event', inline: true, placeholder: 'All events', options: [{ value: 'deal', label: 'deal.*' }, { value: 'invoice', label: 'invoice.*' }, { value: 'task', label: 'task.*' }, { value: 'grant', label: 'grant.*' }, { value: 'webhook_endpoint', label: 'webhook_endpoint.*' }, { value: 'workspace', label: 'workspace.*' }] },\n        { key: 'via', label: 'Channel', inline: true, placeholder: 'Any channel', options: [{ value: 'web', label: 'Web' }, { value: 'api', label: 'API' }, { value: 'automation', label: 'Automation' }, { value: 'agent', label: 'Agent' }] },\n        { key: 'from', label: 'From', text: true, placeholder: 'YYYY-MM-DD' },\n        { key: 'to', label: 'To', text: true, placeholder: 'YYYY-MM-DD' },\n    ],\n};\n\nexport function AuditLogPage() {\n    return (\n        <SectionLayout title=\"Organization\" groups={organizationGroups} permissions={adminPermissions}>\n            <div className=\"flex flex-col gap-6\">\n                <PageHeader title=\"Audit log\" />\n                <FilterBar state={state} end={<ExportButton href=\"#\" label=\"Export CSV\" />} />\n                <AuditLogTable page={page} events={events} />\n                <p className=\"text-xs text-muted-foreground\">Times in your timezone (Africa/Mogadishu). The CSV is in UTC and keeps the raw event name.</p>\n            </div>\n        </SectionLayout>\n    );\n}\n",
+      "type": "registry:ui",
+      "target": "components/company-os/templates/audit-log-page.tsx"
+    },
+    {
+      "path": "registry/company-os/templates/organization-nav.ts",
+      "content": "import { BotIcon, HistoryIcon, PlugIcon, Settings2Icon, ShieldCheckIcon, UsersIcon, WebhookIcon } from 'lucide-react';\nimport type { NavGroup } from '@/components/company-os';\n\nexport const organizationGroups: NavGroup[] = [\n    {\n        label: 'People',\n        items: [\n            { title: 'Users', href: '/templates/users-page', icon: UsersIcon, permission: 'users.view-any' },\n            { title: 'Roles', href: '/templates/roles-page', icon: ShieldCheckIcon, permission: 'roles.manage' },\n        ],\n    },\n    {\n        label: 'System',\n        items: [\n            { title: 'Workspace', href: '/templates/workspace-page', icon: Settings2Icon, permission: 'settings.manage' },\n            { title: 'Setup', href: '/templates/setup-page', icon: Settings2Icon, permission: 'settings.manage' },\n            { title: 'AI agents', href: '/templates/agents', icon: BotIcon, permission: 'agents.manage' },\n            { title: 'Integrations', href: '/templates/integrations', icon: PlugIcon, permission: 'integrations.manage' },\n            { title: 'Webhooks', href: '/templates/webhooks-page', icon: WebhookIcon, permission: 'integrations.manage' },\n            { title: 'Audit log', href: '/templates/audit-log-page', icon: HistoryIcon, permission: 'audit.view' },\n        ],\n    },\n];\n\nexport const adminPermissions = ['users.view-any', 'roles.manage', 'settings.manage', 'agents.manage', 'integrations.manage', 'audit.view'];\n",
+      "type": "registry:ui",
+      "target": "components/company-os/templates/organization-nav.ts"
+    }
+  ],
+  "categories": [
+    "templates"
+  ],
+  "meta": {
+    "system": "Company OS",
+    "kind": "template",
+    "pieces": [
+      2,
+      23,
+      26
+    ],
+    "tags": [
+      "audit",
+      "activity log",
+      "events",
+      "csv",
+      "export",
+      "organization"
+    ]
+  }
+}

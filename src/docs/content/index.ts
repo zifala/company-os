@@ -1,6 +1,7 @@
 import { access } from './entries/access';
 import { dialogs } from './entries/dialogs';
 import { forms } from './entries/forms';
+import { organization } from './entries/organization';
 import { pageKit } from './entries/page-kit';
 import { setup } from './entries/setup';
 import { shell } from './entries/shell';
@@ -10,6 +11,6 @@ import type { DocEntry } from './types';
 export { categories } from './categories';
 export type { DocEntry } from './types';
 
-export const entries: DocEntry[] = [...shell, ...pageKit, ...dialogs, ...forms, ...access, ...views, ...setup];
+export const entries: DocEntry[] = [...shell, ...pageKit, ...dialogs, ...forms, ...access, ...organization, ...views, ...setup];
 
 export const entryBySlug = (slug: string) => entries.find((entry) => entry.slug === slug);

@@ -76,6 +76,15 @@
 - [PermissionPicker](http://localhost:5173/llms/permission-picker.md): Permissions grouped by module, a scope beside each scoped one, and a lock on what the editor does not hold. One job: Build a role in the UI without letting anyone grant beyond their own reach.
 - [SensitiveSwitches](http://localhost:5173/llms/sensitive-switches.md): One switch per sensitive field family, each with the line that says what it reveals. One job: Hide money, margins, salaries and client contacts per role without a permission per field.
 - [PreferenceMatrix](http://localhost:5173/llms/preference-matrix.md): Events down, channels across, one switch per cell. Quiet hours said once, under the grid. One job: Let each person pick which events reach them on which channel.
+- [AuditLogTable](http://localhost:5173/llms/audit-log-table.md): One table of every event: when, who and through which channel, the event label over its raw name, the subject, the reason. One job: Show the audit log the way the audit recipe stores it, filterable and exportable, without a second design per module.
+- [ServiceStatusList](http://localhost:5173/llms/service-status-list.md): Each service the app needs, configured or missing, with the env names to set. Never a value. One job: Tell an admin what the server still needs without putting a secret anywhere near the browser.
+- [LetterheadPreview](http://localhost:5173/llms/letterhead-preview.md): The printed header, live beside the workspace form: legal name, lines, logo. One job: Let the person editing the letterhead see what every invoice and statement will print.
+- [WebhookEventPicker](http://localhost:5173/llms/webhook-event-picker.md): The event catalogue as checkboxes, grouped by noun, with a tri-state box per group and the raw name under each label. One job: Subscribe an endpoint to exactly the catalogue events it needs.
+- [WebhookDeliveryLog](http://localhost:5173/llms/webhook-delivery-log.md): Every delivery as a row: event, status, attempts, response code over its excerpt, next attempt, resend. One job: Answer "did they get it, and if not why" from the endpoint page.
+- [WebhookEndpointStatus](http://localhost:5173/llms/webhook-endpoint-status.md): The banner on an endpoint that is failing or off: since when, who turned it off and why, and Enable. One job: Make the auto-disabled state impossible to miss and one click to undo.
+- [SecretReveal](http://localhost:5173/llms/secret-reveal.md): A secret shown once: read-only, select on focus, copy, and the line that says it will not come back. One job: Hand over a signing secret or private link exactly once, from the flash, and never from props again.
+- [GrantList](http://localhost:5173/llms/grant-list.md): The pages granted to one person on top of their role: what, who granted it, when, and revoke with a reason. One job: Add or take away a single page for one person without inventing a role for them.
+- [CalendarFeedCard](http://localhost:5173/llms/calendar-feed-card.md): The personal ICS link: off or on, create, the new URL shown once, reset and revoke behind a confirm. One job: Let each person put their own events, reminders and due dates in the calendar app they already use.
 - [SavedViewsMenu](http://localhost:5173/llms/saved-views-menu.md): Saved filter sets for a list. The menu knows which one is active by comparing the URL. One job: Save the current query of a list under a name and return to it in one click.
 - [FavoriteButton](http://localhost:5173/llms/favorite-button.md): A star that pins any viewable record or saved view to the sidebar. One job: Toggle one record in the user's favorites.
 - [ExportButton](http://localhost:5173/llms/export-button.md): A plain download link styled as an outline button. Exports what the list shows. One job: Download the current list as CSV.
@@ -103,8 +112,13 @@
 - Organization · Setup (`template-setup-page`): The checklist that ticks from real data, the services panel, and Finish setup.
 - Settings · Profile (`template-settings-page`): The personal settings layout: profile, timezone and quiet hours, nothing platform-wide.
 - Organization · Roles (`template-roles-page`): The role form: name on top, permission picker below, scope per permission and the sensitive switches.
+- Organization · Audit log (`template-audit-log-page`): Every event in one table: who, through which channel, what, on which record, and why. Filters and the CSV export.
+- Organization · Workspace (`template-workspace-page`): The workspace singleton: name and timezone, the letterhead the print sheet reads, two-factor, and the services panel.
+- Organization · Webhooks (`template-webhooks-page`): Endpoints with their state and last delivery. Add one in a dialog; the signing secret is shown once.
+- Organization · Webhook endpoint (`template-webhook-endpoint-page`): One endpoint: the auto-disabled banner with Enable, send test, rotate secret, turn off with a reason, the delivery log.
+- Organization · User grants (`template-grants-page`): The pages one person holds on top of their role: who granted what, when, and revoke with a reason.
 - Notifications (`template-notifications-page`): The inbox behind the bell: every in-app row, filter by event and read state, mark all read.
-- Settings · Notifications (`template-notification-settings`): The event × channel matrix in personal settings. Opt-in events start off; a channel without a number is greyed.
+- Settings · Notifications (`template-notification-settings`): The event × channel matrix in personal settings, and the calendar feed link under it.
 - Onboarding stepper (`template-onboarding-stepper`): Full screen with Exit, the left rail of steps, the send-back banner, the review step and Submit.
 - Guest onboarding link (`template-guest-onboarding`): The same stepper behind a link: no Exit, only the guest steps, and the fields the link fixed shown read-only.
 - Print · Invoice (`template-print-invoice`): The A4 sheet: letterhead, repeating header and footer, lines, totals that never split, the draft stamp.

@@ -1,0 +1,45 @@
+{
+  "$schema": "https://ui.shadcn.com/schema/registry-item.json",
+  "name": "calendar-feed-card",
+  "type": "registry:ui",
+  "title": "CalendarFeedCard",
+  "description": "The personal ICS link: off or on, create, the new URL shown once, reset and revoke behind a confirm. One job: Let each person put their own events, reminders and due dates in the calendar app they already use.",
+  "registryDependencies": [
+    "http://localhost:5173/r/tokens.json",
+    "http://localhost:5173/r/confirm-dialog.json",
+    "http://localhost:5173/r/secret-reveal.json",
+    "button"
+  ],
+  "files": [
+    {
+      "path": "registry/company-os/calendar-feed-card.tsx",
+      "content": "import { CalendarIcon, RefreshCwIcon } from 'lucide-react';\nimport { useState } from 'react';\nimport { ConfirmDialog } from '@/components/company-os/confirm-dialog';\nimport { SecretReveal } from '@/components/company-os/secret-reveal';\nimport { Button } from '@/components/ui/button';\n\nexport type CalendarFeedLabels = {\n    title: string;\n    on: string;\n    off: string;\n    intro: string;\n    create: string;\n    reset: string;\n    revoke: string;\n    url: string;\n    once: string;\n    resetTitle: string;\n    resetConsequence: string;\n    revokeTitle: string;\n    revokeConsequence: string;\n    keep: string;\n};\n\nexport const calendarFeedLabels: CalendarFeedLabels = {\n    title: 'Calendar feed',\n    on: 'On',\n    off: 'Off',\n    intro: 'Subscribe from Google Calendar, Outlook or Apple Calendar to see your own events, reminders and due dates. The link shows titles and links only.',\n    create: 'Create link',\n    reset: 'Reset link',\n    revoke: 'Revoke',\n    url: 'Your calendar link',\n    once: 'Paste it into your calendar app now. It is shown once; reset to get a new one.',\n    resetTitle: 'Reset the calendar link',\n    resetConsequence: 'The old link stops working at once. Calendars subscribed to it stop updating until you add the new one.',\n    revokeTitle: 'Revoke the calendar link',\n    revokeConsequence: 'The link stops working at once and no new one is made. Subscribed calendars stop updating.',\n    keep: 'Keep it',\n};\n\nexport function CalendarFeedCard({\n    active,\n    url,\n    processing = false,\n    onCreate,\n    onRevoke,\n    labels: custom,\n}: {\n    active: boolean;\n    url: string | null;\n    processing?: boolean;\n    onCreate: () => void;\n    onRevoke: () => void;\n    labels?: Partial<CalendarFeedLabels>;\n}) {\n    const labels = { ...calendarFeedLabels, ...custom };\n    const [confirming, setConfirming] = useState<'reset' | 'revoke' | null>(null);\n    const resetting = confirming === 'reset';\n\n    return (\n        <section className=\"rounded-lg glass\">\n            <div className=\"flex items-center gap-3 border-b border-border px-5 py-3\">\n                <CalendarIcon className=\"size-4 text-muted-foreground\" aria-hidden />\n                <h2 className=\"text-sm font-semibold text-slate-800\">{labels.title}</h2>\n                <span className={active ? 'ml-auto text-xs font-medium text-success' : 'ml-auto text-xs font-medium text-muted-foreground'}>{active ? labels.on : labels.off}</span>\n            </div>\n            <div className=\"grid gap-4 p-5\">\n                <p className=\"text-sm text-muted-foreground\">{labels.intro}</p>\n                {url && <SecretReveal id=\"calendar-feed-url\" label={labels.url} value={url} labels={{ once: labels.once }} />}\n                <div className=\"flex flex-wrap gap-2\">\n                    {active ? (\n                        <>\n                            <Button variant=\"outline\" disabled={processing} onClick={() => setConfirming('reset')}>\n                                <RefreshCwIcon /> {labels.reset}\n                            </Button>\n                            <Button variant=\"ghost\" className=\"text-destructive\" disabled={processing} onClick={() => setConfirming('revoke')}>\n                                {labels.revoke}\n                            </Button>\n                        </>\n                    ) : (\n                        <Button disabled={processing} onClick={onCreate}>\n                            {labels.create}\n                        </Button>\n                    )}\n                </div>\n            </div>\n            <ConfirmDialog\n                open={confirming !== null}\n                onOpenChange={(open) => !open && setConfirming(null)}\n                title={resetting ? labels.resetTitle : labels.revokeTitle}\n                consequence={resetting ? labels.resetConsequence : labels.revokeConsequence}\n                confirmLabel={resetting ? labels.reset : labels.revoke}\n                cancelLabel={labels.keep}\n                destructive={!resetting}\n                processing={processing}\n                onConfirm={() => {\n                    setConfirming(null);\n                    if (resetting) {\n                        onCreate();\n                    } else {\n                        onRevoke();\n                    }\n                }}\n            />\n        </section>\n    );\n}\n",
+      "type": "registry:ui",
+      "target": "components/company-os/calendar-feed-card.tsx"
+    }
+  ],
+  "categories": [
+    "organization"
+  ],
+  "docs": "http://localhost:5173/llms/calendar-feed-card.md",
+  "meta": {
+    "system": "Company OS",
+    "pieces": [
+      12
+    ],
+    "job": "Let each person put their own events, reminders and due dates in the calendar app they already use.",
+    "tags": [
+      "calendar",
+      "ics",
+      "feed",
+      "subscribe",
+      "settings",
+      "token"
+    ],
+    "exports": [
+      "CalendarFeedCard",
+      "calendarFeedLabels",
+      "CalendarFeedLabels"
+    ]
+  }
+}

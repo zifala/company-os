@@ -1,0 +1,49 @@
+{
+  "$schema": "https://ui.shadcn.com/schema/registry-item.json",
+  "name": "template-grants-page",
+  "type": "registry:block",
+  "title": "Organization · User grants",
+  "description": "The pages one person holds on top of their role: who granted what, when, and revoke with a reason.",
+  "registryDependencies": [
+    "http://localhost:5173/r/tokens.json",
+    "http://localhost:5173/r/section-layout.json",
+    "http://localhost:5173/r/page-header.json",
+    "http://localhost:5173/r/pill.json",
+    "http://localhost:5173/r/tab-nav.json",
+    "http://localhost:5173/r/form-dialog.json",
+    "http://localhost:5173/r/field-row.json",
+    "http://localhost:5173/r/grant-list.json"
+  ],
+  "files": [
+    {
+      "path": "registry/company-os/templates/grants-page.tsx",
+      "content": "import { PlusIcon } from 'lucide-react';\nimport { useState } from 'react';\nimport { FieldRow, FormDialog, GrantList, PageHeader, Pill, SectionLayout, TabNav } from '@/components/company-os';\nimport type { Grant } from '@/components/company-os';\nimport { Button } from '@/components/ui/button';\nimport { OptionSelect } from '@/components/ui/option-select';\nimport { adminPermissions, organizationGroups } from './organization-nav';\n\nconst initial: Grant[] = [\n    {\n        id: '1',\n        page: { key: 'reports.margins', label: 'Margins report', detail: 'Reports' },\n        grantedBy: { name: 'Ayaan Warsame', detail: 'Administrator' },\n        grantedAt: { label: '17 Nov 2026', relative: 'today' },\n        revokedAt: null,\n    },\n    {\n        id: '2',\n        page: { key: 'finance.payments', label: 'Payments', detail: 'Finance' },\n        grantedBy: { name: 'Farah Nur', detail: 'Finance lead' },\n        grantedAt: { label: '2 Oct 2026', relative: '6 weeks ago' },\n        revokedAt: null,\n    },\n    {\n        id: '3',\n        page: { key: 'setup.price_lists', label: 'Price lists', detail: 'Setup' },\n        grantedBy: { name: 'Ayaan Warsame', detail: 'Administrator' },\n        grantedAt: { label: '4 Aug 2026', relative: '3 months ago' },\n        revokedAt: { label: '1 Sep 2026', relative: '11 weeks ago' },\n        revokedBy: 'Ayaan Warsame',\n        revokeReason: 'Price review finished.',\n    },\n];\n\n// Only pages the granter holds themselves are offered.\nconst grantable = [\n    { value: 'reports.pipeline', label: 'Reports · Pipeline' },\n    { value: 'reports.margins', label: 'Reports · Margins' },\n    { value: 'setup.price_lists', label: 'Setup · Price lists' },\n];\n\nconst held = new Set(['reports.pipeline', 'reports.margins', 'setup.price_lists']);\n\nexport function GrantsPage() {\n    const [grants, setGrants] = useState(initial);\n    const [granting, setGranting] = useState(false);\n    const [page, setPage] = useState('');\n\n    return (\n        <SectionLayout title=\"Organization\" groups={organizationGroups} permissions={adminPermissions}>\n            <div className=\"flex flex-col gap-6\">\n                <PageHeader title=\"Hodan Ali\" meta={<Pill name=\"Sales manager\" color=\"cyan\" />}>\n                    <Button onClick={() => setGranting(true)}>\n                        <PlusIcon /> Grant a page\n                    </Button>\n                </PageHeader>\n                <TabNav\n                    label=\"User sections\"\n                    tabs={[\n                        { label: 'Profile', href: '/templates/users-page' },\n                        { label: 'Access', href: '/templates/roles-page' },\n                        { label: 'Grants', href: '/templates/grants-page', count: grants.filter((grant) => grant.revokedAt === null).length },\n                    ]}\n                />\n                <p className=\"max-w-2xl text-sm text-muted-foreground\">\n                    Grants add a page to one person on top of their role, without a new role. You can grant only pages you hold, and revoking asks for a reason.\n                </p>\n                <GrantList\n                    person=\"Hodan Ali\"\n                    grants={grants}\n                    canRevoke={(grant) => held.has(grant.page.key)}\n                    onRevoke={(grant, reason, done) => {\n                        setGrants(grants.map((row) => (row.id === grant.id ? { ...row, revokedAt: { label: '17 Nov 2026', relative: 'today' }, revokedBy: 'Ayaan Warsame', revokeReason: reason } : row)));\n                        done();\n                    }}\n                />\n            </div>\n            <FormDialog\n                open={granting}\n                onOpenChange={setGranting}\n                title=\"Grant a page to Hodan Ali\"\n                description=\"The page appears in their sidebar on their next request. The grant is audited with your name.\"\n                submitLabel=\"Grant page\"\n                onSubmit={() => setGranting(false)}\n            >\n                <FieldRow id=\"grant-page\" label=\"Page\" hint=\"Only pages you hold are listed.\">\n                    <OptionSelect id=\"grant-page\" options={grantable} placeholder=\"Choose a page\" value={page} onValueChange={setPage} />\n                </FieldRow>\n            </FormDialog>\n        </SectionLayout>\n    );\n}\n",
+      "type": "registry:ui",
+      "target": "components/company-os/templates/grants-page.tsx"
+    },
+    {
+      "path": "registry/company-os/templates/organization-nav.ts",
+      "content": "import { BotIcon, HistoryIcon, PlugIcon, Settings2Icon, ShieldCheckIcon, UsersIcon, WebhookIcon } from 'lucide-react';\nimport type { NavGroup } from '@/components/company-os';\n\nexport const organizationGroups: NavGroup[] = [\n    {\n        label: 'People',\n        items: [\n            { title: 'Users', href: '/templates/users-page', icon: UsersIcon, permission: 'users.view-any' },\n            { title: 'Roles', href: '/templates/roles-page', icon: ShieldCheckIcon, permission: 'roles.manage' },\n        ],\n    },\n    {\n        label: 'System',\n        items: [\n            { title: 'Workspace', href: '/templates/workspace-page', icon: Settings2Icon, permission: 'settings.manage' },\n            { title: 'Setup', href: '/templates/setup-page', icon: Settings2Icon, permission: 'settings.manage' },\n            { title: 'AI agents', href: '/templates/agents', icon: BotIcon, permission: 'agents.manage' },\n            { title: 'Integrations', href: '/templates/integrations', icon: PlugIcon, permission: 'integrations.manage' },\n            { title: 'Webhooks', href: '/templates/webhooks-page', icon: WebhookIcon, permission: 'integrations.manage' },\n            { title: 'Audit log', href: '/templates/audit-log-page', icon: HistoryIcon, permission: 'audit.view' },\n        ],\n    },\n];\n\nexport const adminPermissions = ['users.view-any', 'roles.manage', 'settings.manage', 'agents.manage', 'integrations.manage', 'audit.view'];\n",
+      "type": "registry:ui",
+      "target": "components/company-os/templates/organization-nav.ts"
+    }
+  ],
+  "categories": [
+    "templates"
+  ],
+  "meta": {
+    "system": "Company OS",
+    "kind": "template",
+    "pieces": [
+      5,
+      16
+    ],
+    "tags": [
+      "grants",
+      "delegated",
+      "scoped permissions",
+      "users",
+      "organization"
+    ]
+  }
+}

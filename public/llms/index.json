@@ -1,0 +1,2197 @@
+{
+  "base": "http://localhost:5173",
+  "install": "npx shadcn@latest add http://localhost:5173/r/<name>.json",
+  "components": [
+    {
+      "name": "app-shell",
+      "title": "AppShell",
+      "category": "shell",
+      "tagline": "Sidebar left, thin header, content below. The one layout every signed-in page renders in.",
+      "job": "Hold the sidebar, the header and the page in the one frame the product has.",
+      "tags": [
+        "shell",
+        "layout",
+        "sidebar",
+        "header",
+        "frame"
+      ],
+      "pieces": [
+        19
+      ],
+      "exports": [
+        "AppShell"
+      ],
+      "doc": "llms/app-shell.md"
+    },
+    {
+      "name": "app-sidebar",
+      "title": "AppSidebar",
+      "category": "shell",
+      "tagline": "Logo, New, favorites, permission-gated groups, user menu. Collapses to icons.",
+      "job": "Put every page one click away, in the order people work.",
+      "tags": [
+        "sidebar",
+        "navigation",
+        "groups",
+        "favorites",
+        "user-menu",
+        "logo"
+      ],
+      "pieces": [
+        19
+      ],
+      "exports": [
+        "AppSidebar",
+        "AppLogo",
+        "NavMain",
+        "NavFavorites",
+        "NavUser",
+        "UserInfo",
+        "initialsOf",
+        "Favorite",
+        "UserMenuItem",
+        "UserSummary"
+      ],
+      "doc": "llms/app-sidebar.md"
+    },
+    {
+      "name": "nav",
+      "title": "Nav",
+      "category": "shell",
+      "tagline": "The nav list as data. One array of gated groups drives the sidebar, the section nav, the palette and the g-keys.",
+      "job": "Declare every page once, with its permission, icon, tour key and go-key.",
+      "tags": [
+        "nav",
+        "navigation",
+        "permissions",
+        "gating",
+        "active",
+        "shortcuts"
+      ],
+      "pieces": [
+        4,
+        19
+      ],
+      "exports": [
+        "canSee",
+        "visibleGroups",
+        "permissionsIn",
+        "goShortcuts",
+        "useActiveNavHref",
+        "NavItem",
+        "GatedItem",
+        "NavGroup",
+        "GoShortcut"
+      ],
+      "doc": "llms/nav.md"
+    },
+    {
+      "name": "app-header",
+      "title": "AppHeader",
+      "category": "shell",
+      "tagline": "A thin bar: sidebar trigger left, then trigger · search · locale · bell. Nothing else.",
+      "job": "Hold the three global controls without stealing the page title.",
+      "tags": [
+        "header",
+        "search",
+        "bell",
+        "locale",
+        "trigger"
+      ],
+      "pieces": [
+        19
+      ],
+      "exports": [
+        "AppHeader",
+        "SearchButton"
+      ],
+      "doc": "llms/app-header.md"
+    },
+    {
+      "name": "quick-create",
+      "title": "QuickCreate",
+      "category": "shell",
+      "tagline": "The one global New menu, top of the sidebar. Items the user may create, nothing else.",
+      "job": "Create any record from anywhere in two keystrokes.",
+      "tags": [
+        "create",
+        "new",
+        "menu",
+        "sidebar",
+        "shortcut"
+      ],
+      "pieces": [
+        13
+      ],
+      "exports": [
+        "QuickCreate",
+        "QuickCreateItem"
+      ],
+      "doc": "llms/quick-create.md"
+    },
+    {
+      "name": "command-palette",
+      "title": "CommandPalette",
+      "category": "shell",
+      "tagline": "One ⌘K dialog that finds records, runs actions and goes to pages. The server searches; the nav list supplies Go to.",
+      "job": "Reach any record, verb or page from the keyboard in one box.",
+      "tags": [
+        "palette",
+        "search",
+        "command",
+        "shortcuts",
+        "cmdk",
+        "go-to"
+      ],
+      "pieces": [
+        13
+      ],
+      "exports": [
+        "CommandPalette",
+        "useRecordSearch",
+        "useShortcuts",
+        "goItems",
+        "matchesTerm",
+        "paletteLabels",
+        "PaletteItem",
+        "FoundGroup",
+        "PaletteLabels",
+        "RecordSearch",
+        "ShortcutHandlers"
+      ],
+      "doc": "llms/command-palette.md"
+    },
+    {
+      "name": "shortcut-help",
+      "title": "ShortcutHelp",
+      "category": "shell",
+      "tagline": "The ? sheet. Every key the shell answers to, grouped, with the go-keys generated from the nav.",
+      "job": "Show the keyboard once so people stop using the mouse.",
+      "tags": [
+        "shortcuts",
+        "keyboard",
+        "help",
+        "sheet",
+        "kbd"
+      ],
+      "pieces": [
+        13
+      ],
+      "exports": [
+        "ShortcutHelp",
+        "shellShortcutGroups",
+        "shellShortcutLabels",
+        "ShortcutGroup",
+        "ShellShortcutLabels"
+      ],
+      "doc": "llms/shortcut-help.md"
+    },
+    {
+      "name": "notification-bell",
+      "title": "NotificationBell",
+      "category": "shell",
+      "tagline": "The header bell. A count badge, then a Sheet with the work waiting for you and the recent activity.",
+      "job": "Tell one person what needs them now and what just happened.",
+      "tags": [
+        "notifications",
+        "bell",
+        "inbox",
+        "sheet",
+        "badge",
+        "attention"
+      ],
+      "pieces": [
+        10
+      ],
+      "exports": [
+        "NotificationBell",
+        "NotificationList",
+        "notificationLabels",
+        "NotificationData",
+        "NotificationLabels",
+        "WaitingItem",
+        "RecentItem"
+      ],
+      "doc": "llms/notification-bell.md"
+    },
+    {
+      "name": "locale-switch",
+      "title": "LocaleSwitch",
+      "category": "shell",
+      "tagline": "A globe with the current language code. Pick another and the page reloads in it.",
+      "job": "Switch the interface language in one click from any page.",
+      "tags": [
+        "locale",
+        "language",
+        "bilingual",
+        "i18n",
+        "switch"
+      ],
+      "pieces": [
+        18
+      ],
+      "exports": [
+        "LocaleSwitch",
+        "LocaleOption"
+      ],
+      "doc": "llms/locale-switch.md"
+    },
+    {
+      "name": "section-layout",
+      "title": "SectionLayout",
+      "category": "shell",
+      "tagline": "Title, grouped inner nav on the left, page on the right. Setup, Organization and Settings open in it.",
+      "job": "Give a section with many pages one place to switch between them.",
+      "tags": [
+        "section",
+        "settings",
+        "setup",
+        "organization",
+        "inner-nav",
+        "layout"
+      ],
+      "pieces": [
+        7,
+        26
+      ],
+      "exports": [
+        "SectionLayout"
+      ],
+      "doc": "llms/section-layout.md"
+    },
+    {
+      "name": "app-tour",
+      "title": "AppTour",
+      "category": "shell",
+      "tagline": "One short overlay tour over the shell, once per user. Hidden targets are skipped by size.",
+      "job": "Walk a new user through navigation, New and search in under a minute.",
+      "tags": [
+        "tour",
+        "onboarding",
+        "driver",
+        "overlay",
+        "walkthrough"
+      ],
+      "pieces": [
+        9
+      ],
+      "exports": [
+        "AppTour",
+        "visibleSteps",
+        "tourLabels",
+        "TourStep",
+        "TourLabels"
+      ],
+      "doc": "llms/app-tour.md"
+    },
+    {
+      "name": "page-header",
+      "title": "PageHeader",
+      "category": "page-kit",
+      "tagline": "The one h1 of a page, with its own create and export actions on the right.",
+      "job": "Name the page and hold the actions that belong to the whole page.",
+      "tags": [
+        "header",
+        "title",
+        "h1",
+        "create",
+        "actions"
+      ],
+      "pieces": [
+        20
+      ],
+      "exports": [
+        "PageHeader"
+      ],
+      "doc": "llms/page-header.md"
+    },
+    {
+      "name": "filter-bar",
+      "title": "FilterBar",
+      "category": "page-kit",
+      "tagline": "Search, inline filters, an overflow popover, and removable chips. The query string is the state.",
+      "job": "Narrow one index table from the URL, one field per filterable column.",
+      "tags": [
+        "filters",
+        "search",
+        "chips",
+        "query string",
+        "index"
+      ],
+      "pieces": [
+        20,
+        15
+      ],
+      "exports": [
+        "FilterBar",
+        "FilterChips",
+        "FilterControl",
+        "applyFilters",
+        "activeFilters",
+        "FilterState",
+        "FilterField"
+      ],
+      "doc": "llms/filter-bar.md"
+    },
+    {
+      "name": "data-table",
+      "title": "DataTable",
+      "category": "page-kit",
+      "tagline": "The index table frame: sticky header, scrolling rows, pager footer, and an empty state that keeps the table.",
+      "job": "Frame one paginated table so it fills the page and always shows the shape the data will take.",
+      "tags": [
+        "table",
+        "index",
+        "pagination",
+        "empty",
+        "skeleton",
+        "list"
+      ],
+      "pieces": [
+        20
+      ],
+      "exports": [
+        "DataTable",
+        "TableEmptyRow",
+        "DataTableSkeleton",
+        "Paginated",
+        "PageLabels"
+      ],
+      "doc": "llms/data-table.md"
+    },
+    {
+      "name": "cells",
+      "title": "Cells",
+      "category": "page-kit",
+      "tagline": "One cell per data kind. Laravel formats, the cell only places.",
+      "job": "Render one typed value in one table cell, aligned and styled for its kind.",
+      "tags": [
+        "table",
+        "cell",
+        "money",
+        "date",
+        "status",
+        "person",
+        "typed"
+      ],
+      "pieces": [
+        20
+      ],
+      "exports": [
+        "MoneyCell",
+        "NumberCell",
+        "DateCell",
+        "StatusCell",
+        "PersonCell",
+        "CodeCell",
+        "BooleanCell",
+        "LinkCell",
+        "TextCell",
+        "EmptyValue"
+      ],
+      "doc": "llms/cells.md"
+    },
+    {
+      "name": "pill",
+      "title": "Pill",
+      "category": "page-kit",
+      "tagline": "A tinted label for a status, a stage or a count. The tint is the colour; there is no dot.",
+      "job": "State one status or category in one word.",
+      "tags": [
+        "status",
+        "badge",
+        "pill",
+        "label",
+        "stage"
+      ],
+      "pieces": [
+        20
+      ],
+      "exports": [
+        "Pill",
+        "pillTint",
+        "pillSolid",
+        "PillColor"
+      ],
+      "doc": "llms/pill.md"
+    },
+    {
+      "name": "empty-state",
+      "title": "EmptyState",
+      "category": "page-kit",
+      "tagline": "An icon chip, why the region is empty, and the first action. For regions that are not tables.",
+      "job": "Say why a region is empty and what fills it.",
+      "tags": [
+        "empty",
+        "first use",
+        "no results",
+        "state"
+      ],
+      "pieces": [
+        20
+      ],
+      "exports": [
+        "EmptyState"
+      ],
+      "doc": "llms/empty-state.md"
+    },
+    {
+      "name": "tab-nav",
+      "title": "TabNav",
+      "category": "page-kit",
+      "tagline": "Tabs that are routes. The active tab comes from the URL, never from state.",
+      "job": "Switch between the sections of one record or one area, each on its own URL.",
+      "tags": [
+        "tabs",
+        "routes",
+        "record page",
+        "navigation"
+      ],
+      "pieces": [
+        20
+      ],
+      "exports": [
+        "TabNav",
+        "TabLink"
+      ],
+      "doc": "llms/tab-nav.md"
+    },
+    {
+      "name": "actions-menu",
+      "title": "ActionsMenu",
+      "category": "page-kit",
+      "tagline": "The \"…\" menu for a row or a record header. Destructive items in rose, dialogs opened by state.",
+      "job": "Hold the secondary and destructive actions of one record.",
+      "tags": [
+        "menu",
+        "row actions",
+        "dropdown",
+        "destructive"
+      ],
+      "pieces": [
+        20
+      ],
+      "exports": [
+        "ActionsMenu",
+        "ActionsMenuItem"
+      ],
+      "doc": "llms/actions-menu.md"
+    },
+    {
+      "name": "stat-tile",
+      "title": "StatTile",
+      "category": "page-kit",
+      "tagline": "One number with its label, unit and hint. Quiet by default, raised glass above a list.",
+      "job": "State one figure the server computed.",
+      "tags": [
+        "kpi",
+        "stat",
+        "tile",
+        "dashboard",
+        "number"
+      ],
+      "pieces": [
+        20
+      ],
+      "exports": [
+        "StatTile"
+      ],
+      "doc": "llms/stat-tile.md"
+    },
+    {
+      "name": "activity-timeline",
+      "title": "ActivityTimeline",
+      "category": "page-kit",
+      "tagline": "The audit log as a timeline: day groups, kind icon, actor, from → to pills, the reason.",
+      "job": "Show the history of one record, or of everything, as the audit log recorded it.",
+      "tags": [
+        "activity",
+        "audit",
+        "timeline",
+        "history",
+        "log"
+      ],
+      "pieces": [
+        2,
+        23,
+        20
+      ],
+      "exports": [
+        "ActivityTimeline",
+        "ActivityEntryItem",
+        "ActivityEntry"
+      ],
+      "doc": "llms/activity-timeline.md"
+    },
+    {
+      "name": "detail-card",
+      "title": "DetailCard",
+      "category": "page-kit",
+      "tagline": "A record readout: a titled glass card of label and value pairs. Main facts left, fixed facts right.",
+      "job": "State a set of labelled facts about one record.",
+      "tags": [
+        "detail",
+        "record",
+        "readout",
+        "description list",
+        "show page"
+      ],
+      "pieces": [
+        7,
+        20,
+        27
+      ],
+      "exports": [
+        "DetailCard",
+        "DetailList",
+        "Detail"
+      ],
+      "doc": "llms/detail-card.md"
+    },
+    {
+      "name": "form-layout",
+      "title": "FormLayout",
+      "category": "page-kit",
+      "tagline": "The full-page form: sticky header with Cancel and Save, section cards left, small fixed-field cards right.",
+      "job": "Lay out a create or edit page with more than five fields.",
+      "tags": [
+        "form",
+        "create page",
+        "edit page",
+        "sections",
+        "layout"
+      ],
+      "pieces": [
+        20
+      ],
+      "exports": [
+        "FormLayout",
+        "FormSection"
+      ],
+      "doc": "llms/form-layout.md"
+    },
+    {
+      "name": "field-row",
+      "title": "FieldRow",
+      "category": "page-kit",
+      "tagline": "Label, control, hint, error. Plus the form's error summary and its Cancel.",
+      "job": "Wrap one form control with its persistent label and its server error.",
+      "tags": [
+        "form",
+        "field",
+        "label",
+        "error",
+        "validation",
+        "cancel"
+      ],
+      "pieces": [
+        20
+      ],
+      "exports": [
+        "FieldRow",
+        "InputError",
+        "AlertError",
+        "FormCancel"
+      ],
+      "doc": "llms/field-row.md"
+    },
+    {
+      "name": "list-skeleton",
+      "title": "ListSkeleton",
+      "category": "page-kit",
+      "tagline": "Placeholder bars for a non-table list while its deferred prop loads.",
+      "job": "Hold the space of a list that is still arriving.",
+      "tags": [
+        "skeleton",
+        "loading",
+        "deferred",
+        "list"
+      ],
+      "pieces": [
+        20
+      ],
+      "exports": [
+        "ListSkeleton"
+      ],
+      "doc": "llms/list-skeleton.md"
+    },
+    {
+      "name": "load-error",
+      "title": "LoadError",
+      "category": "page-kit",
+      "tagline": "The fourth state of a data region: it did not load, and here is the button that tries again.",
+      "job": "Say a region failed to load and offer one retry.",
+      "tags": [
+        "error",
+        "retry",
+        "deferred",
+        "rescue",
+        "state"
+      ],
+      "pieces": [
+        20
+      ],
+      "exports": [
+        "LoadError"
+      ],
+      "doc": "llms/load-error.md"
+    },
+    {
+      "name": "confirm-dialog",
+      "title": "ConfirmDialog",
+      "category": "dialogs",
+      "tagline": "Title, one sentence of consequence, Keep it, and a button that names the verb. For the light status changes.",
+      "job": "Stop a one-click state change long enough to read what it does.",
+      "tags": [
+        "dialog",
+        "confirm",
+        "status",
+        "archive",
+        "restore",
+        "destructive"
+      ],
+      "pieces": [
+        14,
+        16
+      ],
+      "exports": [
+        "ConfirmDialog",
+        "ConfirmDialogProps"
+      ],
+      "doc": "llms/confirm-dialog.md"
+    },
+    {
+      "name": "reason-dialog",
+      "title": "ReasonDialog",
+      "category": "dialogs",
+      "tagline": "A confirm with a required reason, and a typed name for deletes. The reason lands in the audit log.",
+      "job": "Make every serious change say why before it happens.",
+      "tags": [
+        "dialog",
+        "reason",
+        "audit",
+        "delete",
+        "disable",
+        "reject",
+        "typed-name"
+      ],
+      "pieces": [
+        6,
+        14,
+        16
+      ],
+      "exports": [
+        "ReasonDialog",
+        "reasonLabels",
+        "ReasonLabels"
+      ],
+      "doc": "llms/reason-dialog.md"
+    },
+    {
+      "name": "form-dialog",
+      "title": "FormDialog",
+      "category": "dialogs",
+      "tagline": "A dialog that is a form: title, your fields, Cancel and a submit that names the object.",
+      "job": "Create or rename a small record without leaving the page.",
+      "tags": [
+        "dialog",
+        "form",
+        "create",
+        "rename",
+        "setup-lists",
+        "inline"
+      ],
+      "pieces": [
+        25
+      ],
+      "exports": [
+        "FormDialog"
+      ],
+      "doc": "llms/form-dialog.md"
+    },
+    {
+      "name": "phone-field",
+      "title": "PhoneField",
+      "category": "forms",
+      "tagline": "The one phone input: country selector, as-you-type formatting, E.164 out, Somalia first.",
+      "job": "Collect one valid phone number in international form.",
+      "tags": [
+        "phone",
+        "input",
+        "country",
+        "libphonenumber",
+        "E.164",
+        "form"
+      ],
+      "pieces": [
+        6,
+        27
+      ],
+      "exports": [
+        "PhoneField",
+        "PhoneInput",
+        "isValidPhone",
+        "DEFAULT_COUNTRY"
+      ],
+      "doc": "llms/phone-field.md"
+    },
+    {
+      "name": "password-input",
+      "title": "PasswordInput",
+      "category": "forms",
+      "tagline": "A password input with a show / hide toggle that stays out of the tab order.",
+      "job": "Collect a password the user can check before submitting.",
+      "tags": [
+        "password",
+        "input",
+        "login",
+        "security"
+      ],
+      "pieces": [
+        6
+      ],
+      "exports": [
+        "PasswordInput"
+      ],
+      "doc": "llms/password-input.md"
+    },
+    {
+      "name": "remote-combobox",
+      "title": "RemoteCombobox",
+      "category": "forms",
+      "tagline": "A searchable picker whose options come from the server as you type.",
+      "job": "Pick one record from a list too long to send with the page.",
+      "tags": [
+        "combobox",
+        "search",
+        "picker",
+        "remote",
+        "select"
+      ],
+      "pieces": [
+        20
+      ],
+      "exports": [
+        "RemoteCombobox",
+        "RemoteOption"
+      ],
+      "doc": "llms/remote-combobox.md"
+    },
+    {
+      "name": "verify-phone-dialog",
+      "title": "VerifyPhoneDialog",
+      "category": "forms",
+      "tagline": "Fixed title, the phone, \"Send code\", then six digits and one confirm.",
+      "job": "Prove a phone number belongs to the person in front of the screen.",
+      "tags": [
+        "phone",
+        "otp",
+        "verify",
+        "dialog",
+        "code"
+      ],
+      "pieces": [
+        6,
+        27
+      ],
+      "exports": [
+        "VerifyPhoneDialog",
+        "VerifyPhoneLabels"
+      ],
+      "doc": "llms/verify-phone-dialog.md"
+    },
+    {
+      "name": "permission-picker",
+      "title": "PermissionPicker",
+      "category": "access",
+      "tagline": "Permissions grouped by module, a scope beside each scoped one, and a lock on what the editor does not hold.",
+      "job": "Build a role in the UI without letting anyone grant beyond their own reach.",
+      "tags": [
+        "permissions",
+        "roles",
+        "scope",
+        "access",
+        "grant",
+        "checkbox"
+      ],
+      "pieces": [
+        4,
+        5
+      ],
+      "exports": [
+        "PermissionPicker",
+        "permissionPickerLabels",
+        "PermissionGrant",
+        "PermissionGroup",
+        "PermissionOption",
+        "PermissionPickerLabels",
+        "ScopeOption"
+      ],
+      "doc": "llms/permission-picker.md"
+    },
+    {
+      "name": "sensitive-switches",
+      "title": "SensitiveSwitches",
+      "category": "access",
+      "tagline": "One switch per sensitive field family, each with the line that says what it reveals.",
+      "job": "Hide money, margins, salaries and client contacts per role without a permission per field.",
+      "tags": [
+        "sensitive",
+        "switches",
+        "roles",
+        "money",
+        "salaries",
+        "access"
+      ],
+      "pieces": [
+        5
+      ],
+      "exports": [
+        "SensitiveSwitches",
+        "SensitiveSwitch"
+      ],
+      "doc": "llms/sensitive-switches.md"
+    },
+    {
+      "name": "preference-matrix",
+      "title": "PreferenceMatrix",
+      "category": "access",
+      "tagline": "Events down, channels across, one switch per cell. Quiet hours said once, under the grid.",
+      "job": "Let each person pick which events reach them on which channel.",
+      "tags": [
+        "notifications",
+        "preferences",
+        "matrix",
+        "channels",
+        "email",
+        "settings"
+      ],
+      "pieces": [
+        10
+      ],
+      "exports": [
+        "PreferenceMatrix",
+        "preferenceMatrixLabels",
+        "PreferenceChannel",
+        "PreferenceEvent",
+        "PreferenceMatrixLabels",
+        "PreferenceValue"
+      ],
+      "doc": "llms/preference-matrix.md"
+    },
+    {
+      "name": "audit-log-table",
+      "title": "AuditLogTable",
+      "category": "organization",
+      "tagline": "One table of every event: when, who and through which channel, the event label over its raw name, the subject, the reason.",
+      "job": "Show the audit log the way the audit recipe stores it, filterable and exportable, without a second design per module.",
+      "tags": [
+        "audit",
+        "activity",
+        "log",
+        "events",
+        "reason",
+        "via",
+        "channel",
+        "csv"
+      ],
+      "pieces": [
+        2,
+        23
+      ],
+      "exports": [
+        "AuditLogTable",
+        "auditLogLabels",
+        "AuditEvent",
+        "AuditLogLabels"
+      ],
+      "doc": "llms/audit-log-table.md"
+    },
+    {
+      "name": "service-status-list",
+      "title": "ServiceStatusList",
+      "category": "organization",
+      "tagline": "Each service the app needs, configured or missing, with the env names to set. Never a value.",
+      "job": "Tell an admin what the server still needs without putting a secret anywhere near the browser.",
+      "tags": [
+        "services",
+        "env",
+        "configuration",
+        "workspace",
+        "setup",
+        "secrets"
+      ],
+      "pieces": [
+        7,
+        8
+      ],
+      "exports": [
+        "ServiceStatusList",
+        "serviceStatusLabels",
+        "ServiceStatus",
+        "ServiceStatusLabels"
+      ],
+      "doc": "llms/service-status-list.md"
+    },
+    {
+      "name": "letterhead-preview",
+      "title": "LetterheadPreview",
+      "category": "organization",
+      "tagline": "The printed header, live beside the workspace form: legal name, lines, logo.",
+      "job": "Let the person editing the letterhead see what every invoice and statement will print.",
+      "tags": [
+        "letterhead",
+        "workspace",
+        "print",
+        "legal name",
+        "logo"
+      ],
+      "pieces": [
+        7,
+        17
+      ],
+      "exports": [
+        "LetterheadPreview",
+        "letterheadPreviewLabels",
+        "LetterheadPreviewLabels"
+      ],
+      "doc": "llms/letterhead-preview.md"
+    },
+    {
+      "name": "webhook-event-picker",
+      "title": "WebhookEventPicker",
+      "category": "organization",
+      "tagline": "The event catalogue as checkboxes, grouped by noun, with a tri-state box per group and the raw name under each label.",
+      "job": "Subscribe an endpoint to exactly the catalogue events it needs.",
+      "tags": [
+        "webhooks",
+        "events",
+        "catalogue",
+        "subscribe",
+        "checkbox"
+      ],
+      "pieces": [
+        22,
+        3
+      ],
+      "exports": [
+        "WebhookEventPicker",
+        "webhookEventPickerLabels",
+        "WebhookEvent",
+        "WebhookEventGroup",
+        "WebhookEventPickerLabels"
+      ],
+      "doc": "llms/webhook-event-picker.md"
+    },
+    {
+      "name": "webhook-delivery-log",
+      "title": "WebhookDeliveryLog",
+      "category": "organization",
+      "tagline": "Every delivery as a row: event, status, attempts, response code over its excerpt, next attempt, resend.",
+      "job": "Answer \"did they get it, and if not why\" from the endpoint page.",
+      "tags": [
+        "webhooks",
+        "deliveries",
+        "retry",
+        "resend",
+        "log"
+      ],
+      "pieces": [
+        22
+      ],
+      "exports": [
+        "WebhookDeliveryLog",
+        "webhookDeliveryLogLabels",
+        "WebhookDelivery",
+        "WebhookDeliveryLogLabels"
+      ],
+      "doc": "llms/webhook-delivery-log.md"
+    },
+    {
+      "name": "webhook-endpoint-status",
+      "title": "WebhookEndpointStatus",
+      "category": "organization",
+      "tagline": "The banner on an endpoint that is failing or off: since when, who turned it off and why, and Enable.",
+      "job": "Make the auto-disabled state impossible to miss and one click to undo.",
+      "tags": [
+        "webhooks",
+        "disabled",
+        "failing",
+        "banner",
+        "enable"
+      ],
+      "pieces": [
+        22,
+        16
+      ],
+      "exports": [
+        "WebhookEndpointStatus",
+        "webhookEndpointStatusLabels",
+        "WebhookEndpointState",
+        "WebhookEndpointStatusLabels"
+      ],
+      "doc": "llms/webhook-endpoint-status.md"
+    },
+    {
+      "name": "secret-reveal",
+      "title": "SecretReveal",
+      "category": "organization",
+      "tagline": "A secret shown once: read-only, select on focus, copy, and the line that says it will not come back.",
+      "job": "Hand over a signing secret or private link exactly once, from the flash, and never from props again.",
+      "tags": [
+        "secret",
+        "token",
+        "copy",
+        "once",
+        "webhook",
+        "calendar",
+        "api key"
+      ],
+      "pieces": [
+        22,
+        12
+      ],
+      "exports": [
+        "SecretReveal",
+        "secretRevealLabels",
+        "SecretRevealLabels"
+      ],
+      "doc": "llms/secret-reveal.md"
+    },
+    {
+      "name": "grant-list",
+      "title": "GrantList",
+      "category": "organization",
+      "tagline": "The pages granted to one person on top of their role: what, who granted it, when, and revoke with a reason.",
+      "job": "Add or take away a single page for one person without inventing a role for them.",
+      "tags": [
+        "grants",
+        "delegated",
+        "pages",
+        "revoke",
+        "scoped permissions",
+        "access"
+      ],
+      "pieces": [
+        5,
+        16
+      ],
+      "exports": [
+        "GrantList",
+        "grantListLabels",
+        "Grant",
+        "GrantListLabels"
+      ],
+      "doc": "llms/grant-list.md"
+    },
+    {
+      "name": "calendar-feed-card",
+      "title": "CalendarFeedCard",
+      "category": "organization",
+      "tagline": "The personal ICS link: off or on, create, the new URL shown once, reset and revoke behind a confirm.",
+      "job": "Let each person put their own events, reminders and due dates in the calendar app they already use.",
+      "tags": [
+        "calendar",
+        "ics",
+        "feed",
+        "subscribe",
+        "settings",
+        "token"
+      ],
+      "pieces": [
+        12
+      ],
+      "exports": [
+        "CalendarFeedCard",
+        "calendarFeedLabels",
+        "CalendarFeedLabels"
+      ],
+      "doc": "llms/calendar-feed-card.md"
+    },
+    {
+      "name": "saved-views-menu",
+      "title": "SavedViewsMenu",
+      "category": "views",
+      "tagline": "Saved filter sets for a list. The menu knows which one is active by comparing the URL.",
+      "job": "Save the current query of a list under a name and return to it in one click.",
+      "tags": [
+        "saved views",
+        "filters",
+        "query",
+        "share",
+        "list"
+      ],
+      "pieces": [
+        15
+      ],
+      "exports": [
+        "SavedViewsMenu",
+        "SaveViewDialog",
+        "activeView",
+        "viewDefinition",
+        "SavedViewItem"
+      ],
+      "doc": "llms/saved-views-menu.md"
+    },
+    {
+      "name": "favorite-button",
+      "title": "FavoriteButton",
+      "category": "views",
+      "tagline": "A star that pins any viewable record or saved view to the sidebar.",
+      "job": "Toggle one record in the user's favorites.",
+      "tags": [
+        "favorite",
+        "pin",
+        "star",
+        "sidebar"
+      ],
+      "pieces": [
+        15
+      ],
+      "exports": [
+        "FavoriteButton"
+      ],
+      "doc": "llms/favorite-button.md"
+    },
+    {
+      "name": "export-button",
+      "title": "ExportButton",
+      "category": "views",
+      "tagline": "A plain download link styled as an outline button. Exports what the list shows.",
+      "job": "Download the current list as CSV.",
+      "tags": [
+        "export",
+        "csv",
+        "download"
+      ],
+      "pieces": [
+        15
+      ],
+      "exports": [
+        "ExportButton"
+      ],
+      "doc": "llms/export-button.md"
+    },
+    {
+      "name": "csv-import",
+      "title": "CsvImport",
+      "category": "views",
+      "tagline": "Pick a file, preview what would change, then import. Nothing writes before the preview.",
+      "job": "Import records from CSV with a dry run first.",
+      "tags": [
+        "import",
+        "csv",
+        "preview",
+        "dry run",
+        "upload"
+      ],
+      "pieces": [
+        15
+      ],
+      "exports": [
+        "CsvImport",
+        "ImportPreviewSection",
+        "ImportPreview",
+        "ImportRowView"
+      ],
+      "doc": "llms/csv-import.md"
+    },
+    {
+      "name": "print-sheet",
+      "title": "PrintSheet",
+      "category": "views",
+      "tagline": "The A4 sheet: letterhead, repeating header and footer, title and number, lines, totals, the stamp.",
+      "job": "Give every official document one print layout that the browser turns into a PDF.",
+      "tags": [
+        "print",
+        "pdf",
+        "a4",
+        "invoice",
+        "statement",
+        "letterhead"
+      ],
+      "pieces": [
+        17
+      ],
+      "exports": [
+        "PrintSheet",
+        "printSheetLabels",
+        "Letterhead",
+        "PrintMeta",
+        "PrintSheetLabels",
+        "PrintLines",
+        "PrintTotals",
+        "PrintBlock",
+        "PrintColumn",
+        "PrintRow",
+        "PrintTotal"
+      ],
+      "doc": "llms/print-sheet.md"
+    },
+    {
+      "name": "setup-checklist",
+      "title": "SetupChecklist",
+      "category": "setup",
+      "tagline": "Steps that tick from real data, each with a link to where it gets done, and one \"Finish setup\".",
+      "job": "Walk the super admin through the first configuration without storing a single tick.",
+      "tags": [
+        "setup",
+        "checklist",
+        "onboarding",
+        "super admin",
+        "first run"
+      ],
+      "pieces": [
+        8
+      ],
+      "exports": [
+        "SetupChecklist",
+        "SetupStep",
+        "SetupLabels"
+      ],
+      "doc": "llms/setup-checklist.md"
+    },
+    {
+      "name": "onboarding-card",
+      "title": "OnboardingCard",
+      "category": "setup",
+      "tagline": "The side card on a record born from an onboarding: reference, who started it, who approved it, when, and the source.",
+      "job": "Show where a relationship record came from.",
+      "tags": [
+        "onboarding",
+        "record",
+        "provenance",
+        "side card"
+      ],
+      "pieces": [
+        27
+      ],
+      "exports": [
+        "OnboardingCard",
+        "OnboardingSummary",
+        "OnboardingLabels"
+      ],
+      "doc": "llms/onboarding-card.md"
+    },
+    {
+      "name": "onboarding-stepper",
+      "title": "OnboardingStepper",
+      "category": "setup",
+      "tagline": "Full screen, a thin header with Exit, the left rail of steps, Back and \"Confirm and continue\".",
+      "job": "Walk staff or a guest through an onboarding one saved slice at a time.",
+      "tags": [
+        "onboarding",
+        "stepper",
+        "wizard",
+        "steps",
+        "guest",
+        "send back"
+      ],
+      "pieces": [
+        27
+      ],
+      "exports": [
+        "OnboardingStepper",
+        "onboardingStepperLabels",
+        "OnboardingStepperLabels",
+        "SentBack",
+        "OnboardingRail",
+        "OnboardingStepItem",
+        "stepLocked"
+      ],
+      "doc": "llms/onboarding-stepper.md"
+    },
+    {
+      "name": "review-problems",
+      "title": "ReviewProblems",
+      "category": "setup",
+      "tagline": "One row per section: ready, or the problems the server found, with a Fix that jumps to the step.",
+      "job": "Show what still blocks a submit or an approve, from the same checks the server runs.",
+      "tags": [
+        "onboarding",
+        "review",
+        "problems",
+        "validation",
+        "progress"
+      ],
+      "pieces": [
+        27
+      ],
+      "exports": [
+        "ReviewProblems",
+        "reviewProblemsLabels",
+        "ReviewProblemsLabels",
+        "ReviewSection"
+      ],
+      "doc": "llms/review-problems.md"
+    },
+    {
+      "name": "insight-item",
+      "title": "InsightItem",
+      "category": "setup",
+      "tagline": "One insight: severity, title, body, folded evidence, suggestions you can apply, mark seen, dismiss.",
+      "job": "Present one rule signal and let the reader act on it or close it.",
+      "tags": [
+        "insight",
+        "signal",
+        "inbox",
+        "suggestion",
+        "evidence"
+      ],
+      "pieces": [
+        24,
+        11
+      ],
+      "exports": [
+        "InsightItem",
+        "Insight",
+        "InsightLabels"
+      ],
+      "doc": "llms/insight-item.md"
+    }
+  ],
+  "compositions": [
+    {
+      "name": "block-index-page",
+      "title": "Index page",
+      "kind": "block",
+      "tagline": "PageHeader with its create action, FilterBar with export, one DataTable of typed cells, the pager.",
+      "description": "The index page every module gets. Every filterable column has a field, the query string is the state, rows open the record from the primary column, the footer counts.",
+      "tags": [
+        "index",
+        "list",
+        "table",
+        "filters"
+      ],
+      "pieces": [
+        20,
+        15
+      ],
+      "deps": [
+        "page-header",
+        "filter-bar",
+        "data-table",
+        "cells",
+        "export-button"
+      ]
+    },
+    {
+      "name": "block-record-page",
+      "title": "Record page",
+      "kind": "block",
+      "tagline": "Header actions, tabs that are routes, detail cards main-left and fixed-right, activity.",
+      "description": "The show page: status pill in the header, favorite star, outline secondary action, the \"…\" menu for the serious ones. Tabs per section. DetailCards with the onboarding card on the right.",
+      "tags": [
+        "record",
+        "show",
+        "detail",
+        "tabs",
+        "activity"
+      ],
+      "pieces": [
+        20,
+        2,
+        27
+      ],
+      "deps": [
+        "page-header",
+        "pill",
+        "tab-nav",
+        "actions-menu",
+        "favorite-button",
+        "detail-card",
+        "onboarding-card",
+        "activity-timeline"
+      ]
+    },
+    {
+      "name": "block-form-page",
+      "title": "Full-page form",
+      "kind": "block",
+      "tagline": "Sticky header with Cancel and Create, section cards left, fixed-field cards right.",
+      "description": "More than five fields means a page. Sections named by one title each; relationship, source and finance in small side cards; the phone through the shared PhoneField; a server error shown under its field.",
+      "tags": [
+        "form",
+        "create",
+        "edit",
+        "sections"
+      ],
+      "pieces": [
+        20
+      ],
+      "deps": [
+        "form-layout",
+        "field-row",
+        "phone-field"
+      ]
+    },
+    {
+      "name": "block-home-dashboard",
+      "title": "Home",
+      "kind": "block",
+      "tagline": "Raised stat tiles, the work waiting on you as a table, latest activity.",
+      "description": "Never a setup checklist, never a bare list. Numbers that link to their lists, one table of what waits, the feed with subjects.",
+      "tags": [
+        "home",
+        "dashboard",
+        "stats",
+        "activity"
+      ],
+      "pieces": [
+        20,
+        11
+      ],
+      "deps": [
+        "page-header",
+        "stat-tile",
+        "data-table",
+        "cells",
+        "activity-timeline"
+      ]
+    },
+    {
+      "name": "block-roles-index",
+      "title": "Roles",
+      "kind": "block",
+      "tagline": "Every role with its users and permission counts. Super admin locked, a role in use cannot be deleted.",
+      "description": "Name over description in one cell, counts as numbers. The super admin row has no menu. Delete appears only when nobody holds the role, and it asks for a reason.",
+      "tags": [
+        "roles",
+        "permissions",
+        "organization",
+        "delete"
+      ],
+      "pieces": [
+        4,
+        16
+      ],
+      "deps": [
+        "page-header",
+        "data-table",
+        "cells",
+        "pill",
+        "actions-menu",
+        "reason-dialog"
+      ]
+    },
+    {
+      "name": "block-onboarding-review",
+      "title": "Onboarding review",
+      "kind": "block",
+      "tagline": "What was submitted, read-only. Reject · Send back · Approve in the header, progress and source on the right.",
+      "description": "The reviewer's page. Reject and send back ask for a reason; approve is a confirm that says what gets created. The progress card reads the server problems, so approve stays honest.",
+      "tags": [
+        "onboarding",
+        "review",
+        "approve",
+        "send back",
+        "reject"
+      ],
+      "pieces": [
+        27,
+        16
+      ],
+      "deps": [
+        "form-layout",
+        "detail-card",
+        "pill",
+        "review-problems",
+        "confirm-dialog",
+        "reason-dialog"
+      ]
+    },
+    {
+      "name": "template-users-page",
+      "title": "Organization · Users",
+      "kind": "template",
+      "tagline": "The people list inside the Organization section: invite in a dialog, deactivate with a reason.",
+      "description": "SectionLayout with the People and System groups. Name over email in one cell, role and status pills, last login as a date. Invite is a five-field FormDialog; deactivate is a ReasonDialog with a successor on the real page.",
+      "tags": [
+        "users",
+        "organization",
+        "people",
+        "invite",
+        "deactivate"
+      ],
+      "pieces": [
+        6,
+        26,
+        16
+      ],
+      "deps": [
+        "section-layout",
+        "page-header",
+        "data-table",
+        "cells",
+        "actions-menu",
+        "form-dialog",
+        "reason-dialog",
+        "field-row"
+      ]
+    },
+    {
+      "name": "template-trash-page",
+      "title": "Trash",
+      "kind": "template",
+      "tagline": "What was deleted, by whom, why, and how many days remain. Restore through a confirm.",
+      "description": "One table across types with a type filter. Who and the reason stack in one cell; days left is a number; Restore is a ConfirmDialog that says nothing re-sends.",
+      "tags": [
+        "trash",
+        "restore",
+        "soft delete"
+      ],
+      "pieces": [
+        14,
+        16
+      ],
+      "deps": [
+        "page-header",
+        "filter-bar",
+        "data-table",
+        "cells",
+        "confirm-dialog"
+      ]
+    },
+    {
+      "name": "template-setup-page",
+      "title": "Organization · Setup",
+      "kind": "template",
+      "tagline": "The checklist that ticks from real data, the services panel, and Finish setup.",
+      "description": "Steps with one button per link. Review-only steps never tick. Services show ok or missing with the env names, never values.",
+      "tags": [
+        "setup",
+        "checklist",
+        "services"
+      ],
+      "pieces": [
+        8,
+        7,
+        26
+      ],
+      "deps": [
+        "section-layout",
+        "page-header",
+        "setup-checklist",
+        "service-status-list"
+      ]
+    },
+    {
+      "name": "template-settings-page",
+      "title": "Settings · Profile",
+      "kind": "template",
+      "tagline": "The personal settings layout: profile, timezone and quiet hours, nothing platform-wide.",
+      "description": "Reached from the user menu, never the sidebar. Flat side nav of the user's own pages. Timezone and quiet hours live here because notifications read them per user.",
+      "tags": [
+        "settings",
+        "profile",
+        "timezone",
+        "quiet hours"
+      ],
+      "pieces": [
+        7,
+        18
+      ],
+      "deps": [
+        "section-layout",
+        "page-header",
+        "form-layout",
+        "field-row",
+        "phone-field"
+      ]
+    },
+    {
+      "name": "template-roles-page",
+      "title": "Organization · Roles",
+      "kind": "template",
+      "tagline": "The role form: name on top, permission picker below, scope per permission and the sensitive switches.",
+      "description": "Groups come from the permission registry. What the editor does not hold is locked, so nobody grants beyond their own reach. A scoped permission gets its scope next to it; sensitive fields are switches under the picker.",
+      "tags": [
+        "roles",
+        "permissions",
+        "scope",
+        "sensitive",
+        "organization"
+      ],
+      "pieces": [
+        4,
+        5,
+        26
+      ],
+      "deps": [
+        "section-layout",
+        "form-layout",
+        "field-row",
+        "permission-picker",
+        "sensitive-switches"
+      ]
+    },
+    {
+      "name": "template-audit-log-page",
+      "title": "Organization · Audit log",
+      "kind": "template",
+      "tagline": "Every event in one table: who, through which channel, what, on which record, and why. Filters and the CSV export.",
+      "description": "The audit recipe's page behind audit.view. Filters by person, event prefix, channel, from and to — the same filters the export honours. Times in the viewer's timezone; the CSV in UTC with the raw event name and the via column.",
+      "tags": [
+        "audit",
+        "activity log",
+        "events",
+        "csv",
+        "export",
+        "organization"
+      ],
+      "pieces": [
+        2,
+        23,
+        26
+      ],
+      "deps": [
+        "section-layout",
+        "page-header",
+        "filter-bar",
+        "export-button",
+        "audit-log-table"
+      ]
+    },
+    {
+      "name": "template-workspace-page",
+      "title": "Organization · Workspace",
+      "kind": "template",
+      "tagline": "The workspace singleton: name and timezone, the letterhead the print sheet reads, two-factor, and the services panel.",
+      "description": "One row, typed columns, one Action per setting. The letterhead preview updates as you type and uses the PrintSheet type, so print and settings cannot drift. Services say configured or missing with the env names, never values.",
+      "tags": [
+        "workspace",
+        "settings",
+        "letterhead",
+        "services",
+        "two-factor",
+        "organization"
+      ],
+      "pieces": [
+        7,
+        17,
+        8
+      ],
+      "deps": [
+        "section-layout",
+        "form-layout",
+        "field-row",
+        "letterhead-preview",
+        "service-status-list"
+      ]
+    },
+    {
+      "name": "template-webhooks-page",
+      "title": "Organization · Webhooks",
+      "kind": "template",
+      "tagline": "Endpoints with their state and last delivery. Add one in a dialog; the signing secret is shown once.",
+      "description": "Behind integrations.manage; adding asks for the password. The URL must be https and public. The secret comes back in the flash, shows in a SecretReveal, and never again. Off and failing endpoints say why in the status cell.",
+      "tags": [
+        "webhooks",
+        "integrations",
+        "endpoints",
+        "secret",
+        "organization"
+      ],
+      "pieces": [
+        22,
+        3
+      ],
+      "deps": [
+        "section-layout",
+        "page-header",
+        "data-table",
+        "cells",
+        "form-dialog",
+        "field-row",
+        "webhook-event-picker",
+        "secret-reveal"
+      ]
+    },
+    {
+      "name": "template-webhook-endpoint-page",
+      "title": "Organization · Webhook endpoint",
+      "kind": "template",
+      "tagline": "One endpoint: the auto-disabled banner with Enable, send test, rotate secret, turn off with a reason, the delivery log.",
+      "description": "The state the endpoint is in comes first. Rotate shows the new secret once. Turning off by hand is a ReasonDialog; the system turns it off after three days of failure and writes its own reason. Resend copies a delivery into a new row.",
+      "tags": [
+        "webhooks",
+        "deliveries",
+        "retry",
+        "disabled",
+        "rotate",
+        "organization"
+      ],
+      "pieces": [
+        22,
+        16
+      ],
+      "deps": [
+        "section-layout",
+        "page-header",
+        "pill",
+        "actions-menu",
+        "detail-card",
+        "reason-dialog",
+        "secret-reveal",
+        "webhook-endpoint-status",
+        "webhook-delivery-log"
+      ]
+    },
+    {
+      "name": "template-grants-page",
+      "title": "Organization · User grants",
+      "kind": "template",
+      "tagline": "The pages one person holds on top of their role: who granted what, when, and revoke with a reason.",
+      "description": "A tab on the user. Grant offers only pages the granter holds. Revoked grants stay in the list, struck through, with who and why. The sidebar item disappears on the person's next request.",
+      "tags": [
+        "grants",
+        "delegated",
+        "scoped permissions",
+        "users",
+        "organization"
+      ],
+      "pieces": [
+        5,
+        16
+      ],
+      "deps": [
+        "section-layout",
+        "page-header",
+        "pill",
+        "tab-nav",
+        "form-dialog",
+        "field-row",
+        "grant-list"
+      ]
+    },
+    {
+      "name": "template-notifications-page",
+      "title": "Notifications",
+      "kind": "template",
+      "tagline": "The inbox behind the bell: every in-app row, filter by event and read state, mark all read.",
+      "description": "One table of the user's own notifications. Unread rows carry a dot and weight; the message links to the stored url and marks it read. The channels column reads what was actually sent.",
+      "tags": [
+        "notifications",
+        "inbox",
+        "history",
+        "bell"
+      ],
+      "pieces": [
+        10
+      ],
+      "deps": [
+        "page-header",
+        "filter-bar",
+        "data-table",
+        "cells"
+      ]
+    },
+    {
+      "name": "template-notification-settings",
+      "title": "Settings · Notifications",
+      "kind": "template",
+      "tagline": "The event × channel matrix in personal settings, and the calendar feed link under it.",
+      "description": "Rows are events grouped by module, columns are channels. No saved row means the default; saving writes one row per cell. Quiet hours hold back email only, and the page says so. Under the matrix, the personal ICS link: create behind password confirm, shown once, reset and revoke behind a confirm.",
+      "tags": [
+        "notifications",
+        "preferences",
+        "matrix",
+        "settings",
+        "channels",
+        "calendar",
+        "ics"
+      ],
+      "pieces": [
+        10,
+        7,
+        12
+      ],
+      "deps": [
+        "section-layout",
+        "page-header",
+        "preference-matrix",
+        "calendar-feed-card"
+      ]
+    },
+    {
+      "name": "template-onboarding-stepper",
+      "title": "Onboarding stepper",
+      "kind": "template",
+      "tagline": "Full screen with Exit, the left rail of steps, the send-back banner, the review step and Submit.",
+      "description": "Steps beyond the furthest reached stay locked unless done. Each step saves its own slice. The review step lists the server problems with a Fix per section; the banner shows why it came back.",
+      "tags": [
+        "onboarding",
+        "stepper",
+        "wizard",
+        "review",
+        "send back"
+      ],
+      "pieces": [
+        27
+      ],
+      "deps": [
+        "onboarding-stepper",
+        "review-problems",
+        "form-layout",
+        "field-row",
+        "phone-field"
+      ]
+    },
+    {
+      "name": "template-guest-onboarding",
+      "title": "Guest onboarding link",
+      "kind": "template",
+      "tagline": "The same stepper behind a link: no Exit, only the guest steps, and the fields the link fixed shown read-only.",
+      "description": "What a person outside the app sees from an onboarding link. Same component, fewer steps, a submit label that names who reviews it. The link fields arrive as a card; guests never write them.",
+      "tags": [
+        "onboarding",
+        "guest",
+        "link",
+        "public"
+      ],
+      "pieces": [
+        27
+      ],
+      "deps": [
+        "onboarding-stepper",
+        "form-layout",
+        "field-row",
+        "phone-field",
+        "detail-card"
+      ]
+    },
+    {
+      "name": "template-print-invoice",
+      "title": "Print · Invoice",
+      "kind": "template",
+      "tagline": "The A4 sheet: letterhead, repeating header and footer, lines, totals that never split, the draft stamp.",
+      "description": "The reference for resources/views/print/layout.blade.php. Ink on paper, outside the theme. The toolbar hides when printing; header and footer repeat on every page.",
+      "tags": [
+        "print",
+        "pdf",
+        "invoice",
+        "a4",
+        "statement"
+      ],
+      "pieces": [
+        17
+      ],
+      "deps": [
+        "print-sheet"
+      ]
+    }
+  ],
+  "pieces": [
+    {
+      "n": 1,
+      "name": "actions",
+      "title": "Actions",
+      "summary": "One Action per verb. Guard, write, audit, notify inside. Thin controllers.",
+      "components": [],
+      "doc": "llms/pieces/actions.md"
+    },
+    {
+      "n": 2,
+      "name": "audit",
+      "title": "Audit",
+      "summary": "noun.verb_past events, reason on serious changes, audit log page + CSV.",
+      "components": [
+        "activity-timeline",
+        "audit-log-table"
+      ],
+      "doc": "llms/pieces/audit.md"
+    },
+    {
+      "n": 3,
+      "name": "event-bus",
+      "title": "Event bus",
+      "summary": "Activity row = event bus for automations and webhooks.",
+      "components": [],
+      "doc": "llms/pieces/event-bus.md"
+    },
+    {
+      "n": 4,
+      "name": "permissions",
+      "title": "Permissions",
+      "summary": "Config registry → spatie sync. Roles in UI. Grant only what you hold. Perms shared to Inertia.",
+      "components": [
+        "nav",
+        "permission-picker"
+      ],
+      "doc": "llms/pieces/permissions.md"
+    },
+    {
+      "n": 5,
+      "name": "scoped-permissions",
+      "title": "Scoped permissions",
+      "summary": "Scope per permission: firm / department / assigned / own. Sensitive switches. Delegated grants.",
+      "components": [
+        "permission-picker",
+        "sensitive-switches",
+        "grant-list"
+      ],
+      "doc": "llms/pieces/scoped-permissions.md"
+    },
+    {
+      "n": 6,
+      "name": "people-lifecycle",
+      "title": "People lifecycle",
+      "summary": "Invite, deactivate with successor + handover, reactivate, forced password change, 2FA for privileged.",
+      "components": [
+        "reason-dialog",
+        "password-input",
+        "phone-field",
+        "verify-phone-dialog"
+      ],
+      "doc": "llms/pieces/people-lifecycle.md"
+    },
+    {
+      "n": 7,
+      "name": "settings",
+      "title": "Settings",
+      "summary": "Workspace singleton + per-user timezone, quiet hours. Secrets in env; UI shows ok / missing.",
+      "components": [
+        "section-layout",
+        "detail-card",
+        "service-status-list",
+        "letterhead-preview"
+      ],
+      "doc": "llms/pieces/settings.md"
+    },
+    {
+      "n": 8,
+      "name": "setup-checklist",
+      "title": "Setup checklist",
+      "summary": "Checklist ticks from real data. Super admin redirected until done.",
+      "components": [
+        "setup-checklist",
+        "service-status-list"
+      ],
+      "doc": "llms/pieces/setup-checklist.md"
+    },
+    {
+      "n": 9,
+      "name": "tour",
+      "title": "Tour",
+      "summary": "One-time tour, skips hidden steps, replay ?tour=1.",
+      "components": [
+        "app-tour"
+      ],
+      "doc": "llms/pieces/tour.md"
+    },
+    {
+      "n": 10,
+      "name": "notifications",
+      "title": "Notifications",
+      "summary": "After commit, recipient filter, per-event channel matrix, quiet hours, digest, inbox + bell.",
+      "components": [
+        "notification-bell",
+        "preference-matrix"
+      ],
+      "doc": "llms/pieces/notifications.md"
+    },
+    {
+      "n": 11,
+      "name": "signals",
+      "title": "Signals",
+      "summary": "Morning brief, reminders with a sent-ledger, rule signals.",
+      "components": [],
+      "doc": "llms/pieces/signals.md"
+    },
+    {
+      "n": 12,
+      "name": "calendar-feed",
+      "title": "Calendar feed",
+      "summary": "Per-user ICS feed.",
+      "components": [
+        "calendar-feed-card",
+        "secret-reveal"
+      ],
+      "doc": "llms/pieces/calendar-feed.md"
+    },
+    {
+      "n": 13,
+      "name": "command-palette",
+      "title": "Command palette",
+      "summary": "⌘K palette (search + actions + go-to), g-keys, one global \"New\".",
+      "components": [
+        "command-palette",
+        "quick-create",
+        "shortcut-help"
+      ],
+      "doc": "llms/pieces/command-palette.md"
+    },
+    {
+      "n": 14,
+      "name": "trash",
+      "title": "Trash",
+      "summary": "Soft delete, 30-day restore, purge job.",
+      "components": [
+        "confirm-dialog",
+        "reason-dialog"
+      ],
+      "doc": "llms/pieces/trash.md"
+    },
+    {
+      "n": 15,
+      "name": "views-import-export",
+      "title": "Views, import, export",
+      "summary": "Saved views, favorites, CSV import with preview, export.",
+      "components": [
+        "saved-views-menu",
+        "favorite-button",
+        "csv-import",
+        "export-button"
+      ],
+      "doc": "llms/pieces/views-import-export.md"
+    },
+    {
+      "n": 16,
+      "name": "status-dialog",
+      "title": "Status dialog",
+      "summary": "Every status change through a confirm / reason dialog.",
+      "components": [
+        "confirm-dialog",
+        "reason-dialog"
+      ],
+      "doc": "llms/pieces/status-dialog.md"
+    },
+    {
+      "n": 17,
+      "name": "print-layouts",
+      "title": "Print layouts",
+      "summary": "Print / PDF layouts for official documents.",
+      "components": [
+        "print-sheet"
+      ],
+      "doc": "llms/pieces/print-layouts.md"
+    },
+    {
+      "n": 18,
+      "name": "bilingual",
+      "title": "Bilingual",
+      "summary": "lang/en + lang/so, enum labels from lang. Day one.",
+      "components": [
+        "locale-switch"
+      ],
+      "doc": "llms/pieces/bilingual.md"
+    },
+    {
+      "n": 19,
+      "name": "shell",
+      "title": "Shell",
+      "summary": "Sidebar groups daily → setup, header search + bell, Settings/ vs Organization/.",
+      "components": [
+        "app-shell",
+        "app-sidebar",
+        "app-header",
+        "nav"
+      ],
+      "doc": "llms/pieces/shell.md"
+    },
+    {
+      "n": 20,
+      "name": "page-kit",
+      "title": "Page kit",
+      "summary": "PageHeader, FilterBar + DataTable (typed cells) + EmptyState, TabNav, ActionsMenu, ReasonDialog, ActivityTimeline, StatTile, skeleton, load-error.",
+      "components": [
+        "page-header",
+        "filter-bar",
+        "data-table",
+        "cells",
+        "pill",
+        "empty-state",
+        "tab-nav",
+        "actions-menu",
+        "activity-timeline",
+        "stat-tile",
+        "detail-card",
+        "form-layout",
+        "field-row",
+        "remote-combobox",
+        "list-skeleton",
+        "load-error"
+      ],
+      "doc": "llms/pieces/page-kit.md"
+    },
+    {
+      "n": 21,
+      "name": "docs-ci",
+      "title": "Docs & CI",
+      "summary": "Docs system, agent files, CI ci:check + audits, Larastan 7.",
+      "components": [],
+      "doc": "llms/pieces/docs-ci.md"
+    },
+    {
+      "n": 22,
+      "name": "webhooks",
+      "title": "Webhooks",
+      "summary": "Signed endpoints, delivery log + retry, SSRF IP pinning, auto-disable on repeated failure.",
+      "components": [
+        "webhook-event-picker",
+        "webhook-delivery-log",
+        "webhook-endpoint-status",
+        "secret-reveal"
+      ],
+      "doc": "llms/pieces/webhooks.md"
+    },
+    {
+      "n": 23,
+      "name": "audit-channel",
+      "title": "Audit channel",
+      "summary": "Every activity row stamped via web / api / automation / agent.",
+      "components": [
+        "activity-timeline",
+        "audit-log-table"
+      ],
+      "doc": "llms/pieces/audit-channel.md"
+    },
+    {
+      "n": 24,
+      "name": "insights",
+      "title": "Insights",
+      "summary": "Rule signals raise one live insight per kind + scope, dismiss with quiet period, apply suggestion.",
+      "components": [
+        "insight-item"
+      ],
+      "doc": "llms/pieces/insights.md"
+    },
+    {
+      "n": 25,
+      "name": "setup-lists",
+      "title": "Setup lists",
+      "summary": "Values a company adds or renames are rows. Enums only where code branches.",
+      "components": [
+        "form-dialog",
+        "data-table",
+        "section-layout"
+      ],
+      "doc": "llms/pieces/setup-lists.md"
+    },
+    {
+      "n": 26,
+      "name": "section-nav",
+      "title": "Section nav",
+      "summary": "Setup and Organization open a grouped inner sidebar; landing redirects to first permitted page.",
+      "components": [
+        "section-layout"
+      ],
+      "doc": "llms/pieces/section-nav.md"
+    },
+    {
+      "n": 27,
+      "name": "onboarding",
+      "title": "Onboarding",
+      "summary": "Relationship records born only from an approved onboarding. Steps, review, send back, guest link.",
+      "components": [
+        "onboarding-card",
+        "onboarding-stepper",
+        "review-problems",
+        "phone-field",
+        "verify-phone-dialog",
+        "form-layout"
+      ],
+      "doc": "llms/pieces/onboarding.md"
+    }
+  ]
+}

@@ -51,6 +51,13 @@ ${entries.map((entry) => `- [${entry.name}](${base}/llms/${entry.slug}.md): ${en
                         </Prose>
                     </Section>
                 </div>
+                <Section title="Registry MCP" subtitle="Search from any assistant">
+                    <Prose>
+                        <p>A zero-dependency MCP server over stdio. Tools: <code className="font-mono text-xs">search_registry</code>, <code className="font-mono text-xs">list_registry</code>, <code className="font-mono text-xs">get_component</code>, <code className="font-mono text-xs">get_composition</code>, <code className="font-mono text-xs">get_piece</code>. It ranks over <code className="font-mono text-xs">/llms/index.json</code> and returns the same markdown as these pages, with the install command.</p>
+                        <p>Point it at this site with <code className="font-mono text-xs">COMPANY_OS_REGISTRY</code>, or leave it unset to read a local build.</p>
+                    </Prose>
+                    <CodeBlock code={`claude mcp add company-os -e COMPANY_OS_REGISTRY=${base} -- node /path/to/company-os/mcp/server.mjs`} />
+                </Section>
                 <Section title="llms.txt" subtitle="Served at the site root">
                     <CodeBlock code={llms} />
                 </Section>

@@ -1,0 +1,49 @@
+{
+  "$schema": "https://ui.shadcn.com/schema/registry-item.json",
+  "name": "audit-log-table",
+  "type": "registry:ui",
+  "title": "AuditLogTable",
+  "description": "One table of every event: when, who and through which channel, the event label over its raw name, the subject, the reason. One job: Show the audit log the way the audit recipe stores it, filterable and exportable, without a second design per module.",
+  "registryDependencies": [
+    "http://localhost:5173/r/tokens.json",
+    "http://localhost:5173/r/cells.json",
+    "http://localhost:5173/r/data-table.json",
+    "table"
+  ],
+  "files": [
+    {
+      "path": "registry/company-os/audit-log-table.tsx",
+      "content": "import type { ReactNode } from 'react';\nimport { DateCell, EmptyValue, PersonCell, TextCell } from '@/components/company-os/cells';\nimport type { Day, Person, Target } from '@/components/company-os/cells';\nimport { DataTable, TableEmptyRow } from '@/components/company-os/data-table';\nimport type { PageLabels, Paginated } from '@/components/company-os/data-table';\nimport { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table';\nimport { Link } from '@/lib/navigation';\n\nexport type AuditEvent = {\n    id: string;\n    at: Day;\n    actor: Person;\n    event: { name: string; label: string };\n    subject: Target | null;\n    via: string | null;\n    reason: string | null;\n};\n\nexport type AuditLogLabels = {\n    when: string;\n    who: string;\n    what: string;\n    subject: string;\n    reason: string;\n    system: string;\n    emptyTitle: string;\n    emptyMessage: string;\n};\n\nexport const auditLogLabels: AuditLogLabels = {\n    when: 'When',\n    who: 'Who',\n    what: 'What',\n    subject: 'Subject',\n    reason: 'Reason',\n    system: 'System',\n    emptyTitle: 'No events match',\n    emptyMessage: 'Widen the dates or clear a filter. Every change still lands here.',\n};\n\nexport function AuditLogTable({\n    page,\n    events,\n    empty,\n    pageLabels,\n    labels: custom,\n}: {\n    page: Paginated<unknown>;\n    events: AuditEvent[];\n    empty?: ReactNode;\n    pageLabels?: PageLabels;\n    labels?: Partial<AuditLogLabels>;\n}) {\n    const labels = { ...auditLogLabels, ...custom };\n\n    return (\n        <DataTable page={page} labels={pageLabels}>\n            <Table>\n                <TableHeader>\n                    <TableRow>\n                        <TableHead className=\"w-44\">{labels.when}</TableHead>\n                        <TableHead>{labels.who}</TableHead>\n                        <TableHead>{labels.what}</TableHead>\n                        <TableHead>{labels.subject}</TableHead>\n                        <TableHead>{labels.reason}</TableHead>\n                    </TableRow>\n                </TableHeader>\n                <TableBody>\n                    {events.length === 0 && (\n                        <TableEmptyRow colSpan={5} title={labels.emptyTitle} message={labels.emptyMessage}>\n                            {empty}\n                        </TableEmptyRow>\n                    )}\n                    {events.map((event) => (\n                        <TableRow key={event.id}>\n                            <DateCell value={event.at} />\n                            <PersonCell value={event.actor ? { name: event.actor.name, detail: event.via ?? event.actor.detail } : { name: labels.system, detail: event.via }} />\n                            <TextCell detail={event.event.name}>\n                                <span className=\"font-medium text-slate-800\">{event.event.label}</span>\n                            </TextCell>\n                            <TableCell className=\"text-sm\">\n                                {event.subject ? (\n                                    <span className=\"grid min-w-0 gap-0.5\">\n                                        <Link href={event.subject.href} className=\"truncate transition-all duration-300 hover:text-primary\">\n                                            {event.subject.label}\n                                        </Link>\n                                        {event.subject.detail && <span className=\"truncate text-xs text-muted-foreground\">{event.subject.detail}</span>}\n                                    </span>\n                                ) : (\n                                    <EmptyValue />\n                                )}\n                            </TableCell>\n                            <TableCell className=\"max-w-72 text-sm whitespace-normal text-slate-700\">{event.reason ?? <EmptyValue />}</TableCell>\n                        </TableRow>\n                    ))}\n                </TableBody>\n            </Table>\n        </DataTable>\n    );\n}\n",
+      "type": "registry:ui",
+      "target": "components/company-os/audit-log-table.tsx"
+    }
+  ],
+  "categories": [
+    "organization"
+  ],
+  "docs": "http://localhost:5173/llms/audit-log-table.md",
+  "meta": {
+    "system": "Company OS",
+    "pieces": [
+      2,
+      23
+    ],
+    "job": "Show the audit log the way the audit recipe stores it, filterable and exportable, without a second design per module.",
+    "tags": [
+      "audit",
+      "activity",
+      "log",
+      "events",
+      "reason",
+      "via",
+      "channel",
+      "csv"
+    ],
+    "exports": [
+      "AuditLogTable",
+      "auditLogLabels",
+      "AuditEvent",
+      "AuditLogLabels"
+    ]
+  }
+}

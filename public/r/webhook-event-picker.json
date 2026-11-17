@@ -1,0 +1,45 @@
+{
+  "$schema": "https://ui.shadcn.com/schema/registry-item.json",
+  "name": "webhook-event-picker",
+  "type": "registry:ui",
+  "title": "WebhookEventPicker",
+  "description": "The event catalogue as checkboxes, grouped by noun, with a tri-state box per group and the raw name under each label. One job: Subscribe an endpoint to exactly the catalogue events it needs.",
+  "registryDependencies": [
+    "http://localhost:5173/r/tokens.json",
+    "checkbox"
+  ],
+  "files": [
+    {
+      "path": "registry/company-os/webhook-event-picker.tsx",
+      "content": "import { Checkbox } from '@/components/ui/checkbox';\n\nexport type WebhookEvent = {\n    name: string;\n    label: string;\n};\n\nexport type WebhookEventGroup = {\n    key: string;\n    label: string;\n    events: WebhookEvent[];\n};\n\nexport type WebhookEventPickerLabels = {\n    all: (group: string) => string;\n    count: (selected: number, total: number) => string;\n};\n\nexport const webhookEventPickerLabels: WebhookEventPickerLabels = {\n    all: (group) => `All ${group.toLowerCase()} events`,\n    count: (selected, total) => `${selected} of ${total}`,\n};\n\nexport function WebhookEventPicker({\n    groups,\n    value,\n    onChange,\n    disabled = false,\n    labels: custom,\n}: {\n    groups: WebhookEventGroup[];\n    value: string[];\n    onChange: (value: string[]) => void;\n    disabled?: boolean;\n    labels?: Partial<WebhookEventPickerLabels>;\n}) {\n    const labels = { ...webhookEventPickerLabels, ...custom };\n    const on = new Set(value);\n\n    const toggleGroup = (group: WebhookEventGroup, checked: boolean) => {\n        const names = group.events.map((event) => event.name);\n        onChange(checked ? [...new Set([...value, ...names])] : value.filter((name) => !names.includes(name)));\n    };\n\n    return (\n        <div className=\"grid gap-3\">\n            {groups.map((group) => {\n                const selected = group.events.filter((event) => on.has(event.name)).length;\n                const all = selected === group.events.length;\n                const groupId = `webhook-group-${group.key}`;\n\n                return (\n                    <fieldset key={group.key} className=\"rounded-md border border-border\">\n                        <legend className=\"sr-only\">{group.label}</legend>\n                        <div className=\"flex items-center gap-3 border-b border-border bg-muted/40 px-3 py-2\">\n                            <Checkbox\n                                id={groupId}\n                                checked={all ? true : selected > 0 ? 'indeterminate' : false}\n                                disabled={disabled}\n                                onCheckedChange={(checked) => toggleGroup(group, checked === true)}\n                                aria-label={labels.all(group.label)}\n                            />\n                            <label htmlFor={groupId} className=\"text-sm font-medium text-slate-800\">\n                                {group.label}\n                            </label>\n                            <span className=\"ml-auto text-xs text-muted-foreground tabular-nums\">{labels.count(selected, group.events.length)}</span>\n                        </div>\n                        <ul className=\"grid gap-x-4 gap-y-2 p-3 sm:grid-cols-2\">\n                            {group.events.map((event) => {\n                                const id = `webhook-event-${event.name}`;\n\n                                return (\n                                    <li key={event.name} className=\"flex items-start gap-2\">\n                                        <Checkbox\n                                            id={id}\n                                            checked={on.has(event.name)}\n                                            disabled={disabled}\n                                            onCheckedChange={(checked) => onChange(checked === true ? [...value, event.name] : value.filter((name) => name !== event.name))}\n                                        />\n                                        <label htmlFor={id} className=\"grid gap-0.5 text-sm leading-none\">\n                                            <span className=\"text-slate-800\">{event.label}</span>\n                                            <span className=\"font-mono text-xs text-muted-foreground\">{event.name}</span>\n                                        </label>\n                                    </li>\n                                );\n                            })}\n                        </ul>\n                    </fieldset>\n                );\n            })}\n        </div>\n    );\n}\n",
+      "type": "registry:ui",
+      "target": "components/company-os/webhook-event-picker.tsx"
+    }
+  ],
+  "categories": [
+    "organization"
+  ],
+  "docs": "http://localhost:5173/llms/webhook-event-picker.md",
+  "meta": {
+    "system": "Company OS",
+    "pieces": [
+      22,
+      3
+    ],
+    "job": "Subscribe an endpoint to exactly the catalogue events it needs.",
+    "tags": [
+      "webhooks",
+      "events",
+      "catalogue",
+      "subscribe",
+      "checkbox"
+    ],
+    "exports": [
+      "WebhookEventPicker",
+      "webhookEventPickerLabels",
+      "WebhookEvent",
+      "WebhookEventGroup",
+      "WebhookEventPickerLabels"
+    ]
+  }
+}
