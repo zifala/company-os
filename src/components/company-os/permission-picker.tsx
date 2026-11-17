@@ -1,4 +1,5 @@
 import { LockIcon } from 'lucide-react';
+import { useId } from 'react';
 import { Checkbox } from '@/components/ui/checkbox';
 import { OptionSelect } from '@/components/ui/option-select';
 import { cn } from '@/lib/utils';
@@ -29,6 +30,7 @@ export const permissionPickerLabels: PermissionPickerLabels = {
 };
 
 function Row({
+    id,
     permission,
     grant,
     scopes,
@@ -37,6 +39,7 @@ function Row({
     onToggle,
     onScope,
 }: {
+    id: string;
     permission: PermissionOption;
     grant: PermissionGrant | undefined;
     scopes: ScopeOption[];
@@ -45,16 +48,19 @@ function Row({
     onToggle: (checked: boolean) => void;
     onScope: (scope: string) => void;
 }) {
-    const id = `perm-${permission.name}`;
-
     return (
         <li className="flex min-h-12 flex-wrap items-center gap-3 border-b border-border px-5 py-2 last:border-0">
-            <Checkbox id={id} checked={grant !== undefined} disabled={locked} onCheckedChange={(checked) => onToggle(checked === true)} />
-            <label htmlFor={id} className={cn('min-w-0 flex-1 text-sm text-slate-800', locked && 'text-muted-foreground')}>
+            <Checkbox id={id} checked={grant !== undefined} disabled={locked} aria-describedby={locked ? `${id}-locked` : undefined} onCheckedChange={(checked) => onToggle(checked === true)} />
+            <label htmlFor={id} className={cn('min-w-0 flex-1 text-sm text-foreground', locked && 'text-muted-foreground')}>
                 {permission.label}
-                <span className="ml-2 font-mono text-xs text-muted-foreground">{permission.name}</span>
+                <span className="ms-2 font-mono text-xs text-muted-foreground">{permission.name}</span>
             </label>
-            {locked && <LockIcon className="size-3.5 text-muted-foreground" aria-label={labels.notHeld} />}
+            {locked && (
+                <span id={`${id}-locked`} title={labels.notHeld} className="inline-flex">
+                    <LockIcon className="size-3.5 text-muted-foreground" aria-hidden />
+                    <span className="sr-only">{labels.notHeld}</span>
+                </span>
+            )}
             {permission.scoped && grant && (
                 <OptionSelect aria-label={`${labels.scope}: ${permission.label}`} className="w-40" value={grant.scope ?? scopes[0]?.value} options={scopes} disabled={locked} onValueChange={onScope} />
             )}
@@ -79,6 +85,7 @@ export function PermissionPicker({
     disabled?: boolean;
     labels?: PermissionPickerLabels;
 }) {
+    const uid = useId();
     const byName = new Map(value.map((grant) => [grant.name, grant]));
     const defaultScope = scopes[0]?.value ?? null;
     const locked = (name: string) => disabled || (!holds(name) && !byName.has(name));
@@ -99,25 +106,29 @@ export function PermissionPicker({
         <div className="grid gap-6">
             {groups.map((group) => {
                 const count = group.permissions.filter((permission) => byName.has(permission.name)).length;
-                const all = count === group.permissions.length;
+                const open = group.permissions.filter((permission) => !locked(permission.name));
+                // Toggle against what the editor can change: once every open permission is ticked, the next click clears them,
+                // even when a locked one keeps the box indeterminate.
+                const allOpen = open.length > 0 && open.every((permission) => byName.has(permission.name));
 
                 return (
                     <section key={group.key} className="rounded-lg glass">
                         <div className="flex items-center gap-3 border-b border-border px-5 py-3">
                             <Checkbox
-                                id={`perm-group-${group.key}`}
+                                id={`${uid}-group-${group.key}`}
                                 aria-label={`${labels.selectAll}: ${group.label}`}
-                                checked={all ? true : count > 0 ? 'indeterminate' : false}
-                                disabled={disabled}
-                                onCheckedChange={(checked) => setGroup(group, checked === true)}
+                                checked={count === 0 ? false : count === group.permissions.length ? true : 'indeterminate'}
+                                disabled={open.length === 0}
+                                onCheckedChange={() => setGroup(group, !allOpen)}
                             />
-                            <h3 className="flex-1 text-sm font-semibold text-slate-800">{group.label}</h3>
+                            <h3 className="flex-1 text-sm font-semibold text-foreground">{group.label}</h3>
                             <span className="text-xs tabular-nums text-muted-foreground">{labels.selected(count, group.permissions.length)}</span>
                         </div>
                         <ul>
                             {group.permissions.map((permission) => (
                                 <Row
                                     key={permission.name}
+                                    id={`${uid}-${permission.name}`}
                                     permission={permission}
                                     grant={byName.get(permission.name)}
                                     scopes={scopes}

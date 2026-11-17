@@ -23,13 +23,19 @@ export const reviewProblems: DocEntry = {
 
 <ReviewProblems sections={review.sections} onFix={setStep} />`,
         },
+        {
+            title: 'Everything in, read-only',
+            description: 'No <code>onFix</code>: the reviewer\'s side panel.',
+            demoKey: 'review-problems-ready',
+            code: `<ReviewProblems sections={review.sections} />`,
+        },
     ],
     props: [
         {
             component: 'ReviewProblems',
             rows: [
                 { name: 'sections', type: 'ReviewSection[]', description: '<code>{ key, label, problems: string[] }</code>.' },
-                { name: 'onFix', type: '(key: string) => void', description: 'Shows a Fix button on sections with problems.' },
+                { name: 'onFix', type: '(key: string) => void', description: 'Shows a Fix button on sections with problems, labelled with the section name. Omit it for a read-only review.' },
                 { name: 'labels', type: 'ReviewProblemsLabels', description: 'ready, problems(count), fix, allReady.' },
             ],
         },

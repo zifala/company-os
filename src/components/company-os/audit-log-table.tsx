@@ -76,7 +76,7 @@ export function AuditLogTable({
                             <DateCell value={event.at} />
                             <PersonCell value={event.actor ? { name: event.actor.name, detail: event.via ?? event.actor.detail } : { name: labels.system, detail: event.via }} />
                             <TextCell detail={event.event.name}>
-                                <span className="font-medium text-slate-800">{event.event.label}</span>
+                                <span className="font-medium text-foreground">{event.event.label}</span>
                             </TextCell>
                             <TableCell className="text-sm">
                                 {event.subject ? (
@@ -90,7 +90,7 @@ export function AuditLogTable({
                                     <EmptyValue />
                                 )}
                             </TableCell>
-                            <TableCell className="max-w-72 text-sm whitespace-normal text-slate-700">{event.reason ?? <EmptyValue />}</TableCell>
+                            <TableCell className="max-w-72 text-sm whitespace-normal text-foreground">{event.reason ?? <EmptyValue />}</TableCell>
                         </TableRow>
                     ))}
                 </TableBody>

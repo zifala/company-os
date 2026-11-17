@@ -1,3 +1,4 @@
+import { useState } from 'react';
 import { PageHeader, SectionLayout, ServiceStatusList, SetupChecklist } from '@/components/company-os';
 import type { ServiceStatus, SetupStep } from '@/components/company-os';
 import { adminPermissions, organizationGroups } from './organization-nav';
@@ -17,11 +18,20 @@ const services: ServiceStatus[] = [
 ];
 
 export function SetupPage() {
+    const [finishing, setFinishing] = useState(false);
+
     return (
         <SectionLayout title="Organization" groups={organizationGroups} permissions={adminPermissions}>
             <div className="flex flex-col gap-6">
                 <PageHeader title="Setup" />
-                <SetupChecklist steps={steps} finishing={false} onFinish={() => undefined}>
+                <SetupChecklist
+                    steps={steps}
+                    finishing={finishing}
+                    onFinish={() => {
+                        setFinishing(true);
+                        window.setTimeout(() => setFinishing(false), 600);
+                    }}
+                >
                     <ServiceStatusList services={services} />
                 </SetupChecklist>
             </div>

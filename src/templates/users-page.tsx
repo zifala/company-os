@@ -48,7 +48,7 @@ export function UsersPage() {
                             {members.map((member) => (
                                 <TableRow key={member.id}>
                                     <TextCell detail={member.email}>
-                                        <span className="font-semibold text-slate-800">{member.name}</span>
+                                        <span className="font-semibold text-foreground">{member.name}</span>
                                     </TextCell>
                                     <StatusCell value={member.role} />
                                     <StatusCell value={member.status} />

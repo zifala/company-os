@@ -47,6 +47,14 @@ function PermissionPickerDemo() {
     );
 }
 
+function PermissionPickerLockedDemo() {
+    return (
+        <div className="max-w-2xl">
+            <PermissionPicker groups={groups} value={groups.flatMap((group) => group.permissions.map((permission) => ({ name: permission.name, scope: permission.scoped ? 'firm' : null })))} onChange={() => undefined} scopes={scopes} holds={() => true} disabled />
+        </div>
+    );
+}
+
 function SensitiveSwitchesDemo() {
     const [value, setValue] = useState(['money']);
 
@@ -100,6 +108,7 @@ function PreferenceMatrixDemo() {
 
 export const accessDemos: Record<string, ComponentType> = {
     'permission-picker-basic': PermissionPickerDemo,
+    'permission-picker-locked': PermissionPickerLockedDemo,
     'sensitive-switches-basic': SensitiveSwitchesDemo,
     'preference-matrix-basic': PreferenceMatrixDemo,
 };

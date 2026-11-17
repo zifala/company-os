@@ -35,19 +35,37 @@ const initial: PreferenceValue = {
 export function NotificationSettings() {
     const [value, setValue] = useState(initial);
     const [feed, setFeed] = useState<{ active: boolean; url: string | null }>({ active: false, url: null });
+    const [saving, setSaving] = useState(false);
+    const [feedProcessing, setFeedProcessing] = useState(false);
+    const settleFeed = (next: { active: boolean; url: string | null }) => {
+        setFeedProcessing(true);
+        window.setTimeout(() => {
+            setFeed(next);
+            setFeedProcessing(false);
+        }, 600);
+    };
 
     return (
         <SectionLayout title="Settings" groups={settingsGroups} permissions={[]}>
             <div className="flex max-w-3xl flex-col gap-6">
                 <PageHeader title="Notifications">
-                    <Button>Save preferences</Button>
+                    <Button
+                        disabled={saving}
+                        onClick={() => {
+                            setSaving(true);
+                            window.setTimeout(() => setSaving(false), 600);
+                        }}
+                    >
+                        Save preferences
+                    </Button>
                 </PageHeader>
-                <PreferenceMatrix events={events} channels={channels} value={value} onChange={setValue} />
+                <PreferenceMatrix events={events} channels={channels} value={value} onChange={setValue} disabled={saving} />
                 <CalendarFeedCard
                     active={feed.active}
                     url={feed.url}
-                    onCreate={() => setFeed({ active: true, url: 'https://app.halcyon.example/calendar/feed/r8Kd2QpX7vLm4Tn9Wc1Zb6Hs3Gy5Ja0Fe8Ui2Ow7.ics' })}
-                    onRevoke={() => setFeed({ active: false, url: null })}
+                    processing={feedProcessing}
+                    onCreate={() => settleFeed({ active: true, url: 'https://app.halcyon.example/calendar/feed/r8Kd2QpX7vLm4Tn9Wc1Zb6Hs3Gy5Ja0Fe8Ui2Ow7.ics' })}
+                    onRevoke={() => settleFeed({ active: false, url: null })}
                 />
             </div>
         </SectionLayout>

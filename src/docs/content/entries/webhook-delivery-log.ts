@@ -30,6 +30,11 @@ export const webhookDeliveryLog: DocEntry = {
   onResend={(delivery) => router.post(route('organization.integrations.webhooks.deliveries.resend', delivery.id))}
 />`,
         },
+        {
+            title: 'Nothing sent yet, no permission to resend',
+            demoKey: 'webhook-delivery-log-empty',
+            code: `<WebhookDeliveryLog page={deliveries} deliveries={[]} canResend={false} onResend={() => undefined} />`,
+        },
     ],
     props: [
         {
@@ -40,6 +45,7 @@ export const webhookDeliveryLog: DocEntry = {
                 { name: 'canResend', type: 'boolean', description: 'Shows the resend column.' },
                 { name: 'resending', type: 'string | null', defaultValue: 'null', description: 'Delivery id in flight; its button disables.' },
                 { name: 'onResend', type: '(delivery) => void', description: 'Called with the row.' },
+                { name: 'pageLabels', type: 'PageLabels', description: 'Footer and pager copy.' },
                 { name: 'labels', type: 'Partial<WebhookDeliveryLogLabels>', description: 'Column heads, resend, empty copy.' },
             ],
         },

@@ -63,6 +63,14 @@ export function SavedViewsMenu({
     dialogLabels?: SaveViewLabels;
 }) {
     const [open, setOpen] = useState(false);
+    // A fresh dialog per opening, so a cancelled name does not linger.
+    const [session, setSession] = useState(0);
+    // Close once a save finishes without an error; the page only reports request state.
+    const [wasSaving, setWasSaving] = useState(saving);
+    if (saving !== wasSaving) {
+        setWasSaving(saving);
+        if (!saving && !saveError) setOpen(false);
+    }
     const active = activeView(state, views, implied);
 
     return (
@@ -72,7 +80,7 @@ export function SavedViewsMenu({
                     <Button variant="outline" className={cn('max-w-48', active && 'text-primary')}>
                         <BookmarkIcon />
                         <span className="truncate">{active?.name ?? labels.views}</span>
-                        <ChevronDownIcon className="text-slate-400" />
+                        <ChevronDownIcon className="text-muted-foreground" />
                     </Button>
                 </DropdownMenuTrigger>
                 <DropdownMenuContent align="end" className="w-64">
@@ -85,11 +93,23 @@ export function SavedViewsMenu({
                             onSelect={() => navigateWithQuery(state.url, view.query, { preserveScroll: true })}
                         >
                             <span className="truncate">{view.name}</span>
-                            {view.is_shared && <UsersIcon className="ml-auto size-3.5" aria-label={labels.sharedBy(view.owner)} />}
+                            {view.is_shared && (
+                                <span className="ms-auto inline-flex" title={labels.sharedBy(view.owner)}>
+                                    <UsersIcon className="size-3.5" aria-hidden />
+                                    <span className="sr-only">{labels.sharedBy(view.owner)}</span>
+                                </span>
+                            )}
                         </DropdownMenuItem>
                     ))}
                     <DropdownMenuSeparator />
-                    <DropdownMenuItem onSelect={() => setOpen(true)}>{labels.saveCurrent}</DropdownMenuItem>
+                    <DropdownMenuItem
+                        onSelect={() => {
+                            setSession((value) => value + 1);
+                            setOpen(true);
+                        }}
+                    >
+                        {labels.saveCurrent}
+                    </DropdownMenuItem>
                     {active?.can_update && <DropdownMenuItem onSelect={() => onUpdate(active)}>{labels.update(active.name)}</DropdownMenuItem>}
                     {active?.can_delete && (
                         <DropdownMenuItem variant="destructive" onSelect={() => onDelete(active)}>
@@ -98,7 +118,7 @@ export function SavedViewsMenu({
                     )}
                 </DropdownMenuContent>
             </DropdownMenu>
-            <SaveViewDialog open={open} onOpenChange={setOpen} canShare={canShare} processing={saving} error={saveError} onSave={onSave} labels={dialogLabels} />
+            <SaveViewDialog key={session} open={open} onOpenChange={setOpen} canShare={canShare} processing={saving} error={saveError} onSave={onSave} labels={dialogLabels} />
         </>
     );
 }

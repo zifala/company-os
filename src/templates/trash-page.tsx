@@ -43,7 +43,7 @@ export function TrashPage() {
                         {rows.map((row) => (
                             <TableRow key={row.id}>
                                 <TextCell detail={row.context}>
-                                    <span className="font-semibold text-slate-800">{row.label}</span>
+                                    <span className="font-semibold text-foreground">{row.label}</span>
                                 </TextCell>
                                 <StatusCell value={row.type} />
                                 <DateCell value={row.deleted} />

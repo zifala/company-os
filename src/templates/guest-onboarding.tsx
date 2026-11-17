@@ -39,7 +39,7 @@ function StepBody({ step }: { step: string }) {
         );
     }
     if (step === 'review') {
-        return <p className="rounded-lg glass px-5 py-4 text-sm text-slate-700">Check your answers, then submit. Halcyon Freight reviews it and calls you on the number you gave.</p>;
+        return <p className="rounded-lg glass px-5 py-4 text-sm text-foreground">Check your answers, then submit. Halcyon Freight reviews it and calls you on the number you gave.</p>;
     }
 
     return (

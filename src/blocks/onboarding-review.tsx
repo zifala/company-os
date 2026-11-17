@@ -14,11 +14,16 @@ type Pending = 'approve' | 'send-back' | 'reject' | null;
 
 export function OnboardingReview() {
     const [pending, setPending] = useState<Pending>(null);
+    // The reason dialog keeps its last kind so its copy does not flip while it animates closed.
+    const [kind, setKind] = useState<'send-back' | 'reject'>('send-back');
     const [reason, setReason] = useState('');
-    const close = () => {
+    const open = (next: Exclude<Pending, null>) => {
+        if (next !== 'approve') setKind(next);
         setReason('');
-        setPending(null);
+        setPending(next);
     };
+    const close = () => setPending(null);
+    const rejecting = kind === 'reject';
 
     return (
         <>
@@ -27,9 +32,9 @@ export function OnboardingReview() {
                 actions={
                     <>
                         <Pill name="Submitted" color="indigo" />
-                        <Button variant="outline" onClick={() => setPending('reject')}>Reject</Button>
-                        <Button variant="outline" onClick={() => setPending('send-back')}>Send back</Button>
-                        <Button onClick={() => setPending('approve')}>Approve</Button>
+                        <Button variant="outline" onClick={() => open('reject')}>Reject</Button>
+                        <Button variant="outline" onClick={() => open('send-back')}>Send back</Button>
+                        <Button onClick={() => open('approve')}>Approve</Button>
                     </>
                 }
                 side={
@@ -54,7 +59,7 @@ export function OnboardingReview() {
             </FormLayout>
             <ConfirmDialog
                 open={pending === 'approve'}
-                onOpenChange={(open) => !open && close()}
+                onOpenChange={(next) => !next && close()}
                 title="Approve ONB-0012"
                 consequence="Daryeel Clinic becomes a provider, the main contact is created, and the documents move to the new record. This cannot be undone here."
                 confirmLabel="Approve and create"
@@ -64,11 +69,11 @@ export function OnboardingReview() {
             />
             <ReasonDialog
                 open={pending === 'send-back' || pending === 'reject'}
-                onOpenChange={(open) => !open && close()}
-                title={pending === 'reject' ? 'Reject ONB-0012' : 'Send ONB-0012 back'}
-                consequence={pending === 'reject' ? 'The onboarding closes for good. Nothing is created. Hodan Ali sees your reason.' : 'Hodan Ali can edit it again and sees your reason on top of the stepper.'}
-                confirmLabel={pending === 'reject' ? 'Reject onboarding' : 'Send back'}
-                destructive={pending === 'reject'}
+                onOpenChange={(next) => !next && close()}
+                title={rejecting ? 'Reject ONB-0012' : 'Send ONB-0012 back'}
+                consequence={rejecting ? 'The onboarding closes for good. Nothing is created. Hodan Ali sees your reason.' : 'Hodan Ali can edit it again and sees your reason on top of the stepper.'}
+                confirmLabel={rejecting ? 'Reject onboarding' : 'Send back'}
+                destructive={rejecting}
                 reason={reason}
                 onReasonChange={setReason}
                 processing={false}

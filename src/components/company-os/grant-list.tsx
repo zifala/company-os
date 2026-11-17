@@ -64,12 +64,16 @@ export function GrantList({
     labels?: Partial<GrantListLabels>;
 }) {
     const labels = { ...grantListLabels, ...custom };
+    // The grant outlives the open flag so the dialog keeps its title while it animates closed.
     const [revoking, setRevoking] = useState<Grant | null>(null);
+    const [open, setOpen] = useState(false);
     const [reason, setReason] = useState('');
-    const close = () => {
-        setRevoking(null);
+    const start = (grant: Grant) => {
+        setRevoking(grant);
         setReason('');
+        setOpen(true);
     };
+    const close = () => setOpen(false);
 
     return (
         <>
@@ -92,7 +96,7 @@ export function GrantList({
                             return (
                                 <TableRow key={grant.id} className={revoked ? 'text-muted-foreground' : undefined}>
                                     <TextCell detail={grant.page.detail}>
-                                        <span className={revoked ? 'line-through' : 'font-medium text-slate-800'}>{grant.page.label}</span>
+                                        <span className={revoked ? 'line-through' : 'font-medium text-foreground'}>{grant.page.label}</span>
                                     </TextCell>
                                     <PersonCell value={grant.grantedBy} />
                                     <DateCell value={grant.grantedAt} />
@@ -100,9 +104,9 @@ export function GrantList({
                                         value={revoked ? { label: labels.revoked, color: 'slate' } : { label: labels.active, color: 'emerald' }}
                                         detail={revoked ? labels.revokedDetail(grant.revokedBy, grant.revokeReason) : null}
                                     />
-                                    <TableCell className="text-right">
+                                    <TableCell className="text-end">
                                         {!revoked && canRevoke(grant) && (
-                                            <Button size="sm" variant="ghost" className="text-destructive" onClick={() => setRevoking(grant)}>
+                                            <Button size="sm" variant="ghost" className="text-destructive" disabled={processing} aria-label={labels.revokeTitle(grant.page.label)} onClick={() => start(grant)}>
                                                 {labels.revoke}
                                             </Button>
                                         )}
@@ -114,8 +118,8 @@ export function GrantList({
                 </Table>
             </DataTable>
             <ReasonDialog
-                open={revoking !== null}
-                onOpenChange={(open) => !open && close()}
+                open={open}
+                onOpenChange={(next) => !next && close()}
                 title={labels.revokeTitle(revoking?.page.label ?? '')}
                 consequence={labels.revokeConsequence(person)}
                 confirmLabel={labels.revoke}

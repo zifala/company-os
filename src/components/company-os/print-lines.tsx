@@ -13,7 +13,7 @@ export function PrintLines({ columns, rows }: { columns: PrintColumn[]; rows: Pr
             <thead>
                 <tr>
                     {columns.map((column) => (
-                        <th key={column.key} scope="col" style={{ width: column.width }} className={cn('border-b border-black px-[1mm] py-[2mm] text-left font-semibold', column.numeric && 'text-right')}>
+                        <th key={column.key} scope="col" style={{ width: column.width }} className={cn('border-b border-black px-[1mm] py-[2mm] text-start font-semibold', column.numeric && 'text-end')}>
                             {column.label}
                         </th>
                     ))}
@@ -23,7 +23,7 @@ export function PrintLines({ columns, rows }: { columns: PrintColumn[]; rows: Pr
                 {rows.map((row) => (
                     <tr key={row.id} className="break-inside-avoid">
                         {columns.map((column) => (
-                            <td key={column.key} className={cn('border-b border-neutral-300 px-[1mm] py-[2mm] align-top', column.numeric && 'text-right tabular-nums')}>
+                            <td key={column.key} className={cn('border-b border-black/25 px-[1mm] py-[2mm] align-top', column.numeric && 'text-end tabular-nums')}>
                                 {row.cells[column.key]}
                             </td>
                         ))}
@@ -36,11 +36,11 @@ export function PrintLines({ columns, rows }: { columns: PrintColumn[]; rows: Pr
 
 export function PrintTotals({ totals }: { totals: PrintTotal[] }) {
     return (
-        <dl className="ml-auto grid w-[70mm] break-inside-avoid grid-cols-[1fr_auto] gap-x-4 gap-y-1 text-[9.5pt]">
+        <dl className="ms-auto grid w-[70mm] break-inside-avoid grid-cols-[1fr_auto] gap-x-4 gap-y-1 text-[9.5pt]">
             {totals.map((total) => (
                 <div key={total.label} className={cn('col-span-2 grid grid-cols-subgrid', total.strong && 'border-t border-black pt-[1.5mm] font-semibold')}>
                     <dt>{total.label}</dt>
-                    <dd className="text-right tabular-nums">{total.value}</dd>
+                    <dd className="text-end tabular-nums">{total.value}</dd>
                 </div>
             ))}
         </dl>
@@ -50,7 +50,7 @@ export function PrintTotals({ totals }: { totals: PrintTotal[] }) {
 export function PrintBlock({ title, children }: { title: string; children: ReactNode }) {
     return (
         <section className="break-inside-avoid">
-            <h2 className="mb-[1.5mm] text-[8.5pt] font-semibold tracking-wide text-neutral-600 uppercase">{title}</h2>
+            <h2 className="mb-[1.5mm] text-[8.5pt] font-semibold tracking-wide text-black/65 uppercase">{title}</h2>
             <div className="text-[9.5pt]">{children}</div>
         </section>
     );

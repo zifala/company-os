@@ -29,6 +29,8 @@ export function WebhookEndpointPage() {
     const [disabling, setDisabling] = useState(false);
     const [reason, setReason] = useState('');
     const [secret, setSecret] = useState<string | null>(null);
+    const [enabling, setEnabling] = useState(false);
+    const [resending, setResending] = useState<string | null>(null);
 
     return (
         <SectionLayout title="Organization" groups={organizationGroups} permissions={adminPermissions}>
@@ -44,8 +46,19 @@ export function WebhookEndpointPage() {
                         ]}
                     />
                 </PageHeader>
-                <WebhookEndpointStatus endpoint={endpoint} canManage onEnable={() => setEndpoint({ active: true, failingSince: null, disabledAt: null, disabledBy: null, disabledReason: null })} />
-                {secret && <SecretReveal id="rotated-secret" label="New signing secret" value={secret} hint="The old secret stopped working. Update your verifier, then copy it now: it is shown once." />}
+                <WebhookEndpointStatus
+                    endpoint={endpoint}
+                    canManage
+                    processing={enabling}
+                    onEnable={() => {
+                        setEnabling(true);
+                        window.setTimeout(() => {
+                            setEndpoint({ active: true, failingSince: null, disabledAt: null, disabledBy: null, disabledReason: null });
+                            setEnabling(false);
+                        }, 600);
+                    }}
+                />
+                {secret && <SecretReveal label="New signing secret" value={secret} hint="The old secret stopped working. Update your verifier, then copy it now: it is shown once." />}
                 <DetailCard
                     title="Endpoint"
                     details={[
@@ -55,7 +68,16 @@ export function WebhookEndpointPage() {
                         { label: 'Retries', value: '8 attempts over about 3 days, then failed' },
                     ]}
                 />
-                <WebhookDeliveryLog page={page} deliveries={deliveries} canResend={endpoint.active} onResend={() => undefined} />
+                <WebhookDeliveryLog
+                    page={page}
+                    deliveries={deliveries}
+                    canResend={endpoint.active}
+                    resending={resending}
+                    onResend={(delivery) => {
+                        setResending(delivery.id);
+                        window.setTimeout(() => setResending(null), 800);
+                    }}
+                />
             </div>
             <ReasonDialog
                 open={disabling}

@@ -20,6 +20,7 @@ const views: SavedViewItem[] = [
 
 function SavedViewsDemo() {
     const [saving, setSaving] = useState(false);
+    const [saveError, setSaveError] = useState<string | undefined>(undefined);
 
     return (
         <FilterBar
@@ -30,11 +31,14 @@ function SavedViewsDemo() {
                     views={views}
                     canShare
                     saving={saving}
+                    saveError={saveError}
                     onSave={({ name, shared }) => {
+                        const taken = views.some((view) => view.name.toLowerCase() === name.toLowerCase());
                         setSaving(true);
                         window.setTimeout(() => {
+                            setSaveError(taken ? 'You already have a view with this name.' : undefined);
                             setSaving(false);
-                            toast.success(`View “${name}” saved${shared ? ' and shared' : ''}`);
+                            if (!taken) toast.success(`View “${name}” saved${shared ? ' and shared' : ''}`);
                         }, 500);
                     }}
                     onUpdate={(view) => toast(`Would update “${view.name}”`)}
@@ -47,11 +51,23 @@ function SavedViewsDemo() {
 
 function FavoriteDemo() {
     const [saved, setSaved] = useState(false);
+    const [processing, setProcessing] = useState(false);
 
     return (
         <div className="flex items-center gap-2">
-            <span className="text-sm font-medium text-slate-800">Harbour terminal rollout</span>
-            <FavoriteButton saved={saved} label="Harbour terminal rollout" onToggle={() => setSaved((value) => !value)} />
+            <span className="text-sm font-medium text-foreground">Harbour terminal rollout</span>
+            <FavoriteButton
+                saved={saved}
+                label="Harbour terminal rollout"
+                processing={processing}
+                onToggle={() => {
+                    setProcessing(true);
+                    window.setTimeout(() => {
+                        setSaved((value) => !value);
+                        setProcessing(false);
+                    }, 400);
+                }}
+            />
         </div>
     );
 }
@@ -69,6 +85,7 @@ const plan: ImportPreview = {
 function CsvImportDemo() {
     const [preview, setPreview] = useState<ImportPreview | null>(null);
     const [processing, setProcessing] = useState(false);
+    const [fileError, setFileError] = useState<string | undefined>(undefined);
 
     const run = (next: ImportPreview | null, message: string) => {
         setProcessing(true);
@@ -87,7 +104,12 @@ function CsvImportDemo() {
                 detailLabel="Email"
                 preview={preview}
                 processing={processing}
-                onPreview={() => run(plan, 'Preview ready')}
+                fileError={fileError}
+                onPreview={(file) => {
+                    const csv = /\.(csv|txt)$/i.test(file.name);
+                    setFileError(csv ? undefined : 'The file must be a CSV.');
+                    if (csv) run(plan, 'Preview ready');
+                }}
                 onImport={() => run(null, 'Imported 3 contacts')}
             />
         </div>

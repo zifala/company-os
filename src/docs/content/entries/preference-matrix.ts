@@ -41,11 +41,11 @@ const form = useForm({ preferences });
                 { name: 'channels', type: 'PreferenceChannel[]', description: '<code>{ key, label, available?, unavailableHint? }</code>.' },
                 { name: 'value · onChange', type: 'PreferenceValue', description: '<code>{ [event]: { [channel]: boolean } }</code>. A missing cell reads as off.' },
                 { name: 'disabled', type: 'boolean', defaultValue: 'false', description: 'While saving.' },
-                { name: 'labels', type: 'PreferenceMatrixLabels', description: 'event column header, quietHours line (<code>null</code> hides it).' },
+                { name: 'labels', type: 'PreferenceMatrixLabels', defaultValue: 'preferenceMatrixLabels', description: 'event column header, quietHours line (<code>null</code> hides it).' },
             ],
         },
     ],
-    a11y: { notes: ['A real table: events are row headers, channels column headers, module names colgroup headers.', 'Each switch is labelled "event: channel".'] },
+    a11y: { notes: ['A real table: events are row headers, channels column headers, module names colgroup headers.', 'Each switch is labelled "event: channel"; an unavailable channel\'s hint describes its switches.'] },
     donts: ['No switch for in-app on reminders that must arrive; leave the event out instead.', 'No delaying in-app for quiet hours. Only channels that buzz a phone wait.', 'No guessing the default in React. The server sends the effective value.'],
     faq: [{ q: 'Where is the matrix?', a: 'Settings → Notifications, per user. Never in Organization.' }],
 };

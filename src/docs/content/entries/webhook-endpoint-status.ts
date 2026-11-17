@@ -24,6 +24,11 @@ export const webhookEndpointStatus: DocEntry = {
 <WebhookEndpointStatus endpoint={endpoint} canManage={can.manage} processing={enabling} onEnable={enable} />`,
         },
         {
+            title: 'Turned off by a person, viewer cannot manage',
+            demoKey: 'webhook-endpoint-status-read-only',
+            code: `<WebhookEndpointStatus endpoint={endpoint} canManage={false} onEnable={() => undefined} />`,
+        },
+        {
             title: 'Failing, still retrying',
             demoKey: 'webhook-endpoint-status-failing',
             code: `<WebhookEndpointStatus endpoint={{ ...endpoint, active: true, failingSince: '16 Nov 2026' }} canManage onEnable={enable} />`,

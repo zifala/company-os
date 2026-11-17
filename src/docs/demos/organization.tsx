@@ -53,7 +53,7 @@ function LetterheadPreviewDemo() {
                 letterhead={{
                     legalName: 'Halcyon Trading Company Ltd',
                     lines: ['KM4, Maka Al Mukarama Road', 'Mogadishu, Somalia', 'Reg. no. SO-2019-04417 · TIN 300-118-552'],
-                    logo: <span className="grid size-10 shrink-0 place-items-center rounded-sm bg-neutral-900 text-xs font-bold text-white">HT</span>,
+                    logo: <span className="grid size-10 shrink-0 place-items-center rounded-sm bg-primary text-xs font-bold text-primary-foreground">HT</span>,
                 }}
             />
         </div>
@@ -63,7 +63,7 @@ function LetterheadPreviewDemo() {
 function SecretRevealDemo() {
     return (
         <div className="max-w-xl">
-            <SecretReveal label="Signing secret" value="whsec_Q8n2vT7mKc4LxR1pZ9aW3eY6uB0sJ5hD2fG8kN4q" onCopy={() => undefined} />
+            <SecretReveal label="Signing secret" value="whsec_Q8n2vT7mKc4LxR1pZ9aW3eY6uB0sJ5hD2fG8kN4q" />
         </div>
     );
 }
@@ -78,6 +78,14 @@ function WebhookEventPickerDemo() {
     );
 }
 
+function WebhookEventPickerDisabledDemo() {
+    return (
+        <div className="max-w-xl">
+            <WebhookEventPicker groups={webhookGroups} value={['deal.won', 'invoice.paid']} onChange={() => undefined} disabled />
+        </div>
+    );
+}
+
 export const organizationDemos: Record<string, ComponentType> = {
     'audit-log-table-basic': AuditLogTableDemo,
     'audit-log-table-empty': AuditLogTableEmptyDemo,
@@ -85,5 +93,6 @@ export const organizationDemos: Record<string, ComponentType> = {
     'letterhead-preview-basic': LetterheadPreviewDemo,
     'secret-reveal-basic': SecretRevealDemo,
     'webhook-event-picker-basic': WebhookEventPickerDemo,
+    'webhook-event-picker-disabled': WebhookEventPickerDisabledDemo,
     ...organizationDemos2,
 };

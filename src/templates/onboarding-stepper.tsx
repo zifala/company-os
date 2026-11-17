@@ -73,11 +73,12 @@ export function OnboardingStepperPage() {
     const [current, setCurrent] = useState('finance');
     const index = steps.findIndex((step) => step.key === current);
     const [furthest, setFurthest] = useState(index);
+    const [processing, setProcessing] = useState(false);
 
     const go = (next: number) => {
-        const target = steps[Math.min(Math.max(next, 0), steps.length - 1)];
-        setCurrent(target.key);
-        setFurthest((value) => Math.max(value, next));
+        const bounded = Math.min(Math.max(next, 0), steps.length - 1);
+        setCurrent(steps[bounded].key);
+        setFurthest((value) => Math.max(value, bounded));
     };
 
     return (
@@ -92,11 +93,15 @@ export function OnboardingStepperPage() {
             furthest={furthest}
             onSelect={setCurrent}
             exitHref="/templates"
-            processing={false}
+            processing={processing}
             onBack={() => go(index - 1)}
             onContinue={() => {
-                setSteps((list) => list.map((step) => (step.key === current && step.key !== 'review' ? { ...step, done: true } : step)));
-                go(index + 1);
+                setProcessing(true);
+                window.setTimeout(() => {
+                    setSteps((list) => list.map((step) => (step.key === current && step.key !== 'review' ? { ...step, done: true } : step)));
+                    setProcessing(false);
+                    go(index + 1);
+                }, 500);
             }}
         >
             <StepBody step={current} onFix={setCurrent} />

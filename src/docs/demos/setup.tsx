@@ -91,6 +91,7 @@ const reviewSections: ReviewSection[] = [
 
 function StepperDemo() {
     const [current, setCurrent] = useState('finance');
+    const [processing, setProcessing] = useState(false);
     const index = onboardingSteps.findIndex((step) => step.key === current);
     const go = (next: number) => setCurrent(onboardingSteps[Math.min(Math.max(next, 0), onboardingSteps.length - 1)].key);
 
@@ -107,9 +108,15 @@ function StepperDemo() {
                 furthest={2}
                 onSelect={setCurrent}
                 exitHref="#"
-                processing={false}
+                processing={processing}
                 onBack={() => go(index - 1)}
-                onContinue={() => (current === 'review' ? toast.success('Submitted for review') : go(index + 1))}
+                onContinue={() => {
+                    setProcessing(true);
+                    window.setTimeout(() => {
+                        setProcessing(false);
+                        return current === 'review' ? toast.success('Submitted for review') : go(index + 1);
+                    }, 500);
+                }}
             >
                 {current === 'review' ? (
                     <ReviewProblems sections={reviewSections} onFix={setCurrent} />
@@ -129,9 +136,7 @@ export const setupDemos: Record<string, ComponentType> = {
     'setup-checklist-basic': SetupDemo,
     'onboarding-card-basic': () => (
         <div className="max-w-sm">
-            <OnboardingCard
-                onboarding={{ reference: 'ONB-0007', href: '#', started_by: 'Hodan Ali', approved_by: 'Ayaan Warsame', approved_at: '3 Nov 2026', source: 'Referral', referrer: 'Halcyon Freight' }}
-            />
+            <OnboardingCard onboarding={{ reference: 'ONB-0007', href: '#', started_by: 'Hodan Ali', approved_by: 'Ayaan Warsame', approved_at: '3 Nov 2026', source: 'Referral', referrer: 'Halcyon Freight' }} />
         </div>
     ),
     'onboarding-stepper-basic': StepperDemo,
@@ -140,5 +145,6 @@ export const setupDemos: Record<string, ComponentType> = {
             <ReviewProblems sections={reviewSections} onFix={(key) => toast(`Opens the ${key} step`)} />
         </div>
     ),
+    'review-problems-ready': () => <ReviewProblems sections={reviewSections.map((section) => ({ ...section, problems: [] }))} />,
     'insight-item-basic': InsightDemo,
 };

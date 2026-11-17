@@ -49,7 +49,7 @@ export function WorkspacePage() {
                             letterhead={{
                                 legalName: letterhead.legalName,
                                 lines: [...letterhead.address.split('\n'), [letterhead.registration, letterhead.tax].filter(Boolean).join(' · '), letterhead.contact],
-                                logo: <span className="grid size-10 shrink-0 place-items-center rounded-sm bg-neutral-900 text-xs font-bold text-white">HT</span>,
+                                logo: <span className="grid size-10 shrink-0 place-items-center rounded-sm bg-primary text-xs font-bold text-primary-foreground">HT</span>,
                             }}
                         />
                         <ServiceStatusList
@@ -94,7 +94,7 @@ export function WorkspacePage() {
                 <FormSection title="Security" compact>
                     <div className="flex items-start gap-4">
                         <div className="grid flex-1 gap-1">
-                            <label htmlFor="require-2fa" className="text-sm font-medium text-slate-800">
+                            <label htmlFor="require-2fa" className="text-sm font-medium text-foreground">
                                 Require two-factor for privileged people
                             </label>
                             <p id="require-2fa-hint" className="text-xs text-muted-foreground">

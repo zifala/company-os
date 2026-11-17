@@ -1,5 +1,5 @@
 import { FileUpIcon } from 'lucide-react';
-import { useState } from 'react';
+import { useId, useState } from 'react';
 import { InputError } from '@/components/company-os/field-row';
 import { ImportPreviewSection } from '@/components/company-os/import-preview';
 import type { ImportPreview, ImportPreviewLabels } from '@/components/company-os/import-preview';
@@ -49,33 +49,40 @@ export function CsvImport({
     labels?: CsvImportLabels;
     previewLabels?: ImportPreviewLabels;
 }) {
+    const id = useId();
     const [file, setFile] = useState<File | null>(null);
     const [previewed, setPreviewed] = useState<{ file: File; updateExisting: boolean } | null>(null);
     const [mode, setMode] = useState('skip');
     const updateExisting = mode === 'update';
     const current = preview !== null && previewed?.file === file && previewed.updateExisting === updateExisting;
-    const changes = current && preview ? preview.creates.length + preview.updates.length : 0;
+    const changes = current ? preview.creates.length + preview.updates.length : 0;
 
     return (
         <>
             <div className="max-w-2xl rounded-lg glass p-6">
                 <div className="grid gap-4">
                     <div className="grid gap-2">
-                        <Label htmlFor="csv-file">{labels.file}</Label>
+                        <Label htmlFor={`${id}-file`}>{labels.file}</Label>
                         <Input
-                            id="csv-file"
+                            id={`${id}-file`}
                             type="file"
                             accept=".csv,.txt,text/csv"
+                            disabled={processing}
+                            aria-invalid={Boolean(fileError)}
+                            aria-describedby={`${id}-help`}
                             onChange={(event) => setFile(event.target.files?.[0] ?? null)}
                         />
                         <InputError message={fileError} />
-                        <p className="text-sm text-muted-foreground">{help}</p>
+                        <p id={`${id}-help`} className="text-sm text-muted-foreground">
+                            {help}
+                        </p>
                     </div>
                     <div className="grid gap-2">
-                        <Label>{labels.existing}</Label>
+                        <Label htmlFor={`${id}-existing`}>{labels.existing}</Label>
                         <OptionSelect
-                            aria-label={labels.existing}
+                            id={`${id}-existing`}
                             value={mode}
+                            disabled={processing}
                             onValueChange={setMode}
                             options={[
                                 { value: 'skip', label: labels.skip },
@@ -98,14 +105,14 @@ export function CsvImport({
                             {labels.preview}
                         </Button>
                         {current && (
-                            <Button disabled={changes === 0 || processing || file === null} onClick={() => file && onImport(file, updateExisting)}>
+                            <Button disabled={changes === 0 || processing} onClick={() => file && onImport(file, updateExisting)}>
                                 {labels.import(changes, noun)}
                             </Button>
                         )}
                     </div>
                 </div>
             </div>
-            {current && preview && <ImportPreviewSection preview={preview} detailLabel={detailLabel} labels={previewLabels} />}
+            {current && <ImportPreviewSection preview={preview} detailLabel={detailLabel} labels={previewLabels} />}
         </>
     );
 }

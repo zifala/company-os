@@ -38,24 +38,24 @@ export function ReviewProblems({
 
                     return (
                         <li key={section.key} className="flex gap-3 border-b border-border px-5 py-3 last:border-0">
-                            <span className={cn('mt-0.5 flex size-6 shrink-0 items-center justify-center rounded-full', ok ? 'bg-emerald-500/10 text-emerald-600' : 'bg-rose-500/10 text-rose-600')}>
-                                <Icon className="size-3.5" />
+                            <span className={cn('mt-0.5 flex size-6 shrink-0 items-center justify-center rounded-full', ok ? 'bg-success/10 text-success' : 'bg-destructive/10 text-destructive')}>
+                                <Icon className="size-3.5" aria-hidden />
                             </span>
                             <div className="grid min-w-0 flex-1 gap-1">
                                 <div className="flex items-center gap-2">
-                                    <span className="text-sm font-medium text-slate-800">{section.label}</span>
+                                    <span className="text-sm font-medium text-foreground">{section.label}</span>
                                     <Pill name={ok ? labels.ready : labels.problems(section.problems.length)} color={ok ? 'emerald' : 'rose'} />
                                 </div>
                                 {!ok && (
                                     <ul className="list-inside list-disc text-sm text-muted-foreground">
-                                        {section.problems.map((problem) => (
-                                            <li key={problem}>{problem}</li>
+                                        {section.problems.map((problem, index) => (
+                                            <li key={index}>{problem}</li>
                                         ))}
                                     </ul>
                                 )}
                             </div>
                             {!ok && onFix && (
-                                <Button variant="outline" size="sm" onClick={() => onFix(section.key)}>
+                                <Button variant="outline" size="sm" aria-label={`${labels.fix}: ${section.label}`} onClick={() => onFix(section.key)}>
                                     {labels.fix}
                                 </Button>
                             )}

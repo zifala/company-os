@@ -8,7 +8,7 @@ export const onboardingCard: DocEntry = {
     tagline: 'The side card on a record born from an onboarding: reference, who started it, who approved it, when, and the source.',
     job: 'Show where a relationship record came from.',
     tags: ['onboarding', 'record', 'provenance', 'side card'],
-    exports: ['OnboardingCard', 'OnboardingSummary', 'OnboardingLabels'],
+    exports: ['OnboardingCard', 'onboardingLabels', 'OnboardingSummary', 'OnboardingLabels'],
     files: ['components/company-os/onboarding-card.tsx'],
     registryDeps: ['detail-card'],
     intro: [

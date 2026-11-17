@@ -1,3 +1,4 @@
+import { useId } from 'react';
 import { Checkbox } from '@/components/ui/checkbox';
 
 export type WebhookEvent = {
@@ -35,6 +36,7 @@ export function WebhookEventPicker({
     labels?: Partial<WebhookEventPickerLabels>;
 }) {
     const labels = { ...webhookEventPickerLabels, ...custom };
+    const uid = useId();
     const on = new Set(value);
 
     const toggleGroup = (group: WebhookEventGroup, checked: boolean) => {
@@ -46,8 +48,8 @@ export function WebhookEventPicker({
         <div className="grid gap-3">
             {groups.map((group) => {
                 const selected = group.events.filter((event) => on.has(event.name)).length;
-                const all = selected === group.events.length;
-                const groupId = `webhook-group-${group.key}`;
+                const all = selected > 0 && selected === group.events.length;
+                const groupId = `${uid}-group-${group.key}`;
 
                 return (
                     <fieldset key={group.key} className="rounded-md border border-border">
@@ -56,18 +58,18 @@ export function WebhookEventPicker({
                             <Checkbox
                                 id={groupId}
                                 checked={all ? true : selected > 0 ? 'indeterminate' : false}
-                                disabled={disabled}
+                                disabled={disabled || group.events.length === 0}
                                 onCheckedChange={(checked) => toggleGroup(group, checked === true)}
                                 aria-label={labels.all(group.label)}
                             />
-                            <label htmlFor={groupId} className="text-sm font-medium text-slate-800">
+                            <label htmlFor={groupId} className="text-sm font-medium text-foreground">
                                 {group.label}
                             </label>
-                            <span className="ml-auto text-xs text-muted-foreground tabular-nums">{labels.count(selected, group.events.length)}</span>
+                            <span className="ms-auto text-xs text-muted-foreground tabular-nums">{labels.count(selected, group.events.length)}</span>
                         </div>
                         <ul className="grid gap-x-4 gap-y-2 p-3 sm:grid-cols-2">
                             {group.events.map((event) => {
-                                const id = `webhook-event-${event.name}`;
+                                const id = `${uid}-${event.name}`;
 
                                 return (
                                     <li key={event.name} className="flex items-start gap-2">
@@ -78,7 +80,7 @@ export function WebhookEventPicker({
                                             onCheckedChange={(checked) => onChange(checked === true ? [...value, event.name] : value.filter((name) => name !== event.name))}
                                         />
                                         <label htmlFor={id} className="grid gap-0.5 text-sm leading-none">
-                                            <span className="text-slate-800">{event.label}</span>
+                                            <span className="text-foreground">{event.label}</span>
                                             <span className="font-mono text-xs text-muted-foreground">{event.name}</span>
                                         </label>
                                     </li>

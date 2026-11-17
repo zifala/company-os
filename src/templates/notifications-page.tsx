@@ -49,7 +49,7 @@ export function NotificationsPage() {
                         {rows.map((row) => (
                             <TableRow key={row.id}>
                                 <TextCell detail={row.subject}>
-                                    <Link href={row.url} className={cn('inline-flex items-center gap-2 hover:text-primary hover:underline', row.read ? 'text-slate-700' : 'font-semibold text-slate-800')}>
+                                    <Link href={row.url} className={cn('inline-flex items-center gap-2 hover:text-primary hover:underline', row.read ? 'text-muted-foreground' : 'font-semibold text-foreground')}>
                                         {!row.read && <span aria-label="Unread" className="size-2 shrink-0 rounded-full bg-primary" />}
                                         {row.message}
                                     </Link>

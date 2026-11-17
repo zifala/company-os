@@ -8,7 +8,7 @@ export const setupChecklist: DocEntry = {
     tagline: 'Steps that tick from real data, each with a link to where it gets done, and one "Finish setup".',
     job: 'Walk the super admin through the first configuration without storing a single tick.',
     tags: ['setup', 'checklist', 'onboarding', 'super admin', 'first run'],
-    exports: ['SetupChecklist', 'SetupStep', 'SetupLabels'],
+    exports: ['SetupChecklist', 'setupLabels', 'SetupStep', 'SetupLabels'],
     files: ['components/company-os/setup-checklist.tsx'],
     registryDeps: ['pill'],
     shadcnDeps: ['button'],

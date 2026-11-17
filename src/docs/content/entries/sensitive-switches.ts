@@ -35,7 +35,7 @@ export const sensitiveSwitches: DocEntry = {
             rows: [
                 { name: 'switches', type: 'SensitiveSwitch[]', description: '<code>{ key, label, hint }</code>.' },
                 { name: 'value · onChange', type: 'string[]', description: 'Keys that are on.' },
-                { name: 'holds', type: '(key: string) => boolean', description: 'Whether the editor sees this family.' },
+                { name: 'holds', type: '(key: string) => boolean', description: 'Whether the editor sees this family. A family they do not see can be turned off, never on.' },
                 { name: 'title', type: 'string', defaultValue: "'Sensitive fields'", description: 'Card title.' },
                 { name: 'disabled', type: 'boolean', defaultValue: 'false', description: 'Locks every switch.' },
             ],

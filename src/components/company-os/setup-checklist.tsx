@@ -23,10 +23,10 @@ function StepRow({ step, labels }: { step: SetupStep; labels: SetupLabels }) {
 
     return (
         <li className="flex flex-wrap items-center gap-3 border-b border-border px-5 py-3 last:border-0">
-            <span className={cn('flex size-8 items-center justify-center rounded-full', state === 'done' ? 'bg-emerald-500/10 text-emerald-600' : state === 'review' ? 'bg-slate-500/10 text-slate-600' : 'bg-amber-500/10 text-amber-600')}>
-                <Icon className="size-4" />
+            <span className={cn('flex size-8 shrink-0 items-center justify-center rounded-full', state === 'done' ? 'bg-success/10 text-success' : state === 'review' ? 'bg-muted-foreground/10 text-muted-foreground' : 'bg-warning/10 text-warning')}>
+                <Icon className="size-4" aria-hidden />
             </span>
-            <span className="min-w-0 flex-1 text-sm font-medium text-slate-800">{step.title}</span>
+            <span className="min-w-0 flex-1 text-sm font-medium text-foreground">{step.title}</span>
             <Pill name={labels[state]} color={color} />
             {step.links.map((link) => (
                 <Button key={`${link.label}:${link.href}`} variant="outline" size="sm" asChild>

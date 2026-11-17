@@ -36,7 +36,8 @@ export const printSheet: DocEntry = {
                 { name: 'meta', type: 'PrintMeta[]', description: 'Issued, due, terms. Formatted on the server.' },
                 { name: 'stamp', type: 'string | null', defaultValue: 'null', description: 'Draft or void; null when final.' },
                 { name: 'footer', type: 'string[]', description: 'Legal name, printed at and by, document number.' },
-                { name: 'onPrint · labels', type: '() => void · PrintSheetLabels', description: 'Defaults to window.print(); print, hint.' },
+                { name: 'onPrint · labels', type: '() => void · PrintSheetLabels', defaultValue: 'window.print · printSheetLabels', description: 'The toolbar button; labels are print and hint.' },
+                { name: 'children', type: 'ReactNode', description: 'The body: blocks, lines, totals.' },
             ],
         },
         {

@@ -1,5 +1,5 @@
 import { CalendarIcon, RefreshCwIcon } from 'lucide-react';
-import { useState } from 'react';
+import { useId, useState } from 'react';
 import { ConfirmDialog } from '@/components/company-os/confirm-dialog';
 import { SecretReveal } from '@/components/company-os/secret-reveal';
 import { Button } from '@/components/ui/button';
@@ -54,26 +54,33 @@ export function CalendarFeedCard({
     labels?: Partial<CalendarFeedLabels>;
 }) {
     const labels = { ...calendarFeedLabels, ...custom };
-    const [confirming, setConfirming] = useState<'reset' | 'revoke' | null>(null);
-    const resetting = confirming === 'reset';
+    const id = useId();
+    // The action outlives the open flag so the dialog keeps its copy while it animates closed.
+    const [action, setAction] = useState<'reset' | 'revoke'>('reset');
+    const [confirming, setConfirming] = useState(false);
+    const resetting = action === 'reset';
+    const confirm = (next: 'reset' | 'revoke') => {
+        setAction(next);
+        setConfirming(true);
+    };
 
     return (
         <section className="rounded-lg glass">
             <div className="flex items-center gap-3 border-b border-border px-5 py-3">
                 <CalendarIcon className="size-4 text-muted-foreground" aria-hidden />
-                <h2 className="text-sm font-semibold text-slate-800">{labels.title}</h2>
-                <span className={active ? 'ml-auto text-xs font-medium text-success' : 'ml-auto text-xs font-medium text-muted-foreground'}>{active ? labels.on : labels.off}</span>
+                <h2 className="text-sm font-semibold text-foreground">{labels.title}</h2>
+                <span className={active ? 'ms-auto text-xs font-medium text-success' : 'ms-auto text-xs font-medium text-muted-foreground'}>{active ? labels.on : labels.off}</span>
             </div>
             <div className="grid gap-4 p-5">
                 <p className="text-sm text-muted-foreground">{labels.intro}</p>
-                {url && <SecretReveal id="calendar-feed-url" label={labels.url} value={url} labels={{ once: labels.once }} />}
+                {url && <SecretReveal id={`${id}-url`} label={labels.url} value={url} labels={{ once: labels.once }} />}
                 <div className="flex flex-wrap gap-2">
                     {active ? (
                         <>
-                            <Button variant="outline" disabled={processing} onClick={() => setConfirming('reset')}>
+                            <Button variant="outline" disabled={processing} onClick={() => confirm('reset')}>
                                 <RefreshCwIcon /> {labels.reset}
                             </Button>
-                            <Button variant="ghost" className="text-destructive" disabled={processing} onClick={() => setConfirming('revoke')}>
+                            <Button variant="ghost" className="text-destructive" disabled={processing} onClick={() => confirm('revoke')}>
                                 {labels.revoke}
                             </Button>
                         </>
@@ -85,8 +92,8 @@ export function CalendarFeedCard({
                 </div>
             </div>
             <ConfirmDialog
-                open={confirming !== null}
-                onOpenChange={(open) => !open && setConfirming(null)}
+                open={confirming}
+                onOpenChange={setConfirming}
                 title={resetting ? labels.resetTitle : labels.revokeTitle}
                 consequence={resetting ? labels.resetConsequence : labels.revokeConsequence}
                 confirmLabel={resetting ? labels.reset : labels.revoke}
@@ -94,7 +101,7 @@ export function CalendarFeedCard({
                 destructive={!resetting}
                 processing={processing}
                 onConfirm={() => {
-                    setConfirming(null);
+                    setConfirming(false);
                     if (resetting) {
                         onCreate();
                     } else {

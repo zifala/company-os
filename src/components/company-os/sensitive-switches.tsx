@@ -1,3 +1,4 @@
+import { useId } from 'react';
 import { Switch } from '@/components/ui/switch';
 
 export type SensitiveSwitch = {
@@ -21,20 +22,21 @@ export function SensitiveSwitches({
     holds: (key: string) => boolean;
     disabled?: boolean;
 }) {
+    const uid = useId();
     const on = new Set(value);
 
     return (
         <section className="rounded-lg glass">
-            <h2 className="border-b border-border px-5 py-3 text-sm font-semibold text-slate-800">{title}</h2>
+            <h2 className="border-b border-border px-5 py-3 text-sm font-semibold text-foreground">{title}</h2>
             <ul>
                 {switches.map((item) => {
-                    const id = `sensitive-${item.key}`;
+                    const id = `${uid}-${item.key}`;
                     const checked = on.has(item.key);
 
                     return (
                         <li key={item.key} className="flex items-start gap-4 border-b border-border px-5 py-3 last:border-0">
                             <div className="min-w-0 flex-1">
-                                <label htmlFor={id} className="text-sm font-medium text-slate-800">
+                                <label htmlFor={id} className="text-sm font-medium text-foreground">
                                     {item.label}
                                 </label>
                                 <p id={`${id}-hint`} className="text-xs text-muted-foreground">

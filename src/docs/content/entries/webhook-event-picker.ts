@@ -23,6 +23,11 @@ export const webhookEventPicker: DocEntry = {
 
 <WebhookEventPicker groups={catalogue} value={form.data.events} onChange={(events) => form.setData('events', events)} />`,
         },
+        {
+            title: 'Locked while saving',
+            demoKey: 'webhook-event-picker-disabled',
+            code: `<WebhookEventPicker groups={groups} value={form.data.events} onChange={(events) => form.setData('events', events)} disabled={form.processing} />`,
+        },
     ],
     props: [
         {

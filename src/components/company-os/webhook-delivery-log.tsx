@@ -82,7 +82,7 @@ export function WebhookDeliveryLog({
                     {deliveries.map((delivery) => (
                         <TableRow key={delivery.id}>
                             <TextCell detail={delivery.event.name}>
-                                <span className="font-medium text-slate-800">{delivery.event.label}</span>
+                                <span className="font-medium text-foreground">{delivery.event.label}</span>
                             </TextCell>
                             <StatusCell value={delivery.status} />
                             <NumberCell value={String(delivery.attempts)} />
@@ -91,7 +91,7 @@ export function WebhookDeliveryLog({
                             ) : (
                                 <TableCell className="max-w-64">
                                     <span className="grid min-w-0 gap-0.5">
-                                        <span className="font-mono text-xs text-slate-800">{delivery.responseCode ?? '—'}</span>
+                                        <span className="font-mono text-xs text-foreground">{delivery.responseCode ?? '—'}</span>
                                         {delivery.excerpt && <span className="truncate font-mono text-xs text-muted-foreground" title={delivery.excerpt}>{delivery.excerpt}</span>}
                                     </span>
                                 </TableCell>
@@ -99,7 +99,7 @@ export function WebhookDeliveryLog({
                             <DateCell value={delivery.createdAt} />
                             <DateCell value={delivery.nextAttemptAt} />
                             {canResend && (
-                                <TableCell className="text-right">
+                                <TableCell className="text-end">
                                     <Button
                                         size="sm"
                                         variant="ghost"

@@ -54,7 +54,7 @@ export function WebhookEndpointStatus({
                 <AlertTitle>{labels.disabledTitle}</AlertTitle>
                 <AlertDescription className="grid gap-3">
                     <p>{endpoint.disabledBy ? labels.disabledByPerson(at, endpoint.disabledBy) : labels.disabledBySystem(at)}</p>
-                    {endpoint.disabledReason && <p className="border-l-2 border-current/30 pl-3 italic">{endpoint.disabledReason}</p>}
+                    {endpoint.disabledReason && <p className="border-s-2 border-current/30 ps-3 italic">{endpoint.disabledReason}</p>}
                     {canManage && (
                         <div>
                             <Button size="sm" variant="outline" disabled={processing} onClick={onEnable}>

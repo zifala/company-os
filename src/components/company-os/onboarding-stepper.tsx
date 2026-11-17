@@ -69,7 +69,7 @@ export function OnboardingStepper({
     return (
         <div className="flex min-h-svh flex-col bg-background">
             <header className="flex h-14 shrink-0 items-center gap-3 border-b border-border px-4 md:px-6">
-                <span className="min-w-0 flex-1 truncate text-sm font-semibold text-slate-800">{title}</span>
+                <span className="min-w-0 flex-1 truncate text-sm font-semibold text-foreground">{title}</span>
                 {exitHref !== null && (
                     <Button variant="ghost" size="sm" asChild>
                         <Link href={exitHref}>
@@ -79,7 +79,7 @@ export function OnboardingStepper({
                 )}
             </header>
             <div className="flex flex-1 flex-col md:flex-row">
-                <OnboardingRail reference={reference} name={name} status={status} steps={steps} current={current} furthest={furthest} onSelect={onSelect} />
+                <OnboardingRail reference={reference} name={name} status={status} steps={steps} current={current} furthest={furthest} onSelect={onSelect} disabled={processing} />
                 <main className="flex min-w-0 flex-1 flex-col">
                     <div className="mx-auto flex w-full max-w-3xl flex-1 flex-col gap-6 p-4 md:p-8">
                         {sentBack && (
@@ -91,7 +91,7 @@ export function OnboardingStepper({
                         )}
                         <div className="grid gap-1">
                             <span className="text-xs text-muted-foreground">{labels.stepOf(index + 1, steps.length)}</span>
-                            <h1 className="text-xl font-semibold tracking-tight text-slate-800">{step?.label}</h1>
+                            <h1 className="text-xl font-semibold tracking-tight text-foreground">{step?.label}</h1>
                         </div>
                         <div className="grid gap-6">{children}</div>
                     </div>

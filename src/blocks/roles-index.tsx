@@ -41,7 +41,7 @@ export function RolesIndex() {
                         {roles.map((role) => (
                             <TableRow key={role.id}>
                                 <TextCell detail={role.description}>
-                                    <span className="inline-flex items-center gap-2 font-semibold text-slate-800">
+                                    <span className="inline-flex items-center gap-2 font-semibold text-foreground">
                                         {role.name}
                                         {role.locked && <Pill name="Locked" color="slate" />}
                                     </span>
@@ -50,13 +50,16 @@ export function RolesIndex() {
                                 <NumberCell value={role.permissions} />
                                 <TextCell>
                                     {role.locked ? (
-                                        <LockIcon className="size-4 text-muted-foreground" aria-label="Locked role" />
+                                        <span className="inline-flex" title="Locked role">
+                                            <LockIcon className="size-4 text-muted-foreground" aria-hidden />
+                                            <span className="sr-only">Locked role</span>
+                                        </span>
                                     ) : (
                                         <ActionsMenu
                                             items={[
                                                 { label: 'Edit role', onSelect: () => undefined },
                                                 { label: 'Duplicate role', onSelect: () => undefined },
-                                                ...(role.users === '0' ? [{ label: 'Delete role', destructive: true, onSelect: () => setDeleting(role) }] : []),
+                                                ...(role.users === '0' ? [{ label: 'Delete role', destructive: true, onSelect: () => { setReason(''); setDeleting(role); } }] : []),
                                             ]}
                                         />
                                     )}
