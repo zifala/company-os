@@ -1,0 +1,38 @@
+{
+  "$schema": "https://ui.shadcn.com/schema/registry-item.json",
+  "name": "template-notifications-page",
+  "type": "registry:block",
+  "title": "Notifications",
+  "description": "The inbox behind the bell: every in-app row, filter by event and read state, mark all read.",
+  "registryDependencies": [
+    "http://localhost:5173/r/tokens.json",
+    "http://localhost:5173/r/page-header.json",
+    "http://localhost:5173/r/filter-bar.json",
+    "http://localhost:5173/r/data-table.json",
+    "http://localhost:5173/r/cells.json"
+  ],
+  "files": [
+    {
+      "path": "registry/company-os/templates/notifications-page.tsx",
+      "content": "import { CheckCheckIcon } from 'lucide-react';\nimport { DataTable, DateCell, FilterBar, PageHeader, StatusCell, TextCell } from '@/components/company-os';\nimport type { FilterState, Paginated } from '@/components/company-os';\nimport { Button } from '@/components/ui/button';\nimport { Table, TableBody, TableHead, TableHeader, TableRow } from '@/components/ui/table';\nimport { Link } from '@/lib/navigation';\nimport { cn } from '@/lib/utils';\n\ntype Row = { id: string; message: string; subject: string; url: string; event: { label: string; color: string }; channels: string; read: boolean; at: { label: string; relative: string } };\n\nconst rows: Row[] = [\n    { id: '1', message: 'Hodan Ali assigned ZW-142 to you', subject: 'Task · Harbour terminal rollout', url: '#', event: { label: 'Assigned', color: 'indigo' }, channels: 'In-app · Email', read: false, at: { label: '7 Nov 2026, 09:12', relative: '12 minutes ago' } },\n    { id: '2', message: 'Mahad Yusuf mentioned you on Cold chain audit', subject: 'Deal · Kestrel Logistics', url: '#', event: { label: 'Mentioned', color: 'cyan' }, channels: 'In-app · Email', read: false, at: { label: '7 Nov 2026, 08:40', relative: '44 minutes ago' } },\n    { id: '3', message: 'Ayaan Warsame changed 12 tasks: ZW-120, ZW-121, ZW-124, ZW-127, ZW-130 and 7 more', subject: 'Digest · Store refit, phase 2', url: '#', event: { label: 'Bulk change', color: 'slate' }, channels: 'In-app', read: true, at: { label: '6 Nov 2026, 16:05', relative: 'yesterday' } },\n    { id: '4', message: 'INV-0409 for Kestrel Logistics is due tomorrow', subject: 'Invoice · 9,850.00 USD', url: '#', event: { label: 'Reminder', color: 'amber' }, channels: 'In-app · Email', read: true, at: { label: '6 Nov 2026, 07:00', relative: 'yesterday' } },\n];\n\nconst page: Paginated<Row> = { data: rows, from: 1, to: 4, total: 4, current_page: 1, last_page: 1, prev_page_url: null, next_page_url: null };\n\nconst state: FilterState = {\n    url: '/templates/notifications-page',\n    filters: {},\n    fields: [\n        { key: 'event', label: 'Event', inline: true, placeholder: 'All events', options: [{ value: 'assigned', label: 'Assigned' }, { value: 'mentioned', label: 'Mentioned' }, { value: 'bulk', label: 'Bulk change' }, { value: 'reminder', label: 'Reminder' }] },\n        { key: 'state', label: 'State', inline: true, placeholder: 'Any state', options: [{ value: 'unread', label: 'Unread' }, { value: 'read', label: 'Read' }] },\n    ],\n};\n\nexport function NotificationsPage() {\n    return (\n        <div className=\"flex flex-col gap-6\">\n            <PageHeader title=\"Notifications\">\n                <Button variant=\"outline\">\n                    <CheckCheckIcon /> Mark all read\n                </Button>\n            </PageHeader>\n            <FilterBar state={state} />\n            <DataTable page={page}>\n                <Table>\n                    <TableHeader>\n                        <TableRow>\n                            <TableHead>Notification</TableHead>\n                            <TableHead>Event</TableHead>\n                            <TableHead>Channels</TableHead>\n                            <TableHead>Received</TableHead>\n                        </TableRow>\n                    </TableHeader>\n                    <TableBody>\n                        {rows.map((row) => (\n                            <TableRow key={row.id}>\n                                <TextCell detail={row.subject}>\n                                    <Link href={row.url} className={cn('inline-flex items-center gap-2 hover:text-primary hover:underline', row.read ? 'text-slate-700' : 'font-semibold text-slate-800')}>\n                                        {!row.read && <span aria-label=\"Unread\" className=\"size-2 shrink-0 rounded-full bg-primary\" />}\n                                        {row.message}\n                                    </Link>\n                                </TextCell>\n                                <StatusCell value={row.event} />\n                                <TextCell>{row.channels}</TextCell>\n                                <DateCell value={row.at} />\n                            </TableRow>\n                        ))}\n                    </TableBody>\n                </Table>\n            </DataTable>\n        </div>\n    );\n}\n",
+      "type": "registry:ui",
+      "target": "components/company-os/templates/notifications-page.tsx"
+    }
+  ],
+  "categories": [
+    "templates"
+  ],
+  "meta": {
+    "system": "Company OS",
+    "kind": "template",
+    "pieces": [
+      10
+    ],
+    "tags": [
+      "notifications",
+      "inbox",
+      "history",
+      "bell"
+    ]
+  }
+}

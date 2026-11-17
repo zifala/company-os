@@ -4,6 +4,18 @@ import { PageTitle, Stack } from '../shell';
 const roadmap: { title: string; note: string; items: { t: string; d: string }[] }[] = [
     {
         title: 'Shipped',
+        note: 'v0.2.0 · the firewall and the gaps',
+        items: [
+            { t: 'Firewall', d: 'pnpm lint fails the build on Inertia imports outside the seam, the router imported past it, breadcrumbs, native selects, avatars in tables, and a table swapped for an empty card.' },
+            { t: 'Access', d: 'A new category. PermissionPicker with a scope per permission and a lock on what the editor does not hold, SensitiveSwitches, PreferenceMatrix.' },
+            { t: 'Roles', d: 'The role form inside Organization: name on top, permission picker below, sensitive switches under it. The roles list with the super admin locked and delete only when unused.' },
+            { t: 'Notification history and the preference matrix', d: 'The inbox behind the bell, filtered by event and read state, and the event × channel grid in personal settings.' },
+            { t: 'Onboarding stepper', d: 'OnboardingStepper and its rail, ReviewProblems, the full-screen stepper with the send-back banner, the guest link page, and the reviewer\'s page with Reject · Send back · Approve.' },
+            { t: 'Print layout', d: 'PrintSheet, PrintLines, PrintTotals, PrintBlock and the A4 invoice: repeating header and footer, totals that never split, the draft stamp.' },
+        ],
+    },
+    {
+        title: 'Shipped',
         note: 'v0.1.0 · the site, the kit, the screens',
         items: [
             { t: 'The site', d: 'Introduction, the standard with 27 piece pages mirrored from the skill, component pages in the 76° shape, blocks, templates, AI-ready, ⌘K search. The site runs the shell it documents.' },
@@ -17,13 +29,13 @@ const roadmap: { title: string; note: string; items: { t: string; d: string }[] 
     },
     {
         title: 'Next',
-        note: 'v0.2.0 · the firewall and the gaps',
+        note: 'v0.3.0 · the rest of Organization',
         items: [
-            { t: 'Firewall', d: 'A lint that fails on Inertia imports outside the seam, breadcrumbs, native selects, avatars in tables, and a table swapped for an empty card.' },
-            { t: 'Roles page', d: 'The role form: name on top, permission picker below, scope per permission and the sensitive switches.' },
-            { t: 'Notification history and the preference matrix', d: 'The inbox page and the event × channel grid from the notifications recipe.' },
-            { t: 'Onboarding stepper', d: 'The full-screen stepper with the left rail, the review step and the guest link page.' },
-            { t: 'Print layout', d: 'The A4 print sheet for invoices and statements.' },
+            { t: 'Audit log page', d: 'The audit recipe\'s page: one table of events with actor, channel and reason, filters by subject and event, CSV export.' },
+            { t: 'Workspace and services', d: 'The workspace singleton form with the letterhead fields the print sheet reads, and the services panel showing ok or missing.' },
+            { t: 'Webhooks', d: 'Endpoints with their signing secret shown once, the delivery log with retry, and the auto-disabled state.' },
+            { t: 'Delegated grants', d: 'The per-person page grants from scoped permissions: who granted what, when, and revoke with a reason.' },
+            { t: 'Calendar feed', d: 'The per-user ICS link in settings with copy and reset.' },
         ],
     },
     {

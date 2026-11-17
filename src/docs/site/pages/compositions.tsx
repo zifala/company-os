@@ -37,10 +37,14 @@ export function TemplateViewPage() {
 
     return (
         <div className="min-h-svh">
-            <TemplateShell>
+            {comp.fullScreen ? (
                 <Demo />
-            </TemplateShell>
-            <Button variant="outline" size="sm" className="fixed bottom-4 right-4 z-50 shadow-md" asChild>
+            ) : (
+                <TemplateShell>
+                    <Demo />
+                </TemplateShell>
+            )}
+            <Button variant="outline" size="sm" className="fixed bottom-4 right-4 z-50 shadow-md print:hidden" asChild>
                 <Link to="/templates">← Templates</Link>
             </Button>
         </div>

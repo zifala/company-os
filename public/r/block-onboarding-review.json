@@ -1,0 +1,42 @@
+{
+  "$schema": "https://ui.shadcn.com/schema/registry-item.json",
+  "name": "block-onboarding-review",
+  "type": "registry:block",
+  "title": "Onboarding review",
+  "description": "What was submitted, read-only. Reject · Send back · Approve in the header, progress and source on the right.",
+  "registryDependencies": [
+    "http://localhost:5173/r/tokens.json",
+    "http://localhost:5173/r/form-layout.json",
+    "http://localhost:5173/r/detail-card.json",
+    "http://localhost:5173/r/pill.json",
+    "http://localhost:5173/r/review-problems.json",
+    "http://localhost:5173/r/confirm-dialog.json",
+    "http://localhost:5173/r/reason-dialog.json"
+  ],
+  "files": [
+    {
+      "path": "registry/company-os/blocks/onboarding-review.tsx",
+      "content": "import { useState } from 'react';\nimport { ConfirmDialog, DetailCard, FormLayout, Pill, ReasonDialog, ReviewProblems, reviewProblemsLabels } from '@/components/company-os';\nimport type { ReviewSection } from '@/components/company-os';\nimport { Button } from '@/components/ui/button';\n\nconst progress: ReviewSection[] = [\n    { key: 'company', label: 'Company', problems: [] },\n    { key: 'contacts', label: 'Contacts', problems: [] },\n    { key: 'finance', label: 'Finance', problems: [] },\n    { key: 'documents', label: 'Documents', problems: [] },\n];\n\ntype Pending = 'approve' | 'send-back' | 'reject' | null;\n\nexport function OnboardingReview() {\n    const [pending, setPending] = useState<Pending>(null);\n    const [reason, setReason] = useState('');\n    const close = () => {\n        setReason('');\n        setPending(null);\n    };\n\n    return (\n        <>\n            <FormLayout\n                title=\"Review ONB-0012\"\n                actions={\n                    <>\n                        <Pill name=\"Submitted\" color=\"indigo\" />\n                        <Button variant=\"outline\" onClick={() => setPending('reject')}>Reject</Button>\n                        <Button variant=\"outline\" onClick={() => setPending('send-back')}>Send back</Button>\n                        <Button onClick={() => setPending('approve')}>Approve</Button>\n                    </>\n                }\n                side={\n                    <>\n                        <ReviewProblems sections={progress} labels={{ ...reviewProblemsLabels, allReady: 'Every check passes. Approve creates the record.' }} />\n                        <DetailCard compact title=\"Source\" details={[{ label: 'Source', value: 'Referral' }, { label: 'Referred by', value: 'Halcyon Freight' }, { label: 'Started by', value: 'Hodan Ali' }, { label: 'Submitted', value: '7 Nov 2026, 08:15' }]} />\n                    </>\n                }\n            >\n                <DetailCard\n                    title=\"Company\"\n                    details={[\n                        { label: 'Legal name', value: 'Daryeel Clinic Ltd' },\n                        { label: 'Registration', value: <span className=\"font-mono text-xs\">REG-2021-0832</span> },\n                        { label: 'Industry', value: 'Healthcare' },\n                        { label: 'City', value: 'Mogadishu' },\n                    ]}\n                />\n                <DetailCard title=\"Main contact\" details={[{ label: 'Name', value: 'Idil Hassan' }, { label: 'Phone', value: '+252 61 555 0192' }, { label: 'Email', value: null }, { label: 'Role', value: 'Operations lead' }]} />\n                <DetailCard title=\"Finance\" details={[{ label: 'Payment terms', value: 'Net 30' }, { label: 'Currency', value: 'USD' }]} />\n                <DetailCard title=\"Documents\" details={[{ label: 'Registration certificate', value: 'registration-2026.pdf' }, { label: 'Tax clearance letter', value: 'tax-clearance.pdf' }]} />\n            </FormLayout>\n            <ConfirmDialog\n                open={pending === 'approve'}\n                onOpenChange={(open) => !open && close()}\n                title=\"Approve ONB-0012\"\n                consequence=\"Daryeel Clinic becomes a provider, the main contact is created, and the documents move to the new record. This cannot be undone here.\"\n                confirmLabel=\"Approve and create\"\n                cancelLabel=\"Not yet\"\n                destructive={false}\n                onConfirm={close}\n            />\n            <ReasonDialog\n                open={pending === 'send-back' || pending === 'reject'}\n                onOpenChange={(open) => !open && close()}\n                title={pending === 'reject' ? 'Reject ONB-0012' : 'Send ONB-0012 back'}\n                consequence={pending === 'reject' ? 'The onboarding closes for good. Nothing is created. Hodan Ali sees your reason.' : 'Hodan Ali can edit it again and sees your reason on top of the stepper.'}\n                confirmLabel={pending === 'reject' ? 'Reject onboarding' : 'Send back'}\n                destructive={pending === 'reject'}\n                reason={reason}\n                onReasonChange={setReason}\n                processing={false}\n                onConfirm={close}\n            />\n        </>\n    );\n}\n",
+      "type": "registry:ui",
+      "target": "components/company-os/blocks/onboarding-review.tsx"
+    }
+  ],
+  "categories": [
+    "blocks"
+  ],
+  "meta": {
+    "system": "Company OS",
+    "kind": "block",
+    "pieces": [
+      27,
+      16
+    ],
+    "tags": [
+      "onboarding",
+      "review",
+      "approve",
+      "send back",
+      "reject"
+    ]
+  }
+}

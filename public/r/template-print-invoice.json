@@ -1,0 +1,36 @@
+{
+  "$schema": "https://ui.shadcn.com/schema/registry-item.json",
+  "name": "template-print-invoice",
+  "type": "registry:block",
+  "title": "Print · Invoice",
+  "description": "The A4 sheet: letterhead, repeating header and footer, lines, totals that never split, the draft stamp.",
+  "registryDependencies": [
+    "http://localhost:5173/r/tokens.json",
+    "http://localhost:5173/r/print-sheet.json"
+  ],
+  "files": [
+    {
+      "path": "registry/company-os/templates/print-invoice.tsx",
+      "content": "import { PrintBlock, PrintLines, PrintSheet, PrintTotals } from '@/components/company-os';\nimport type { PrintColumn, PrintRow } from '@/components/company-os';\n\nconst columns: PrintColumn[] = [\n    { key: 'description', label: 'Description' },\n    { key: 'quantity', label: 'Qty', numeric: true, width: '16mm' },\n    { key: 'price', label: 'Unit price', numeric: true, width: '30mm' },\n    { key: 'amount', label: 'Amount', numeric: true, width: '32mm' },\n];\n\nconst rows: PrintRow[] = [\n    { id: '1', cells: { description: 'Cold chain audit, Mogadishu port warehouse', quantity: '1', price: '4,800.00', amount: '4,800.00' } },\n    { id: '2', cells: { description: 'Reefer container monitoring, October', quantity: '12', price: '320.00', amount: '3,840.00' } },\n    { id: '3', cells: { description: 'Temperature loggers, model TL-40', quantity: '24', price: '45.00', amount: '1,080.00' } },\n    { id: '4', cells: { description: 'On-site training, two sessions', quantity: '2', price: '650.00', amount: '1,300.00' } },\n];\n\nexport function PrintInvoice() {\n    return (\n        <PrintSheet\n            letterhead={{\n                legalName: 'Halcyon Freight Ltd',\n                lines: ['KM4 Street, Hodan District, Mogadishu', 'Registration REG-2019-4471 · Tax ID 300-118-442', 'accounts@halcyon.example · +252 61 234 5678'],\n                logo: <span className=\"flex size-12 items-center justify-center rounded-md border border-black text-lg font-bold\">H</span>,\n            }}\n            title=\"Invoice\"\n            number=\"INV-0413\"\n            stamp=\"Draft\"\n            meta={[\n                { label: 'Issued', value: '7 Nov 2026' },\n                { label: 'Due', value: '7 Dec 2026' },\n                { label: 'Terms', value: 'Net 30' },\n                { label: 'Currency', value: 'USD' },\n            ]}\n            footer={['Halcyon Freight Ltd · REG-2019-4471', 'Printed 7 Nov 2026, 10:24 by Ayaan Warsame', 'INV-0413']}\n        >\n            <div className=\"grid grid-cols-2 gap-[8mm]\">\n                <PrintBlock title=\"Bill to\">\n                    <p className=\"font-semibold\">Northwind Trading</p>\n                    <p>Attn. Idil Hassan</p>\n                    <p>Maka Al Mukarama Road, Mogadishu</p>\n                </PrintBlock>\n                <PrintBlock title=\"Reference\">\n                    <p>Deal: Cold chain audit</p>\n                    <p>PO-2291</p>\n                </PrintBlock>\n            </div>\n            <PrintLines columns={columns} rows={rows} />\n            <PrintTotals\n                totals={[\n                    { label: 'Subtotal', value: '11,020.00' },\n                    { label: 'VAT 5%', value: '551.00' },\n                    { label: 'Total USD', value: '11,571.00', strong: true },\n                ]}\n            />\n            <PrintBlock title=\"Pay to\">\n                <p>Premier Bank · Account 0012 4471 9930 · SWIFT PRMBSOSM</p>\n                <p>Quote INV-0413 with the payment.</p>\n            </PrintBlock>\n        </PrintSheet>\n    );\n}\n",
+      "type": "registry:ui",
+      "target": "components/company-os/templates/print-invoice.tsx"
+    }
+  ],
+  "categories": [
+    "templates"
+  ],
+  "meta": {
+    "system": "Company OS",
+    "kind": "template",
+    "pieces": [
+      17
+    ],
+    "tags": [
+      "print",
+      "pdf",
+      "invoice",
+      "a4",
+      "statement"
+    ]
+  }
+}

@@ -1,8 +1,9 @@
 import type { ComponentType } from 'react';
 import { useState } from 'react';
 import { toast } from 'sonner';
-import { InsightItem, OnboardingCard, SetupChecklist } from '@/components/company-os';
-import type { Insight, SetupStep } from '@/components/company-os';
+import { FieldRow, FormSection, InsightItem, OnboardingCard, OnboardingStepper, ReviewProblems, SetupChecklist } from '@/components/company-os';
+import type { Insight, OnboardingStepItem, ReviewSection, SetupStep } from '@/components/company-os';
+import { Input } from '@/components/ui/input';
 
 const steps: SetupStep[] = [
     { key: 'organisation', title: 'Name your organisation and set its timezone', done: true, links: [{ label: 'Workspace', href: '#' }] },
@@ -75,6 +76,55 @@ function InsightDemo() {
     );
 }
 
+const onboardingSteps: OnboardingStepItem[] = [
+    { key: 'company', label: 'Company', done: true },
+    { key: 'finance', label: 'Finance', done: false },
+    { key: 'documents', label: 'Documents', done: false },
+    { key: 'review', label: 'Review', done: false },
+];
+
+const reviewSections: ReviewSection[] = [
+    { key: 'company', label: 'Company', problems: [] },
+    { key: 'finance', label: 'Finance', problems: ['Payment terms are required.'] },
+    { key: 'documents', label: 'Documents', problems: ['Upload the registration certificate.'] },
+];
+
+function StepperDemo() {
+    const [current, setCurrent] = useState('finance');
+    const index = onboardingSteps.findIndex((step) => step.key === current);
+    const go = (next: number) => setCurrent(onboardingSteps[Math.min(Math.max(next, 0), onboardingSteps.length - 1)].key);
+
+    return (
+        <div className="h-[560px] overflow-auto rounded-lg border border-border">
+            <OnboardingStepper
+                title="New provider onboarding"
+                reference="ONB-0012"
+                name="Daryeel Clinic"
+                status={{ label: 'Sent back', color: 'amber' }}
+                sentBack={{ reason: 'Add the payment terms we agreed.', by: 'Ayaan Warsame', at: '6 Nov 2026' }}
+                steps={onboardingSteps}
+                current={current}
+                furthest={2}
+                onSelect={setCurrent}
+                exitHref="#"
+                processing={false}
+                onBack={() => go(index - 1)}
+                onContinue={() => (current === 'review' ? toast.success('Submitted for review') : go(index + 1))}
+            >
+                {current === 'review' ? (
+                    <ReviewProblems sections={reviewSections} onFix={setCurrent} />
+                ) : (
+                    <FormSection title={onboardingSteps[index].label} compact>
+                        <FieldRow id={`demo-${current}`} label="Field">
+                            <Input id={`demo-${current}`} />
+                        </FieldRow>
+                    </FormSection>
+                )}
+            </OnboardingStepper>
+        </div>
+    );
+}
+
 export const setupDemos: Record<string, ComponentType> = {
     'setup-checklist-basic': SetupDemo,
     'onboarding-card-basic': () => (
@@ -82,6 +132,12 @@ export const setupDemos: Record<string, ComponentType> = {
             <OnboardingCard
                 onboarding={{ reference: 'ONB-0007', href: '#', started_by: 'Hodan Ali', approved_by: 'Ayaan Warsame', approved_at: '3 Nov 2026', source: 'Referral', referrer: 'Halcyon Freight' }}
             />
+        </div>
+    ),
+    'onboarding-stepper-basic': StepperDemo,
+    'review-problems-basic': () => (
+        <div className="max-w-2xl">
+            <ReviewProblems sections={reviewSections} onFix={(key) => toast(`Opens the ${key} step`)} />
         </div>
     ),
     'insight-item-basic': InsightDemo,

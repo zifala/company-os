@@ -36,6 +36,7 @@ pnpm dev             # site at localhost:5173
 pnpm build           # registry + llms + typecheck + site → dist/
 pnpm registry        # public/r only
 pnpm llms            # public/llms only
+pnpm lint            # the firewall: seam, no breadcrumbs, no native select, no avatars in tables, empty keeps the table
 pnpm sync:recipes    # refresh the recipe mirror from the skill
 pnpm check:sync      # drift check
 REGISTRY_BASE=https://your.domain pnpm build
