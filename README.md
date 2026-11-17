@@ -22,7 +22,8 @@ src/
 registry/adapters/
   navigation.inertia.tsx       the Inertia version of lib/navigation.tsx; what the registry ships
 mcp/
-  server.mjs                   the registry MCP: search components, blocks, templates, pieces (stdio, no deps)
+  registry.mjs                 the registry MCP tools + JSON-RPC handler, shared by both transports (no deps)
+  server.mjs                   the registry MCP over stdio
 packages/
   laravel/                     company-os/laravel — the server half of the recipes (composer package)
 scripts/
@@ -61,11 +62,23 @@ Required tokens beyond shadcn's: `--success`, `--warning`, `--info`, `--field`. 
 
 ## Registry MCP
 
+Search components, blocks, templates and pieces from any assistant. Tools: `search_registry`, `list_registry`, `get_component`, `get_composition`, `get_piece`. One implementation (`mcp/registry.mjs`), two transports.
+
+Over HTTP, from the deployed site (no local process; for assistants that cannot spawn one):
+
+```bash
+claude mcp add --transport http company-os https://your.domain/mcp
+```
+
+`pnpm start` serves it at `POST /mcp`: MCP Streamable HTTP, stateless, JSON responses, reading the built `llms/` in `dist/`. No sessions and no auth (the data is public); CORS `*`; batches accepted; bodies capped at 1 MB. `GET /mcp` is 405. `COMPANY_OS_DIST=/some/build pnpm start` serves another build.
+
+Over stdio, from a checkout:
+
 ```bash
 claude mcp add company-os -e COMPANY_OS_REGISTRY=https://your.domain -- node /path/to/company-os/mcp/server.mjs
 ```
 
-Tools: `search_registry`, `list_registry`, `get_component`, `get_composition`, `get_piece`. Unset `COMPANY_OS_REGISTRY` to read the local `public/` build.
+Unset `COMPANY_OS_REGISTRY` to read the local `public/` build.
 
 ## Rules the components follow
 

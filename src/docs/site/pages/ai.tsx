@@ -53,8 +53,12 @@ ${entries.map((entry) => `- [${entry.name}](${base}/llms/${entry.slug}.md): ${en
                 </div>
                 <Section title="Registry MCP" subtitle="Search from any assistant">
                     <Prose>
-                        <p>A zero-dependency MCP server over stdio. Tools: <code className="font-mono text-xs">search_registry</code>, <code className="font-mono text-xs">list_registry</code>, <code className="font-mono text-xs">get_component</code>, <code className="font-mono text-xs">get_composition</code>, <code className="font-mono text-xs">get_piece</code>. It ranks over <code className="font-mono text-xs">/llms/index.json</code> and returns the same markdown as these pages, with the install command.</p>
-                        <p>Point it at this site with <code className="font-mono text-xs">COMPANY_OS_REGISTRY</code>, or leave it unset to read a local build.</p>
+                        <p>A zero-dependency MCP server. Tools: <code className="font-mono text-xs">search_registry</code>, <code className="font-mono text-xs">list_registry</code>, <code className="font-mono text-xs">get_component</code>, <code className="font-mono text-xs">get_composition</code>, <code className="font-mono text-xs">get_piece</code>. It ranks over <code className="font-mono text-xs">/llms/index.json</code> and returns the same markdown as these pages, with the install command.</p>
+                        <p><b>Over HTTP.</b> This site serves the same tools at <code className="font-mono text-xs">/mcp</code> (Streamable HTTP, stateless, no auth). Nothing to install; it works for assistants that cannot start a local process.</p>
+                    </Prose>
+                    <CodeBlock code={`claude mcp add --transport http company-os ${base}/mcp`} />
+                    <Prose>
+                        <p><b>Over stdio.</b> Run it from a checkout. Point it at this site with <code className="font-mono text-xs">COMPANY_OS_REGISTRY</code>, or leave it unset to read a local build.</p>
                     </Prose>
                     <CodeBlock code={`claude mcp add company-os -e COMPANY_OS_REGISTRY=${base} -- node /path/to/company-os/mcp/server.mjs`} />
                 </Section>
