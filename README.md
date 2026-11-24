@@ -22,7 +22,8 @@ src/
 registry/adapters/
   navigation.inertia.tsx       the Inertia version of lib/navigation.tsx; what the registry ships
 mcp/
-  server.mjs                   the registry MCP: search components, blocks, templates, pieces (stdio, no deps)
+  registry.mjs                 the registry MCP tools + JSON-RPC handler, transport-free (no deps)
+  server.mjs                   the stdio transport
 packages/
   laravel/                     company-os/laravel — the server half of the recipes (composer package)
 scripts/
@@ -43,7 +44,7 @@ pnpm llms            # public/llms only
 pnpm lint            # the firewall: seam, no breadcrumbs, no native select, no avatars in tables, empty keeps the table
 pnpm sync:recipes    # refresh the recipe mirror from the skill
 pnpm check:sync      # drift check
-pnpm mcp             # the registry MCP over stdio (reads public/, or COMPANY_OS_REGISTRY=https://your.domain)
+pnpm mcp             # the registry MCP over stdio; `pnpm start` also serves it at /mcp (reads public/, or COMPANY_OS_REGISTRY=https://your.domain)
 REGISTRY_BASE=https://your.domain pnpm build
 ```
 
@@ -60,6 +61,14 @@ Installs the component source, the token set (`tokens.css` as a sample to merge 
 Required tokens beyond shadcn's: `--success`, `--warning`, `--info`, `--field`. Map them in `@theme inline` like the others.
 
 ## Registry MCP
+
+The deployed site serves it at `/mcp` (Streamable HTTP, stateless, read-only; `server.mjs` routes it):
+
+```bash
+claude mcp add --transport http company-os https://your.domain/mcp
+```
+
+Or over stdio from a checkout:
 
 ```bash
 claude mcp add company-os -e COMPANY_OS_REGISTRY=https://your.domain -- node /path/to/company-os/mcp/server.mjs
