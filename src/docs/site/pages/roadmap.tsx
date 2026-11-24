@@ -4,6 +4,14 @@ import { PageTitle, Stack } from '../shell';
 const roadmap: { title: string; note: string; items: { t: string; d: string }[] }[] = [
     {
         title: 'Shipped',
+        note: 'v0.4.0 · the registry MCP over HTTP',
+        items: [
+            { t: 'Registry MCP over HTTP', d: 'The deployed site answers MCP at /mcp: Streamable HTTP, stateless, read-only, CORS open, single messages and batches. claude mcp add --transport http company-os <site>/mcp, no checkout needed.' },
+            { t: 'One handler, two transports', d: 'mcp/registry.mjs holds the tools and the JSON-RPC handler with the loader passed in. mcp/server.mjs wraps it in stdio, server.mjs in HTTP over dist/, so both answer the same.' },
+        ],
+    },
+    {
+        title: 'Shipped',
         note: 'v0.3.0 · the rest of Organization, the server half, the MCP',
         items: [
             { t: 'Organization', d: 'A new category. AuditLogTable, ServiceStatusList, LetterheadPreview, WebhookEventPicker, WebhookDeliveryLog, WebhookEndpointStatus, SecretReveal, GrantList, CalendarFeedCard.' },
@@ -46,7 +54,6 @@ const roadmap: { title: string; note: string; items: { t: string; d: string }[] 
         note: 'later',
         items: [
             { t: 'Publish the Laravel package', d: 'Tag company-os/laravel and put it on Packagist once a product has run it in production.' },
-            { t: 'Registry MCP over HTTP', d: 'The same tools on the deployed site, for assistants that cannot spawn a local process.' },
         ],
     },
 ];
